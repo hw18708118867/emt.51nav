@@ -19,8 +19,6 @@ The build outputs a pure static site in `out/`.
 
 ## GitHub Pages
 
-This project builds to `out/` and can be published to GitHub Pages without GitHub Actions.
-
 For a project site, set:
 
 ```bash
@@ -29,20 +27,6 @@ NEXT_PUBLIC_BASE_PATH=/<repo>
 ```
 
 If you publish as a user site (`<user>.github.io`) or use a custom domain, leave `NEXT_PUBLIC_BASE_PATH` empty.
-
-Build the Pages output locally:
-
-```bash
-NEXT_PUBLIC_SITE_URL=https://moneytools.51nav.com npm run pages:build
-```
-
-Then publish the contents of `out/` to a `gh-pages` branch:
-
-```bash
-npm run pages:publish
-```
-
-In the repository settings, configure GitHub Pages to deploy from the `gh-pages` branch root.
 
 ## Content model
 

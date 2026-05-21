@@ -2,6 +2,7 @@
 out/
 node_modules/
 .local/
+.deploy-gh-pages/
 .DS_Store
 Thumbs.db
 .env

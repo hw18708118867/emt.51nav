@@ -5,8 +5,6 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "pages:build": "next build && next-sitemap --config next-sitemap.config.js && pagefind --site out && node ./scripts/sync-pagefind.mjs && node ./scripts/prepare-gh-pages.mjs",
-    "pages:publish": "sh ./scripts/publish-gh-pages.sh",
     "postbuild": "next-sitemap --config next-sitemap.config.js && pagefind --site out && node ./scripts/sync-pagefind.mjs",
     "start": "next start"
   },
