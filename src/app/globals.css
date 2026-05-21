@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffdf9;
+  --foreground: #0f172a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(254, 226, 226, 0.65), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 237, 213, 0.7), transparent 34%),
+    linear-gradient(180deg, #fffdf9 0%, #ffffff 100%);
+  color: var(--foreground);
+  font-family: Georgia, "Times New Roman", serif;
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.emt-search {
+  --pagefind-ui-scale: 1;
+  --pagefind-ui-primary: #b91c1c;
+  --pagefind-ui-text: #0f172a;
+  --pagefind-ui-background: #ffffff;
+  --pagefind-ui-border: #e2e8f0;
+  --pagefind-ui-tag: #fff1f2;
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 1.5rem;
+  --pagefind-ui-image-border-radius: 1rem;
+  --pagefind-ui-font: Georgia, "Times New Roman", serif;
+  --pagefind-ui-list-gap: 1rem;
+  --pagefind-ui-result-padding: 1.25rem;
+  --pagefind-ui-input-padding: 0.9rem 1rem;
+}
+
+.emt-search .pagefind-ui__search-input {
+  font-size: 1rem;
+}
+
+.emt-search .pagefind-ui__result {
+  border-radius: 1.5rem;
+  box-shadow: 0 18px 60px -36px rgba(15, 23, 42, 0.32);
+}
+
+.emt-search .pagefind-ui__result-title {
+  font-weight: 700;
+}
+
+.emt-search .pagefind-ui__result-link {
+  line-height: 1.4;
+}
+
+.emt-search mark {
+  background: rgba(254, 226, 226, 0.9);
+  color: #7f1d1d;
+  padding: 0 0.1em;
+  border-radius: 0.2em;
+}
