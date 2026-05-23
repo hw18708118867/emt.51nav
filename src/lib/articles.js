@@ -13,6 +13,7 @@ import IraSharedLimitBlog from "@/content/blog/ira-limit-shared-across-accounts.
 import InflationGoalBlog from "@/content/blog/use-cpi-before-setting-savings-goal.mdx";
 import PaycheckCheckupBlog from "@/content/blog/midyear-paycheck-checkup.mdx";
 import SocialSecurityRecordBlog from "@/content/blog/review-social-security-earnings-record.mdx";
+import CashBufferBlog from "@/content/blog/cash-buffer-before-extra-debt-payment.mdx";
 import RothVsTraditional from "@/content/compare/roth-vs-traditional-ira.mdx";
 import AvalancheVsSnowball from "@/content/compare/avalanche-vs-snowball.mdx";
 import RentingVsBuying from "@/content/compare/renting-vs-buying.mdx";
@@ -128,6 +129,19 @@ export const compareArticles = [
 ];
 
 export const blogArticles = [
+  {
+    slug: "cash-buffer-before-extra-debt-payment",
+    title: "Why A Small Cash Buffer Can Matter More Than One More Extra Debt Payment",
+    description: "Why sending every spare dollar to debt can backfire when you do not have enough cash to absorb ordinary surprises.",
+    readingTime: "4 min read",
+    publishedAt: "May 23, 2026",
+    updatedAt: "May 23, 2026",
+    category: "Debt",
+    audience: "Readers trying to pay down balances without sliding back after the next surprise expense",
+    takeaway: "A starter cash buffer often makes extra debt payments more durable because it reduces the odds of having to borrow again right after paying.",
+    relatedCalculators: ["debt-payoff-calculator", "budget-calculator", "emergency-fund-calculator"],
+    Content: CashBufferBlog
+  },
   {
     slug: "2026-hsa-contribution-limits",
     title: "2026 HSA Contribution Limits And The HDHP Numbers To Check First",
