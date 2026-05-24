@@ -15,7 +15,8 @@ export const metadata = buildPageMetadata({
     "how to pay off debt",
     "budgeting for beginners",
     "emergency fund guide",
-    "mortgage guide"
+    "mortgage guide",
+    "sinking fund guide"
   ]
 });
 

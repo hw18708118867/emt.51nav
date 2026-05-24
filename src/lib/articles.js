@@ -3,6 +3,7 @@ import SaveMoneyGuide from "@/content/guides/how-to-save-money.mdx";
 import DebtGuide from "@/content/guides/how-to-pay-off-debt-fast.mdx";
 import BudgetGuide from "@/content/guides/budgeting-for-beginners.mdx";
 import MortgageGuide from "@/content/guides/mortgage-guide.mdx";
+import SinkingFundGuide from "@/content/guides/how-to-start-a-sinking-fund.mdx";
 import HsaLimitsBlog from "@/content/blog/2026-hsa-contribution-limits.mdx";
 import RetirementLimitsBlog from "@/content/blog/2026-retirement-contribution-limits.mdx";
 import CreditReportsBlog from "@/content/blog/check-credit-reports-for-free.mdx";
@@ -83,6 +84,19 @@ export const guides = [
     takeaway: "Approval is not the same as affordability, and the safest payment is the one your monthly life can still support.",
     relatedCalculators: ["mortgage-calculator", "loan-calculator", "budget-calculator"],
     Content: MortgageGuide
+  },
+  {
+    slug: "how-to-start-a-sinking-fund",
+    title: "How To Start A Sinking Fund Without Turning It Into A Second Job",
+    description: "A practical guide to setting aside money for known future expenses before they become credit card problems.",
+    readingTime: "6 min read",
+    publishedAt: "May 24, 2026",
+    updatedAt: "May 24, 2026",
+    category: "Savings",
+    audience: "Readers whose budget gets knocked sideways by predictable but irregular expenses",
+    takeaway: "A sinking fund works best when it covers a few real upcoming costs and moves money automatically before those bills arrive.",
+    relatedCalculators: ["budget-calculator", "savings-goal-calculator", "emergency-fund-calculator"],
+    Content: SinkingFundGuide
   }
 ];
 
