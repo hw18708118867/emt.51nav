@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { FeatureCard, StatCard } from "@/components/cards";
+import { CalculatorQuickStart } from "@/components/calculator-navigation";
 import { SectionHeading } from "@/components/section-heading";
 import { StructuredData } from "@/components/structured-data";
 import { calculatorCategories, getCalculatorsBySlugs, getFeaturedCalculators } from "@/lib/calculator-registry";
@@ -40,6 +41,7 @@ export default function HomePage() {
                 Read latest guides
               </Link>
             </div>
+            <CalculatorQuickStart />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -82,7 +84,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="Popular calculators"
             title="Popular tools for the questions that usually come first"
-            description="Run the numbers, then use the page notes and related tools to see what the result actually means."
+            description="Run the numbers from here, then use the page notes and related tools to see what the result actually means."
           />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {featuredCalculators.map((calculator) => (

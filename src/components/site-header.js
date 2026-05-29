@@ -2,6 +2,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/site-config";
 import { Container } from "@/components/container";
 import { HeaderSearchForm } from "@/components/header-search-form";
+import { HeaderCalculatorMenu } from "@/components/calculator-navigation";
 
 export function SiteHeader() {
   return (
@@ -26,15 +27,18 @@ export function SiteHeader() {
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            {siteConfig.navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-slate-700 transition hover:text-slate-950"
-              >
-                {item.label}
-              </Link>
-            ))}
+            <HeaderCalculatorMenu />
+            {siteConfig.navigation
+              .filter((item) => item.href !== "/calculators")
+              .map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm font-medium text-slate-700 transition hover:text-slate-950"
+                >
+                  {item.label}
+                </Link>
+              ))}
             <Link
               href="/resources/search/"
               className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-950 hover:text-slate-950"

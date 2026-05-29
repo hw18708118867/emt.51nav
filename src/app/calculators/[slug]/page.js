@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Container } from "@/components/container";
+import { CalculatorSwitcher } from "@/components/calculator-navigation";
 import { SectionHeading } from "@/components/section-heading";
 import { CalculatorForm } from "@/components/calculator-form";
 import { FeatureCard } from "@/components/cards";
@@ -64,6 +65,8 @@ export default async function CalculatorPage({ params }) {
       </section>
 
       <Container className="space-y-18 pt-16">
+        <CalculatorSwitcher currentSlug={calculator.slug} />
+
         <CalculatorForm calculatorSlug={calculator.slug} />
 
         <section className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
