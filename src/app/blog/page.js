@@ -22,7 +22,7 @@ export const metadata = buildPageMetadata({
 export default function BlogPage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(254,226,226,0.95),_rgba(255,255,255,0.8)_45%,_rgba(255,247,237,0.9)_100%)] py-18">
+      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
         <Container>
           <SectionHeading
             eyebrow="Blog"
@@ -33,9 +33,9 @@ export default function BlogPage() {
       </section>
 
       <Container className="space-y-10 pt-16">
-        <div className="max-w-3xl rounded-[2rem] border border-slate-200 bg-white p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-700">Now live</p>
-          <p className="mt-4 text-lg leading-8 text-slate-700">
+        <div className="max-w-3xl rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-8 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#4b665d]">Now live</p>
+          <p className="mt-4 text-lg leading-8 text-[#556a61]">
             These posts cover decisions people may need to act on soon, including contribution limits, credit-report
             checks, FDIC coverage basics, inflation adjustments, and withholding reviews.
           </p>

@@ -15,6 +15,7 @@ import InflationGoalBlog from "@/content/blog/use-cpi-before-setting-savings-goa
 import PaycheckCheckupBlog from "@/content/blog/midyear-paycheck-checkup.mdx";
 import SocialSecurityRecordBlog from "@/content/blog/review-social-security-earnings-record.mdx";
 import CashBufferBlog from "@/content/blog/cash-buffer-before-extra-debt-payment.mdx";
+import VestingBeforeExitBlog from "@/content/blog/401k-vesting-before-you-leave-job.mdx";
 import RothVsTraditional from "@/content/compare/roth-vs-traditional-ira.mdx";
 import AvalancheVsSnowball from "@/content/compare/avalanche-vs-snowball.mdx";
 import RentingVsBuying from "@/content/compare/renting-vs-buying.mdx";
@@ -143,6 +144,20 @@ export const compareArticles = [
 ];
 
 export const blogArticles = [
+  {
+    slug: "401k-vesting-before-you-leave-job",
+    title: "401(k) Vesting When You Leave a Job: What Happens to Your Employer Match?",
+    description:
+      "Learn how 401(k) vesting works, whether you keep your employer match when you leave a job, and which plan details to check before you resign.",
+    readingTime: "5 min read",
+    publishedAt: "May 29, 2026",
+    updatedAt: "May 29, 2026",
+    category: "Retirement",
+    audience: "Workers changing jobs who want to understand how much of the employer-funded 401(k) balance is truly theirs",
+    takeaway: "Your own 401(k) contributions are always yours, but employer contributions may follow a vesting schedule that is worth checking before you leave.",
+    relatedCalculators: ["retirement-calculator", "net-worth-calculator", "compound-interest-calculator"],
+    Content: VestingBeforeExitBlog
+  },
   {
     slug: "cash-buffer-before-extra-debt-payment",
     title: "Why A Small Cash Buffer Can Matter More Than One More Extra Debt Payment",

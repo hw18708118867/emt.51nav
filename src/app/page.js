@@ -16,27 +16,27 @@ export default function HomePage() {
   return (
     <div className="pb-20">
       <StructuredData data={websiteStructuredData} />
-      <section className="relative overflow-hidden border-b border-slate-200">
+      <section className="relative overflow-hidden border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)]">
         <Container className="grid gap-14 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div className="space-y-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">{siteConfig.hero.eyebrow}</p>
-            <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-7xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{siteConfig.hero.eyebrow}</p>
+            <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-[#1d3128] sm:text-7xl">
               {siteConfig.hero.title}
             </h1>
-            <p className="max-w-2xl text-xl leading-9 text-slate-700">
+            <p className="max-w-2xl text-xl leading-9 text-[#556a61]">
               Check a payment, compare a few scenarios, or read the next step before you make a call on your budget,
               debt, savings, or housing plan.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/calculators/"
-                className="rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+                className="rounded-full bg-[#314841] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#283c36]"
               >
                 Explore calculators
               </Link>
               <Link
                 href="/guides/"
-                className="rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-slate-950 hover:text-slate-950"
+                className="rounded-full border border-[#d0d9d8] bg-[#fcfcfb]/86 px-6 py-3 text-sm font-semibold text-[#3f5950] transition hover:border-[#8d9ca5] hover:text-[#556874]"
               >
                 Read latest guides
               </Link>
@@ -62,14 +62,14 @@ export default function HomePage() {
           />
           <div className="grid gap-4">
             {calculatorCategories.map((category) => (
-              <div key={category.title} className="rounded-[2rem] border border-slate-200 bg-white p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">{category.title}</p>
+              <div key={category.title} className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{category.title}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {getCalculatorsBySlugs(category.slugs).map((calculator) => (
                     <Link
                       key={calculator.slug}
                       href={`/calculators/${calculator.slug}/`}
-                      className="rounded-full border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800 transition hover:border-red-400 hover:text-red-700"
+                      className="rounded-full border border-[#d0d9d8] bg-[#f8faf9] px-3 py-2 text-sm font-medium text-[#3f5950] transition hover:border-[#bec8ce] hover:bg-white hover:text-[#556874]"
                     >
                       {calculator.name}
                     </Link>

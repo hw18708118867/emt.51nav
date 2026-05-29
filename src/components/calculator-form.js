@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { clamp, formatCurrency, formatNumber, formatPercent } from "@/lib/formatters";
 import { getCalculatorPresets } from "@/lib/calculator-presets";
 import { getCalculatorBySlug } from "@/lib/calculator-registry";
@@ -294,7 +294,7 @@ function TrendChart({ timeline }) {
             <span className="text-sm text-slate-300">{point.label}</span>
             <div className="h-3 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-red-400 via-orange-300 to-amber-200"
+                className="h-full rounded-full bg-gradient-to-r from-emerald-300 via-sky-200 to-slate-100"
                 style={{
                   width: `${Math.max(6, Math.min(100, (Math.abs(point.amount) / Math.max(Math.abs(max), Math.abs(min), 1)) * 100))}%`
                 }}
@@ -312,13 +312,13 @@ function TrendChart({ timeline }) {
       <svg viewBox={`0 0 ${width} ${height + 24}`} className="h-56 w-full" role="img" aria-label="Projection chart">
         <defs>
           <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(248,113,113,0.55)" />
-            <stop offset="100%" stopColor="rgba(248,113,113,0.02)" />
+            <stop offset="0%" stopColor="rgba(133,161,149,0.2)" />
+            <stop offset="100%" stopColor="rgba(133,161,149,0.02)" />
           </linearGradient>
           <linearGradient id="chartLine" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#fda4af" />
-            <stop offset="50%" stopColor="#fdba74" />
-            <stop offset="100%" stopColor="#fde68a" />
+            <stop offset="0%" stopColor="#8ba79b" />
+            <stop offset="50%" stopColor="#9bafbd" />
+            <stop offset="100%" stopColor="#d8dde1" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75].map((fraction) => (
@@ -340,7 +340,7 @@ function TrendChart({ timeline }) {
 
           return (
             <g key={point.label}>
-              <circle cx={x} cy={y} r="5" fill="#fff7ed" stroke="#fb7185" strokeWidth="3" />
+              <circle cx={x} cy={y} r="5" fill="#f6f7f5" stroke="#7f998e" strokeWidth="3" />
               <text
                 x={x}
                 y={height + 22}
@@ -374,18 +374,18 @@ function ComparisonChart({ comparison }) {
     <div className="mt-8">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm font-semibold text-white">{comparison.title}</p>
-        <p className="text-sm font-medium text-amber-200">
+        <p className="text-sm font-medium text-[#c4d2db]">
           {comparison.differenceLabel}: {formatCurrency(comparison.differenceValue)}
         </p>
       </div>
       <div className="mt-4 rounded-[1.5rem] border border-white/10 bg-white/5 p-4">
         <div className="mb-4 flex flex-wrap gap-4 text-sm">
           <span className="inline-flex items-center gap-2 text-slate-200">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#8ba79b]" />
             {comparison.currentLabel}
           </span>
           <span className="inline-flex items-center gap-2 text-slate-300">
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#a7bac6]" />
             {comparison.delayedLabel}
           </span>
         </div>
@@ -443,7 +443,7 @@ function BreakdownBars({ items }) {
             <span className="text-sm text-slate-300">{item.label}</span>
             <div className="h-3 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-sky-300 via-red-300 to-amber-200"
+                className="h-full rounded-full bg-gradient-to-r from-sky-300 via-emerald-300 to-slate-100"
                 style={{
                   width: `${Math.max(8, Math.min(100, (Math.abs(item.amount) / max) * 100))}%`
                 }}
@@ -497,26 +497,64 @@ function AmortizationTable({ rows }) {
 }
 
 function InputGroup({ input, value, onChange }) {
-  const sliderRange = deriveSliderRange(input, value);
-  const sliderValue = clamp(Number(value) || 0, sliderRange.min, sliderRange.max);
+  const [draftValue, setDraftValue] = useState(value);
+  const commitTimerRef = useRef(null);
+  const sliderRange = deriveSliderRange(input, draftValue);
+  const sliderValue = clamp(Number(draftValue) || 0, sliderRange.min, sliderRange.max);
+
+  useEffect(() => {
+    setDraftValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    return () => {
+      if (commitTimerRef.current) {
+        window.clearTimeout(commitTimerRef.current);
+      }
+    };
+  }, []);
+
+  function commitValue(nextValue) {
+    if (commitTimerRef.current) {
+      window.clearTimeout(commitTimerRef.current);
+      commitTimerRef.current = null;
+    }
+
+    onChange(nextValue);
+  }
+
+  function scheduleCommit(nextValue) {
+    if (commitTimerRef.current) {
+      window.clearTimeout(commitTimerRef.current);
+    }
+
+    commitTimerRef.current = window.setTimeout(() => {
+      onChange(nextValue);
+      commitTimerRef.current = null;
+    }, 90);
+  }
 
   return (
     <label className="grid gap-2">
-      <span className="flex items-center justify-between gap-4 text-sm font-medium text-slate-700">
+      <span className="flex items-center justify-between gap-4 text-sm font-medium text-[#51675d]">
         <span>{input.label}</span>
-        <span className="font-semibold text-slate-950">{formatInputValue(input, value)}</span>
+        <span className="font-semibold text-[#1d3128]">{formatInputValue(input, draftValue)}</span>
       </span>
-      <div className="flex items-center rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 focus-within:border-red-500 focus-within:bg-white">
-        {input.prefix ? <span className="mr-2 text-slate-500">{input.prefix}</span> : null}
+      <div className="flex items-center rounded-2xl border border-[#d0d9d8] bg-[#f6f8f7] px-4 py-3 focus-within:border-[#8d9ca5] focus-within:bg-[#fcfcfb]">
+        {input.prefix ? <span className="mr-2 text-[#73837a]">{input.prefix}</span> : null}
         <input
           type="number"
           min={input.min}
           step={input.step}
-          value={value}
-          onChange={(event) => onChange(Number(event.target.value))}
-          className="w-full bg-transparent text-lg font-medium text-slate-950 outline-none"
+          value={draftValue}
+          onChange={(event) => {
+            const nextValue = Number(event.target.value);
+            setDraftValue(nextValue);
+            commitValue(nextValue);
+          }}
+          className="w-full bg-transparent text-lg font-medium text-[#1d3128] outline-none"
         />
-        {input.suffix ? <span className="ml-2 text-slate-500">{input.suffix}</span> : null}
+        {input.suffix ? <span className="ml-2 text-[#73837a]">{input.suffix}</span> : null}
       </div>
       <input
         type="range"
@@ -524,8 +562,18 @@ function InputGroup({ input, value, onChange }) {
         max={sliderRange.max}
         step={input.step ?? 1}
         value={sliderValue}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-1 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-red-600"
+        onInput={(event) => {
+          const nextValue = Number(event.currentTarget.value);
+          setDraftValue(nextValue);
+          scheduleCommit(nextValue);
+        }}
+        onPointerUp={(event) => commitValue(Number(event.currentTarget.value))}
+        onKeyUp={(event) => {
+          if (event.key.startsWith("Arrow") || event.key === "Home" || event.key === "End" || event.key === "PageUp" || event.key === "PageDown") {
+            commitValue(Number(event.currentTarget.value));
+          }
+        }}
+        className="mt-1 h-2 w-full cursor-pointer appearance-none rounded-full bg-[#dee4e2] accent-[#4b665d]"
       />
     </label>
   );
@@ -538,9 +586,10 @@ export function CalculatorForm({ calculatorSlug }) {
   const advancedInputs = calculator.advancedInputs || EMPTY_INPUTS;
   const [showAdvanced, setShowAdvanced] = useState(false);
   const queryReadyRef = useRef(false);
+  const deferredValues = useDeferredValue(values);
 
-  const result = useMemo(() => calculator.compute(values), [calculator, values]);
-  const narrative = useMemo(() => getResultNarrative(calculator, values, result), [calculator, result, values]);
+  const result = useMemo(() => calculator.compute(deferredValues), [calculator, deferredValues]);
+  const narrative = useMemo(() => getResultNarrative(calculator, deferredValues, result), [calculator, result, deferredValues]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -587,11 +636,11 @@ export function CalculatorForm({ calculatorSlug }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_18px_70px_-36px_rgba(15,23,42,0.4)] sm:p-8">
+      <section className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)] sm:p-8">
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">{calculator.category}</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Try the calculator</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{calculator.category}</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#1d3128]">Try the calculator</h2>
           </div>
           <button
             type="button"
@@ -599,7 +648,7 @@ export function CalculatorForm({ calculatorSlug }) {
               setValues(normalizeDefaults(calculator));
               setShowAdvanced(false);
             }}
-            className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-950 hover:text-slate-950"
+            className="rounded-full border border-[#d0d9d8] px-4 py-2 text-sm font-medium text-[#3f5950] transition hover:border-[#8d9ca5] hover:text-[#556874]"
           >
             Reset
           </button>
@@ -612,10 +661,12 @@ export function CalculatorForm({ calculatorSlug }) {
               input={input}
               value={values[input.name]}
               onChange={(nextValue) =>
-                setValues((current) => ({
-                  ...current,
-                  [input.name]: nextValue
-                }))
+                startTransition(() => {
+                  setValues((current) => ({
+                    ...current,
+                    [input.name]: nextValue
+                  }));
+                })
               }
             />
           ))}
@@ -624,11 +675,11 @@ export function CalculatorForm({ calculatorSlug }) {
         {advancedInputs.length ? (
           <div className="mt-8">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-sm font-semibold text-slate-950">Advanced housing costs</p>
+              <p className="text-sm font-semibold text-[#1d3128]">Advanced housing costs</p>
               <button
                 type="button"
                 onClick={() => setShowAdvanced((current) => !current)}
-                className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 transition hover:border-slate-950 hover:text-slate-950"
+                className="rounded-full border border-[#d0d9d8] px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#61746b] transition hover:border-[#8d9ca5] hover:text-[#556874]"
               >
                 {showAdvanced ? "Hide extras" : "Add taxes and fees"}
               </button>
@@ -641,10 +692,12 @@ export function CalculatorForm({ calculatorSlug }) {
                     input={input}
                     value={values[input.name]}
                     onChange={(nextValue) =>
-                      setValues((current) => ({
-                        ...current,
-                        [input.name]: nextValue
-                      }))
+                      startTransition(() => {
+                        setValues((current) => ({
+                          ...current,
+                          [input.name]: nextValue
+                        }));
+                      })
                     }
                   />
                 ))}
@@ -656,8 +709,8 @@ export function CalculatorForm({ calculatorSlug }) {
         {presets.length ? (
           <div className="mt-8">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-sm font-semibold text-slate-950">Scenario presets</p>
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Quick compare</p>
+              <p className="text-sm font-semibold text-[#1d3128]">Scenario presets</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-[#73837a]">Quick compare</p>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {presets.map((preset) => (
@@ -670,24 +723,24 @@ export function CalculatorForm({ calculatorSlug }) {
                       setShowAdvanced(advancedInputs.some((input) => Number(preset.values[input.name] ?? 0) > 0));
                     }
                   }}
-                  className="rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-4 text-left transition hover:border-red-300 hover:bg-white"
+                  className="rounded-[1.25rem] border border-[#dde3e5] bg-[#f3f6f7] px-4 py-4 text-left transition hover:border-[#bec8ce] hover:bg-[#fcfcfb]"
                 >
-                  <p className="text-sm font-semibold text-slate-950">{preset.label}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">{preset.description}</p>
+                  <p className="text-sm font-semibold text-[#1d3128]">{preset.label}</p>
+                  <p className="mt-1 text-sm leading-6 text-[#5d7067]">{preset.description}</p>
                 </button>
               ))}
             </div>
           </div>
         ) : null}
 
-        <div className="mt-8 rounded-[1.75rem] border border-red-100 bg-red-50 p-5">
-          <p className="text-sm font-semibold text-slate-950">Example</p>
-          <p className="mt-2 text-base leading-7 text-slate-700">{calculator.example}</p>
+        <div className="mt-8 rounded-[1.75rem] border border-[#d8e1dd] bg-[#edf2f0] p-5">
+          <p className="text-sm font-semibold text-[#1d3128]">Example</p>
+          <p className="mt-2 text-base leading-7 text-[#556a61]">{calculator.example}</p>
         </div>
       </section>
 
-      <section className="rounded-[2rem] bg-slate-950 p-6 text-white shadow-[0_24px_80px_-36px_rgba(15,23,42,0.6)] sm:p-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">Results</p>
+      <section className="rounded-[2rem] bg-[#223832] p-6 text-white shadow-[0_18px_42px_-30px_rgba(34,56,50,0.34)] sm:p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b8cbc3]">Results</p>
         <div className="mt-6 grid gap-4">
           {result.summary.map((item) => (
             <div key={item.label} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">

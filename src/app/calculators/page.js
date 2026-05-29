@@ -23,7 +23,7 @@ export const metadata = buildPageMetadata({
 export default function CalculatorsPage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(254,226,226,0.95),_rgba(255,255,255,0.8)_45%,_rgba(255,247,237,0.9)_100%)] py-18">
+      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
         <Container>
           <SectionHeading
             eyebrow="Calculator library"
@@ -36,7 +36,7 @@ export default function CalculatorsPage() {
       <Container className="space-y-16 pt-16">
         {calculatorCategories.map((category) => (
           <section key={category.title} className="space-y-6">
-            <h2 className="text-3xl font-semibold tracking-tight text-slate-950">{category.title}</h2>
+            <h2 className="text-3xl font-semibold tracking-tight text-[#1d3128]">{category.title}</h2>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {getCalculatorsBySlugs(category.slugs).map((calculator) => (
                 <FeatureCard

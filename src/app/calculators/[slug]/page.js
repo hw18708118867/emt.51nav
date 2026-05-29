@@ -53,13 +53,13 @@ export default async function CalculatorPage({ params }) {
     <div className="pb-20">
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={faqStructuredData} />
-      <section className="border-b border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(254,226,226,0.95),_rgba(255,255,255,0.8)_45%,_rgba(255,247,237,0.9)_100%)] py-18">
+      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
         <Container>
           <div className="max-w-4xl space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">{calculator.category}</p>
-            <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">{calculator.name}</h1>
-            <p className="max-w-3xl text-lg leading-8 text-slate-700">{calculator.description}</p>
-            <p className="max-w-3xl text-base leading-7 text-slate-600">{calculator.intro}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{calculator.category}</p>
+            <h1 className="text-4xl font-semibold tracking-tight text-[#1d3128] sm:text-6xl">{calculator.name}</h1>
+            <p className="max-w-3xl text-lg leading-8 text-[#556a61]">{calculator.description}</p>
+            <p className="max-w-3xl text-base leading-7 text-[#64766d]">{calculator.intro}</p>
           </div>
         </Container>
       </section>
@@ -77,31 +77,31 @@ export default async function CalculatorPage({ params }) {
           />
           <div className="space-y-6">
             {calculator.sections.map((section) => (
-              <div key={section.title} className="rounded-[2rem] border border-slate-200 bg-white p-6">
-                <h2 className="text-2xl font-semibold tracking-tight text-slate-950">{section.title}</h2>
-                <p className="mt-3 text-lg leading-8 text-slate-700">{section.body}</p>
+              <div key={section.title} className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
+                <h2 className="text-2xl font-semibold tracking-tight text-[#1d3128]">{section.title}</h2>
+                <p className="mt-3 text-lg leading-8 text-[#556a61]">{section.body}</p>
               </div>
             ))}
           </div>
         </section>
 
         <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-[2rem] border border-red-100 bg-red-50 p-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">Common questions</p>
-            <ul className="mt-4 space-y-3 text-lg leading-8 text-slate-700">
+          <div className="rounded-[2rem] border border-[#d8e1dd] bg-[#edf2f0] p-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Common questions</p>
+            <ul className="mt-4 space-y-3 text-lg leading-8 text-[#556a61]">
               {calculator.keywords.map((keyword) => (
                 <li key={keyword}>{keyword}</li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">Frequently asked questions</p>
+          <div className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-7 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Frequently asked questions</p>
             <div className="mt-4 space-y-5">
               {calculator.faqs.map((faq) => (
-                <div key={faq.question} className="border-b border-slate-200 pb-5 last:border-b-0 last:pb-0">
-                  <h2 className="text-xl font-semibold tracking-tight text-slate-950">{faq.question}</h2>
-                  <p className="mt-2 text-lg leading-8 text-slate-700">{faq.answer}</p>
+                <div key={faq.question} className="border-b border-[#d9e2e0] pb-5 last:border-b-0 last:pb-0">
+                  <h2 className="text-xl font-semibold tracking-tight text-[#1d3128]">{faq.question}</h2>
+                  <p className="mt-2 text-lg leading-8 text-[#556a61]">{faq.answer}</p>
                 </div>
               ))}
             </div>

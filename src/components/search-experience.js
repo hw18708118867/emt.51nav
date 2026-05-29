@@ -219,15 +219,15 @@ export function SearchExperience() {
 
   return (
     <section className="space-y-5">
-      <div className="rounded-[2rem] border border-slate-200 bg-white p-5 sm:p-7">
+      <div className="rounded-[2rem] border border-[#d1ddda] bg-[#fbfcfb] p-5 sm:p-7">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-red-700">Site search</p>
-            <p className="mt-2 text-sm leading-7 text-slate-600">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#4b665d]">Site search</p>
+            <p className="mt-2 text-sm leading-7 text-[#5d7067]">
               Search across calculators, long-form guides, blog posts, and comparison pages from one place.
             </p>
           </div>
-          <div className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-medium text-slate-600">
+          <div className="rounded-full border border-[#d6e0e6] bg-[#f1f6f8] px-4 py-2 text-xs font-medium text-[#5d7067]">
             {status === "loading" ? "Loading search" : status === "ready" ? "Search ready" : "Search index unavailable"}
           </div>
         </div>
@@ -235,7 +235,7 @@ export function SearchExperience() {
         <div className="emt-search" id={elementId} ref={searchRootRef} />
 
         {status === "unavailable" ? (
-          <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-7 text-slate-700">
+          <div className="mt-5 rounded-2xl border border-[#dce2e4] bg-[#f1f4f5] px-4 py-4 text-sm leading-7 text-[#556a61]">
             Search is available after the Pagefind index has been generated. Run a fresh production build if you need
             to refresh search data locally.
           </div>

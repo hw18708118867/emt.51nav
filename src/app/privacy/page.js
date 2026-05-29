@@ -41,7 +41,7 @@ const privacyNotes = [
 export default function PrivacyPage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(254,226,226,0.95),_rgba(255,255,255,0.8)_45%,_rgba(255,247,237,0.9)_100%)] py-18">
+      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
         <Container>
           <SectionHeading
             eyebrow="Privacy"
@@ -54,20 +54,20 @@ export default function PrivacyPage() {
       <Container className="grid gap-10 pt-16 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-6">
           {sections.map((section) => (
-            <section key={section.title} className="max-w-4xl rounded-[2rem] border border-slate-200 bg-white p-8">
-              <h2 className="text-2xl font-semibold tracking-tight text-slate-950">{section.title}</h2>
-              <p className="mt-4 text-lg leading-8 text-slate-700">{section.body}</p>
+            <section key={section.title} className="max-w-4xl rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-8 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
+              <h2 className="text-2xl font-semibold tracking-tight text-[#1d3128]">{section.title}</h2>
+              <p className="mt-4 text-lg leading-8 text-[#556a61]">{section.body}</p>
             </section>
           ))}
         </div>
 
         <aside className="space-y-5">
-          <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-700">Privacy at a glance</p>
-            <div className="mt-4 space-y-4 text-sm leading-7 text-slate-700">
+          <div className="rounded-[2rem] border border-[#dce2e4] bg-[#f1f4f5] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Privacy at a glance</p>
+            <div className="mt-4 space-y-4 text-sm leading-7 text-[#556a61]">
               {privacyNotes.map((item) => (
                 <div key={item.label}>
-                  <p className="font-semibold text-slate-950">{item.label}</p>
+                  <p className="font-semibold text-[#1d3128]">{item.label}</p>
                   <p>{item.value}</p>
                 </div>
               ))}

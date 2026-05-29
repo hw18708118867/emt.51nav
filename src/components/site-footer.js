@@ -28,14 +28,14 @@ export function SiteFooter() {
   ]);
 
   return (
-    <footer className="border-t border-slate-200 bg-slate-950 text-slate-300">
+    <footer className="border-t border-[#d7dfde] bg-[#223832] text-[#d6dcd9]">
       <Container className="grid gap-10 py-14 xl:grid-cols-[1.2fr_0.75fr_0.85fr_0.8fr_1fr]">
         <div className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">{siteConfig.name}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b8cbc3]">{siteConfig.name}</p>
           <h2 className="max-w-xl text-2xl font-semibold text-white">
             Money tools and readable guidance for the decisions people run into all the time.
           </h2>
-          <p className="max-w-2xl text-sm leading-7 text-slate-400">
+          <p className="max-w-2xl text-sm leading-7 text-[#a7b7af]">
             Use these calculators and guides to estimate payments, model savings growth, compare options, and read a
             little context before making the next call.
           </p>
@@ -92,11 +92,11 @@ export function SiteFooter() {
 
       <Container className="border-t border-white/10 py-6">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-          <p className="text-xs leading-6 text-slate-500">
+          <p className="text-xs leading-6 text-[#8fa099]">
             {siteConfig.name} publishes educational calculators and money content for informational purposes only. It is
             not financial, tax, investment, or legal advice.
           </p>
-          <div className="flex flex-wrap gap-4 text-xs text-slate-500">
+          <div className="flex flex-wrap gap-4 text-xs text-[#8fa099]">
             <Link href="/calculators/" className="transition hover:text-white">
               All calculators
             </Link>

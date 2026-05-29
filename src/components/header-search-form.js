@@ -9,11 +9,11 @@ export function HeaderSearchForm() {
         name="q"
         type="search"
         placeholder="Search the site"
-        className="w-56 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+        className="w-56 rounded-full border border-[#d0d9d8] bg-[#fcfcfb] px-4 py-2 text-sm text-[#31433d] outline-none transition placeholder:text-[#7b887f] focus:border-[#8d9ca5]"
       />
       <button
         type="submit"
-        className="rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+        className="rounded-full bg-[#314841] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#283c36]"
       >
         Go
       </button>
