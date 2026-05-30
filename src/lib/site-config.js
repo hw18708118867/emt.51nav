@@ -25,7 +25,7 @@ export const siteConfig = {
   abbreviation: "EMT",
   brandLines: ["Everyday Money", "Tools"],
   domain: resolveSiteDomain(),
-  ogImagePath: "/og-default.svg",
+  ogImagePath: "/og-default.png",
   description:
     "Money calculators, guides, and comparison pages for budgeting, debt payoff, saving, housing, and long-term planning.",
   defaultAuthor: "Everyday Money Tools Editorial Team",
