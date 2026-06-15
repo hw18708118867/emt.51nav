@@ -57,8 +57,8 @@ export default function HomePage() {
         <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
           <SectionHeading
             eyebrow="Core categories"
-            title="Three areas people come back to when the numbers need a second look"
-            description="Start with the decision in front of you, whether that means building savings, paying down debt, or figuring out whether the monthly plan still works."
+            title="The money decisions people come back to when the numbers need a second look"
+            description="Start with the decision in front of you, whether that means a home purchase, paying down debt, investing, planning retirement, or building savings."
           />
           <div className="grid gap-4">
             {calculatorCategories.map((category) => (

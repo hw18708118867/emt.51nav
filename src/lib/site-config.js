@@ -42,16 +42,28 @@ export const siteConfig = {
   ],
   categories: [
     {
-      title: "Investing",
-      description: "Project long-term growth, retirement savings, and how inflation changes the value of future goals."
+      title: "Mortgage",
+      description: "Estimate payments, amortization, refinancing, affordability, and whether renting or buying costs less."
     },
     {
       title: "Debt",
       description: "Estimate payments, compare payoff paths, and look at the tradeoffs behind borrowing choices."
     },
     {
+      title: "Investing",
+      description: "Project long-term growth and how inflation changes the value of future goals."
+    },
+    {
+      title: "Retirement",
+      description: "Test whether your saving pace supports the retirement timeline and income you want."
+    },
+    {
+      title: "Savings",
+      description: "Set savings targets and build a more reliable short-term cushion."
+    },
+    {
       title: "Budgeting",
-      description: "Plan monthly cash flow, set savings targets, and build a more reliable short-term cushion."
+      description: "Plan monthly cash flow and track net worth over time."
     }
   ]
 };

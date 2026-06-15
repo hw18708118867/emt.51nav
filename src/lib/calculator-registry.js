@@ -192,7 +192,599 @@ function buildPayoffSeries({ balance, annualRate, payment }) {
   };
 }
 
+function amortizeWithExtra({ principal, annualRate, years, extraMonthly = 0 }) {
+  const monthlyRate = annualRate / 100 / 12;
+  const scheduledMonths = years * 12;
+  const basePayment = paymentForLoan(principal, annualRate, years);
+  let balance = principal;
+  let month = 0;
+  let totalInterest = 0;
+  const series = [];
+
+  while (balance > 0 && month < scheduledMonths + 1) {
+    month += 1;
+    const interest = balance * monthlyRate;
+    const principalPaid = Math.min(basePayment + extraMonthly - interest, balance);
+
+    if (principalPaid <= 0) {
+      return { months: null, totalInterest: null, basePayment, series: [], warning: "Payment does not cover monthly interest." };
+    }
+
+    balance = Math.max(0, balance - principalPaid);
+    totalInterest += interest;
+
+    if (month % 12 === 0 || balance === 0) {
+      series.push({ label: `Year ${Math.ceil(month / 12)}`, amount: roundCurrency(balance) });
+    }
+
+    if (balance === 0) {
+      break;
+    }
+  }
+
+  return { months: month, totalInterest, basePayment, series, warning: null };
+}
+
+function buildRentBuyProjection({
+  homePrice,
+  downPayment,
+  annualRate,
+  years,
+  annualPropertyTaxRate,
+  annualMaintenanceRate,
+  annualHomeAppreciation,
+  monthlyRent,
+  annualRentIncrease
+}) {
+  const loanYears = 30;
+  const principal = Math.max(0, homePrice - downPayment);
+  const payment = paymentForLoan(principal, annualRate, loanYears);
+  const monthlyRate = annualRate / 100 / 12;
+
+  let balance = principal;
+  let buyOutflow = downPayment;
+  let rentOutflow = 0;
+  let rent = monthlyRent;
+  let homeValue = homePrice;
+  const series = [];
+
+  for (let month = 1; month <= years * 12; month += 1) {
+    const interest = balance * monthlyRate;
+    const principalPaid = Math.min(payment - interest, balance);
+    balance = Math.max(0, balance - principalPaid);
+
+    const monthlyTax = (homeValue * (annualPropertyTaxRate / 100)) / 12;
+    const monthlyMaintenance = (homeValue * (annualMaintenanceRate / 100)) / 12;
+    buyOutflow += payment + monthlyTax + monthlyMaintenance;
+    rentOutflow += rent;
+
+    if (month % 12 === 0) {
+      homeValue *= 1 + annualHomeAppreciation / 100;
+      rent *= 1 + annualRentIncrease / 100;
+      const homeEquity = homeValue - balance;
+      const buyNetCost = buyOutflow - homeEquity;
+      series.push({
+        label: `Year ${month / 12}`,
+        currentAmount: roundCurrency(rentOutflow),
+        delayedAmount: roundCurrency(buyNetCost)
+      });
+    }
+  }
+
+  const finalEquity = homeValue - balance;
+  const buyNetCost = buyOutflow - finalEquity;
+
+  return {
+    payment,
+    rentTotal: rentOutflow,
+    buyOutflow,
+    finalEquity,
+    buyNetCost,
+    homeValue,
+    series
+  };
+}
+
 export const calculatorRegistry = [
+  {
+    slug: "mortgage-amortization-calculator",
+    name: "Mortgage Amortization Calculator",
+    category: "Mortgage",
+    ogImagePath: "/og/calculators/mortgage-amortization-calculator.svg",
+    description: "See a full year-by-year amortization schedule showing how each mortgage payment splits between principal and interest.",
+    intro:
+      "Enter your loan amount, rate, and term to build a complete amortization table and watch how the principal share of every payment grows over time.",
+    keywords: [
+      "mortgage amortization calculator",
+      "amortization schedule with extra payments",
+      "how much of my mortgage payment goes to principal"
+    ],
+    defaults: {
+      loanAmount: 360000,
+      annualRate: 6.4,
+      years: 30
+    },
+    inputs: [
+      { name: "loanAmount", label: "Loan amount", prefix: "$", min: 10000, step: 5000 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Loan term", suffix: "years", min: 5, step: 5 }
+    ],
+    presets: true,
+    example: "Early in a 30-year loan most of each payment is interest, but the principal share climbs steadily as the balance falls.",
+    sections: [
+      {
+        title: "What an amortization schedule shows",
+        body:
+          "Amortization is the process of paying off a loan with fixed payments over time. Each payment covers the interest charged that month first, and whatever is left reduces the principal. The schedule below tracks that split year by year."
+      },
+      {
+        title: "Why early payments feel slow",
+        body:
+          "At the start the balance is large, so the interest portion of each payment is high and principal moves slowly. As the balance shrinks, less interest is charged and more of every payment attacks the principal, which is why payoff accelerates near the end."
+      },
+      {
+        title: "Reading the schedule",
+        body:
+          "Use the yearly table to see the ending balance, principal paid, and interest paid for each year. This is the clearest way to understand the true cost of the loan and the point where you finally cross the halfway mark on principal."
+      }
+    ],
+    faqs: [
+      {
+        question: "Why is so much of my early payment interest?",
+        answer: "Interest is charged on the outstanding balance, which is highest at the start. As you pay the balance down, the interest portion shrinks and the principal portion grows automatically."
+      },
+      {
+        question: "When does principal overtake interest in a payment?",
+        answer: "For a typical 30-year loan near 6 to 7 percent, the principal portion usually passes the interest portion somewhere in the middle third of the loan, though the exact crossover depends on your rate and term."
+      }
+    ],
+    related: ["mortgage-calculator", "extra-payment-mortgage-calculator", "refinance-calculator"],
+    compute(values) {
+      const principal = Number(values.loanAmount);
+      const payment = paymentForLoan(principal, Number(values.annualRate), Number(values.years));
+      const totalPaid = payment * Number(values.years) * 12;
+      const totalInterest = totalPaid - principal;
+      const table = buildAmortizationTable({
+        principal,
+        annualRate: Number(values.annualRate),
+        years: Number(values.years),
+        payment
+      });
+
+      return {
+        summary: [
+          { label: "Monthly payment", value: formatCurrencyPrecise(payment) },
+          { label: "Total interest", value: formatCurrency(totalInterest) },
+          { label: "Total of payments", value: formatCurrency(totalPaid) }
+        ],
+        details: [
+          { label: "Loan amount", value: formatCurrency(principal) },
+          { label: "Interest rate", value: formatPercent(values.annualRate) },
+          { label: "Loan term", value: `${values.years} years` },
+          { label: "Interest as share of payments", value: formatPercent((totalInterest / totalPaid) * 100 || 0) }
+        ],
+        timeline: buildAmortizationSeries({
+          principal,
+          annualRate: Number(values.annualRate),
+          years: Number(values.years),
+          payment
+        }),
+        amortizationTable: table,
+        breakdown: [
+          { label: "Principal", amount: roundCurrency(principal) },
+          { label: "Interest", amount: roundCurrency(totalInterest) }
+        ],
+        note: "This schedule assumes a fixed rate and the same payment every month for the full term."
+      };
+    }
+  },
+  {
+    slug: "refinance-calculator",
+    name: "Refinance Calculator",
+    category: "Mortgage",
+    ogImagePath: "/og/calculators/refinance-calculator.svg",
+    description: "Compare your current mortgage with a new refinanced loan to see the monthly savings and how long it takes to break even on closing costs.",
+    intro:
+      "Enter your existing loan and a new rate to estimate the monthly payment change, the break-even point on closing costs, and whether refinancing is likely worth it.",
+    keywords: [
+      "refinance calculator break even",
+      "is it worth refinancing my mortgage",
+      "mortgage refinance savings calculator"
+    ],
+    defaults: {
+      currentBalance: 320000,
+      currentRate: 7.5,
+      remainingYears: 27,
+      newRate: 6.1,
+      newTerm: 30,
+      closingCosts: 6000
+    },
+    inputs: [
+      { name: "currentBalance", label: "Remaining balance", prefix: "$", min: 10000, step: 5000 },
+      { name: "currentRate", label: "Current rate", suffix: "%", min: 0, step: 0.1 },
+      { name: "remainingYears", label: "Years left", suffix: "years", min: 1, step: 1 },
+      { name: "newRate", label: "New rate", suffix: "%", min: 0, step: 0.1 }
+    ],
+    advancedInputs: [
+      { name: "newTerm", label: "New loan term", suffix: "years", min: 5, step: 5 },
+      { name: "closingCosts", label: "Closing costs", prefix: "$", min: 0, step: 250 }
+    ],
+    presets: true,
+    example: "Dropping from 7.5% to 6.1% can cut a few hundred dollars off the monthly payment, but closing costs may take a couple of years to recover.",
+    sections: [
+      {
+        title: "How refinancing math works",
+        body:
+          "Refinancing replaces your current loan with a new one, ideally at a lower rate. The savings come from the smaller monthly payment, but you usually pay closing costs to get the new loan. The key question is how long it takes the monthly savings to repay those costs."
+      },
+      {
+        title: "The break-even point",
+        body:
+          "Break-even is closing costs divided by monthly savings. If you plan to stay in the home well past that point, refinancing often makes sense. If you may move or refinance again before then, the upfront cost may not pay off."
+      },
+      {
+        title: "Watch the loan term",
+        body:
+          "Resetting a 27-year balance into a fresh 30-year loan can lower the payment while quietly increasing total interest because you stretch the balance over more years. Compare lifetime interest, not just the monthly number."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is a good break-even period for refinancing?",
+        answer: "Many people look for a break-even under two to three years, but it depends on how long you plan to keep the home. The longer you stay past break-even, the more the refinance saves."
+      },
+      {
+        question: "Does refinancing reset my loan term?",
+        answer: "Usually yes. A new 30-year loan restarts the clock, which can raise total interest even at a lower rate. Choosing a shorter new term avoids that, though the payment savings will be smaller."
+      }
+    ],
+    related: ["mortgage-calculator", "mortgage-amortization-calculator", "extra-payment-mortgage-calculator"],
+    compute(values) {
+      const balance = Number(values.currentBalance);
+      const currentPayment = paymentForLoan(balance, Number(values.currentRate), Number(values.remainingYears));
+      const newTerm = Number(values.newTerm) || Number(values.remainingYears);
+      const newPayment = paymentForLoan(balance, Number(values.newRate), newTerm);
+      const monthlySavings = currentPayment - newPayment;
+      const closingCosts = Number(values.closingCosts);
+      const breakEvenMonths = monthlySavings > 0 ? Math.ceil(closingCosts / monthlySavings) : null;
+
+      const currentTotal = currentPayment * Number(values.remainingYears) * 12;
+      const newTotal = newPayment * newTerm * 12 + closingCosts;
+      const lifetimeDifference = currentTotal - newTotal;
+
+      return {
+        summary: [
+          { label: "New monthly payment", value: formatCurrencyPrecise(newPayment) },
+          { label: "Monthly savings", value: monthlySavings > 0 ? formatCurrencyPrecise(monthlySavings) : "No monthly savings" },
+          {
+            label: "Break-even point",
+            value: breakEvenMonths ? formatYearsAndMonths(breakEvenMonths) : "Does not break even"
+          }
+        ],
+        details: [
+          { label: "Current payment", value: formatCurrencyPrecise(currentPayment) },
+          { label: "Closing costs", value: formatCurrency(closingCosts) },
+          { label: "New rate", value: formatPercent(values.newRate) },
+          { label: "Lifetime cost change", value: formatCurrency(lifetimeDifference) }
+        ],
+        timeline: buildAmortizationSeries({
+          principal: balance,
+          annualRate: Number(values.newRate),
+          years: newTerm,
+          payment: newPayment
+        }),
+        breakdown: [
+          { label: "Current total", amount: roundCurrency(currentTotal) },
+          { label: "New total", amount: roundCurrency(newTotal) }
+        ],
+        milestones: [
+          { label: "Current monthly payment", value: formatCurrencyPrecise(currentPayment) },
+          { label: "Refinanced monthly payment", value: formatCurrencyPrecise(newPayment) },
+          { label: breakEvenMonths ? "Time to recover closing costs" : "Break-even", value: breakEvenMonths ? formatYearsAndMonths(breakEvenMonths) : "Not reached" }
+        ],
+        note: "Lifetime comparison assumes you keep each loan to the end of its term. Refinancing into a longer term can raise total interest even at a lower rate."
+      };
+    }
+  },
+  {
+    slug: "home-affordability-calculator",
+    name: "Home Affordability Calculator",
+    category: "Mortgage",
+    ogImagePath: "/og/calculators/home-affordability-calculator.svg",
+    description: "Estimate how much house you can afford based on your income, monthly debts, down payment, and current mortgage rates.",
+    intro:
+      "Enter your income, existing debt payments, and down payment to estimate a realistic home price range using a standard debt-to-income guideline.",
+    keywords: [
+      "home affordability calculator",
+      "how much house can i afford",
+      "house i can afford based on salary"
+    ],
+    defaults: {
+      annualIncome: 120000,
+      monthlyDebts: 600,
+      downPayment: 60000,
+      annualRate: 6.4,
+      years: 30
+    },
+    inputs: [
+      { name: "annualIncome", label: "Annual income", prefix: "$", min: 20000, step: 1000 },
+      { name: "monthlyDebts", label: "Monthly debt payments", prefix: "$", min: 0, step: 50 },
+      { name: "downPayment", label: "Down payment", prefix: "$", min: 0, step: 5000 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 }
+    ],
+    advancedInputs: [
+      { name: "years", label: "Loan term", suffix: "years", min: 5, step: 5 }
+    ],
+    presets: true,
+    example: "A higher down payment and lower existing debt both push the affordable price up, often more than a small change in interest rate.",
+    sections: [
+      {
+        title: "How affordability is estimated",
+        body:
+          "Lenders generally want your total monthly debts, including the new mortgage, to stay under about 36% of your gross monthly income. This calculator uses that guideline to back into the largest mortgage payment you can carry, then converts it into a home price."
+      },
+      {
+        title: "Why your other debts matter",
+        body:
+          "Car loans, student loans, and credit card minimums all count against the same income limit. Reducing those monthly payments frees up room in your budget and can raise the price you qualify for without earning a dollar more."
+      },
+      {
+        title: "Affordable is not the same as comfortable",
+        body:
+          "The maximum a lender allows is not always a payment you will enjoy living with. Leave room for savings, maintenance, and the rest of your life before borrowing all the way to the limit."
+      }
+    ],
+    faqs: [
+      {
+        question: "What debt-to-income ratio do lenders use?",
+        answer: "A common guideline keeps total monthly debt payments, including the mortgage, at or below 36% of gross monthly income, though some loan programs allow higher. This tool uses the 36% guideline as a planning baseline."
+      },
+      {
+        question: "Does this include taxes and insurance?",
+        answer: "This estimate focuses on principal and interest to keep the price approachable. Property taxes, insurance, and HOA dues will reduce the home price you can actually afford, so treat the result as an upper estimate."
+      }
+    ],
+    related: ["mortgage-calculator", "rent-vs-buy-calculator", "debt-to-income-ratio-calculator"],
+    compute(values) {
+      const grossMonthly = Number(values.annualIncome) / 12;
+      const maxTotalDebt = grossMonthly * 0.36;
+      const availableForMortgage = Math.max(0, maxTotalDebt - Number(values.monthlyDebts));
+      const years = Number(values.years) || 30;
+      const monthlyRate = Number(values.annualRate) / 100 / 12;
+      const months = years * 12;
+
+      const maxLoan = monthlyRate === 0
+        ? availableForMortgage * months
+        : (availableForMortgage * (1 - (1 + monthlyRate) ** -months)) / monthlyRate;
+      const maxHomePrice = maxLoan + Number(values.downPayment);
+
+      return {
+        summary: [
+          { label: "Estimated home price", value: formatCurrency(maxHomePrice) },
+          { label: "Maximum mortgage payment", value: formatCurrencyPrecise(availableForMortgage) },
+          { label: "Supported loan amount", value: formatCurrency(maxLoan) }
+        ],
+        details: [
+          { label: "Gross monthly income", value: formatCurrencyPrecise(grossMonthly) },
+          { label: "Existing monthly debts", value: formatCurrency(values.monthlyDebts) },
+          { label: "Down payment", value: formatCurrency(values.downPayment) },
+          { label: "Debt-to-income limit used", value: "36%" }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "Down payment", amount: roundCurrency(Number(values.downPayment)) },
+          { label: "Mortgage loan", amount: roundCurrency(maxLoan) }
+        ],
+        milestones: [
+          { label: "Affordable home price", value: formatCurrency(maxHomePrice) },
+          { label: "Monthly housing budget", value: formatCurrencyPrecise(availableForMortgage) },
+          { label: "Down payment share", value: formatPercent((Number(values.downPayment) / Math.max(maxHomePrice, 1)) * 100) }
+        ],
+        note: "This is a principal-and-interest estimate using a 36% debt-to-income guideline. Taxes, insurance, and HOA will lower the price you can truly afford."
+      };
+    }
+  },
+  {
+    slug: "rent-vs-buy-calculator",
+    name: "Rent vs Buy Calculator",
+    category: "Mortgage",
+    ogImagePath: "/og/calculators/rent-vs-buy-calculator.svg",
+    description: "Compare the long-term net cost of renting versus buying a home over the years you plan to stay, including equity, taxes, and maintenance.",
+    intro:
+      "Enter a home price, rent, and how long you plan to stay to see which option costs less once equity, appreciation, and ownership costs are included.",
+    keywords: [
+      "rent vs buy calculator",
+      "is it cheaper to rent or buy",
+      "renting vs buying a house calculator"
+    ],
+    defaults: {
+      homePrice: 450000,
+      downPayment: 90000,
+      annualRate: 6.4,
+      monthlyRent: 2200,
+      years: 7
+    },
+    inputs: [
+      { name: "homePrice", label: "Home price", prefix: "$", min: 50000, step: 5000 },
+      { name: "downPayment", label: "Down payment", prefix: "$", min: 0, step: 5000 },
+      { name: "annualRate", label: "Mortgage rate", suffix: "%", min: 0, step: 0.1 },
+      { name: "monthlyRent", label: "Monthly rent", prefix: "$", min: 200, step: 50 }
+    ],
+    advancedInputs: [
+      { name: "years", label: "Years you will stay", suffix: "years", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "Buying tends to win the longer you stay, because each year builds equity while rent payments keep leaving for good.",
+    sections: [
+      {
+        title: "Why the timeline decides it",
+        body:
+          "Buying carries large upfront costs like the down payment and a payment that is mostly interest at first. The longer you stay, the more equity and appreciation work in your favor, which is why a short stay usually favors renting and a long stay usually favors buying."
+      },
+      {
+        title: "What this comparison includes",
+        body:
+          "The buy side adds up mortgage payments, property tax, and maintenance, then subtracts the equity and appreciation you would own at the end. The rent side totals rent payments that rise each year. The chart shows the running net cost of each path."
+      },
+      {
+        title: "Costs this model simplifies",
+        body:
+          "Real decisions also involve closing costs, selling fees, insurance, investment returns on the down payment, and lifestyle factors. Use this as a directional guide and confirm the big assumptions before acting."
+      }
+    ],
+    faqs: [
+      {
+        question: "How many years until buying beats renting?",
+        answer: "It varies with price, rent, and rates, but a common rule of thumb is around five years. Use the chart to find the year where the buy net cost drops below the rent total for your own numbers."
+      },
+      {
+        question: "Does buying always build wealth?",
+        answer: "Not automatically. If you move before building meaningful equity, transaction costs can erase the benefit. Equity grows slowly at first because early payments are mostly interest."
+      }
+    ],
+    related: ["mortgage-calculator", "home-affordability-calculator", "extra-payment-mortgage-calculator"],
+    compute(values) {
+      const projection = buildRentBuyProjection({
+        homePrice: Number(values.homePrice),
+        downPayment: Number(values.downPayment),
+        annualRate: Number(values.annualRate),
+        years: Number(values.years) || 7,
+        annualPropertyTaxRate: 1.1,
+        annualMaintenanceRate: 1,
+        annualHomeAppreciation: 3,
+        monthlyRent: Number(values.monthlyRent),
+        annualRentIncrease: 3
+      });
+
+      const cheaper = projection.buyNetCost < projection.rentTotal ? "Buying" : "Renting";
+      const difference = Math.abs(projection.buyNetCost - projection.rentTotal);
+
+      return {
+        summary: [
+          { label: "Lower net cost", value: cheaper },
+          { label: "Cost difference", value: formatCurrency(difference) },
+          { label: "Equity if you buy", value: formatCurrency(projection.finalEquity) }
+        ],
+        details: [
+          { label: "Total rent paid", value: formatCurrency(projection.rentTotal) },
+          { label: "Net cost of buying", value: formatCurrency(projection.buyNetCost) },
+          { label: "Monthly payment", value: formatCurrencyPrecise(projection.payment) },
+          { label: "Projected home value", value: formatCurrency(projection.homeValue) }
+        ],
+        timeline: [],
+        comparison: {
+          title: "Running net cost: rent vs buy",
+          currentLabel: "Total rent paid",
+          delayedLabel: "Net cost of buying",
+          differenceLabel: cheaper === "Buying" ? "Buying saves" : "Renting saves",
+          differenceValue: roundCurrency(difference),
+          series: projection.series
+        },
+        note: "Assumes 3% yearly home appreciation, 3% rent growth, 1.1% property tax, and 1% maintenance. Closing and selling costs are excluded."
+      };
+    }
+  },
+  {
+    slug: "extra-payment-mortgage-calculator",
+    name: "Extra Payment Mortgage Calculator",
+    category: "Mortgage",
+    ogImagePath: "/og/calculators/extra-payment-mortgage-calculator.svg",
+    description: "See how much interest you can save and how many years you can cut off your mortgage by adding an extra amount to each monthly payment.",
+    intro:
+      "Add an extra monthly amount to your mortgage and see the new payoff date plus the total interest you avoid over the life of the loan.",
+    keywords: [
+      "extra mortgage payment calculator",
+      "pay off mortgage early calculator",
+      "how much can i save paying extra on mortgage"
+    ],
+    defaults: {
+      loanAmount: 360000,
+      annualRate: 6.4,
+      years: 30,
+      extraMonthly: 300
+    },
+    inputs: [
+      { name: "loanAmount", label: "Loan amount", prefix: "$", min: 10000, step: 5000 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Loan term", suffix: "years", min: 5, step: 5 },
+      { name: "extraMonthly", label: "Extra monthly payment", prefix: "$", min: 0, step: 25 }
+    ],
+    presets: true,
+    example: "Adding a few hundred dollars a month can shave years off a 30-year mortgage and save tens of thousands in interest.",
+    sections: [
+      {
+        title: "Why extra payments work so well",
+        body:
+          "Every extra dollar goes straight to principal, which immediately reduces the balance that interest is charged on. That lowers next month's interest, so each extra payment quietly makes the following payments more effective too."
+      },
+      {
+        title: "Time saved versus interest saved",
+        body:
+          "Extra payments produce two wins at once: the loan ends sooner and the total interest drops. The earlier in the loan you start adding extra, the larger both effects become because there is more balance and more time for the savings to compound."
+      },
+      {
+        title: "Make sure it fits the plan",
+        body:
+          "Paying a mortgage down early is powerful, but it locks money into the home. Keep an emergency fund and weigh higher-interest debt or employer retirement matches before committing every spare dollar to the mortgage."
+      }
+    ],
+    faqs: [
+      {
+        question: "Is it better to pay extra monthly or make one lump sum?",
+        answer: "Both help. Consistent extra monthly payments are easy to automate and start saving interest right away, while a lump sum makes a large one-time dent. Starting earlier matters more than the exact method."
+      },
+      {
+        question: "Should I pay off my mortgage early or invest?",
+        answer: "It depends on your mortgage rate and risk tolerance. Paying extra is a guaranteed return equal to your rate, while investing may earn more but carries risk. Many people do some of both."
+      }
+    ],
+    related: ["mortgage-calculator", "mortgage-amortization-calculator", "refinance-calculator"],
+    compute(values) {
+      const principal = Number(values.loanAmount);
+      const baseline = amortizeWithExtra({
+        principal,
+        annualRate: Number(values.annualRate),
+        years: Number(values.years),
+        extraMonthly: 0
+      });
+      const accelerated = amortizeWithExtra({
+        principal,
+        annualRate: Number(values.annualRate),
+        years: Number(values.years),
+        extraMonthly: Number(values.extraMonthly)
+      });
+
+      const baseInterest = baseline.totalInterest ?? 0;
+      const newInterest = accelerated.totalInterest ?? baseInterest;
+      const interestSaved = Math.max(0, baseInterest - newInterest);
+      const monthsSaved = (baseline.months ?? 0) - (accelerated.months ?? 0);
+
+      return {
+        summary: [
+          { label: "Interest saved", value: formatCurrency(interestSaved) },
+          { label: "Time saved", value: monthsSaved > 0 ? formatYearsAndMonths(monthsSaved) : "No change" },
+          { label: "New payoff time", value: accelerated.months ? formatYearsAndMonths(accelerated.months) : "—" }
+        ],
+        details: [
+          { label: "Base monthly payment", value: formatCurrencyPrecise(accelerated.basePayment) },
+          { label: "Extra monthly payment", value: formatCurrency(values.extraMonthly) },
+          { label: "Total payment with extra", value: formatCurrencyPrecise(accelerated.basePayment + Number(values.extraMonthly)) },
+          { label: "Interest without extra", value: formatCurrency(baseInterest) }
+        ],
+        timeline: accelerated.series,
+        breakdown: [
+          { label: "Interest with extra", amount: roundCurrency(newInterest) },
+          { label: "Interest saved", amount: roundCurrency(interestSaved) }
+        ],
+        milestones: [
+          { label: "Payoff without extra", value: baseline.months ? formatYearsAndMonths(baseline.months) : "—" },
+          { label: "Payoff with extra", value: accelerated.months ? formatYearsAndMonths(accelerated.months) : "—" },
+          { label: "Interest saved", value: formatCurrency(interestSaved) }
+        ],
+        note: "Assumes the extra amount is applied to principal every month for the life of the loan."
+      };
+    }
+  },
   {
     slug: "compound-interest-calculator",
     name: "Compound Interest Calculator",
@@ -288,7 +880,7 @@ export const calculatorRegistry = [
   {
     slug: "mortgage-calculator",
     name: "Mortgage Calculator",
-    category: "Debt",
+    category: "Mortgage",
     ogImagePath: "/og/calculators/mortgage-calculator.svg",
     description: "Estimate a mortgage payment, total interest cost, and the full monthly housing picture before you commit to a home price.",
     intro:
@@ -509,7 +1101,7 @@ export const calculatorRegistry = [
   {
     slug: "retirement-calculator",
     name: "Retirement Calculator",
-    category: "Investing",
+    category: "Retirement",
     description: "Project future retirement savings based on your current balance, ongoing contributions, and an assumed long-term return.",
     intro:
       "Test whether your current saving pace is likely to support the retirement timeline and lifestyle you are aiming for.",
@@ -784,7 +1376,7 @@ export const calculatorRegistry = [
   {
     slug: "savings-goal-calculator",
     name: "Savings Goal Calculator",
-    category: "Budgeting",
+    category: "Savings",
     description: "Estimate how long it may take to reach a savings goal with a starting balance, monthly deposits, and a savings rate.",
     intro:
       "Use it when you know the amount you want to reach and need a clearer picture of the monthly effort and timeline required to get there.",
@@ -957,7 +1549,7 @@ export const calculatorRegistry = [
   {
     slug: "emergency-fund-calculator",
     name: "Emergency Fund Calculator",
-    category: "Budgeting",
+    category: "Savings",
     ogImagePath: "/og/calculators/emergency-fund-calculator.svg",
     description: "Estimate how large an emergency fund may need to be and how long it could take to build it.",
     intro:
@@ -1134,16 +1726,35 @@ export const calculatorIndex = Object.fromEntries(calculatorRegistry.map((calcul
 
 export const calculatorCategories = [
   {
-    title: "Investing",
-    slugs: ["compound-interest-calculator", "retirement-calculator", "inflation-calculator"]
+    title: "Mortgage",
+    slugs: [
+      "mortgage-calculator",
+      "mortgage-amortization-calculator",
+      "refinance-calculator",
+      "home-affordability-calculator",
+      "rent-vs-buy-calculator",
+      "extra-payment-mortgage-calculator"
+    ]
   },
   {
     title: "Debt",
-    slugs: ["mortgage-calculator", "loan-calculator", "debt-payoff-calculator"]
+    slugs: ["loan-calculator", "debt-payoff-calculator"]
+  },
+  {
+    title: "Investing",
+    slugs: ["compound-interest-calculator", "inflation-calculator"]
+  },
+  {
+    title: "Retirement",
+    slugs: ["retirement-calculator"]
+  },
+  {
+    title: "Savings",
+    slugs: ["savings-goal-calculator", "emergency-fund-calculator"]
   },
   {
     title: "Budgeting",
-    slugs: ["savings-goal-calculator", "budget-calculator", "emergency-fund-calculator", "net-worth-calculator"]
+    slugs: ["budget-calculator", "net-worth-calculator"]
   }
 ];
 

@@ -4,6 +4,7 @@ import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState
 import { clamp, formatCurrency, formatNumber, formatPercent } from "@/lib/formatters";
 import { getCalculatorPresets } from "@/lib/calculator-presets";
 import { getCalculatorBySlug } from "@/lib/calculator-registry";
+import { CalculatorSwitchButton } from "@/components/calculator-navigation";
 
 const EMPTY_INPUTS = [];
 
@@ -123,6 +124,19 @@ function getTimelineMode(timeline) {
   }
 
   return "bar";
+}
+
+function getLabelIndices(count, maxLabels = 7) {
+  if (count <= maxLabels) {
+    return new Set(Array.from({ length: count }, (_, index) => index));
+  }
+
+  const step = (count - 1) / (maxLabels - 1);
+  const indices = new Set();
+  for (let i = 0; i < maxLabels; i += 1) {
+    indices.add(Math.round(i * step));
+  }
+  return indices;
 }
 
 function summarizeChange(timeline) {
@@ -334,25 +348,30 @@ function TrendChart({ timeline }) {
         ))}
         <path d={areaPath} fill="url(#chartFill)" transform="translate(0 8)" />
         <path d={linePath} fill="none" stroke="url(#chartLine)" strokeWidth="4" strokeLinecap="round" transform="translate(0 8)" />
-        {timeline.map((point, index) => {
-          const x = timeline.length === 1 ? width / 2 : (index / (timeline.length - 1)) * width;
-          const y = height - ((point.amount - min) / Math.max(max - min, 1)) * height + 8;
+        {(() => {
+          const labelIndices = getLabelIndices(timeline.length);
+          return timeline.map((point, index) => {
+            const x = timeline.length === 1 ? width / 2 : (index / (timeline.length - 1)) * width;
+            const y = height - ((point.amount - min) / Math.max(max - min, 1)) * height + 8;
 
-          return (
-            <g key={point.label}>
-              <circle cx={x} cy={y} r="5" fill="#f6f7f5" stroke="#7f998e" strokeWidth="3" />
-              <text
-                x={x}
-                y={height + 22}
-                fill="rgba(255,255,255,0.72)"
-                fontSize="12"
-                textAnchor={index === 0 ? "start" : index === timeline.length - 1 ? "end" : "middle"}
-              >
-                {point.label}
-              </text>
-            </g>
-          );
-        })}
+            return (
+              <g key={point.label}>
+                <circle cx={x} cy={y} r="5" fill="#f6f7f5" stroke="#7f998e" strokeWidth="3" />
+                {labelIndices.has(index) ? (
+                  <text
+                    x={x}
+                    y={height + 22}
+                    fill="rgba(255,255,255,0.72)"
+                    fontSize="12"
+                    textAnchor={index === 0 ? "start" : index === timeline.length - 1 ? "end" : "middle"}
+                  >
+                    {point.label}
+                  </text>
+                ) : null}
+              </g>
+            );
+          });
+        })()}
       </svg>
     </div>
   );
@@ -403,21 +422,27 @@ function ComparisonChart({ comparison }) {
           ))}
           <path d={currentPath} fill="none" stroke="#86efac" strokeWidth="4" strokeLinecap="round" transform="translate(0 8)" />
           <path d={delayedPath} fill="none" stroke="#fcd34d" strokeWidth="4" strokeLinecap="round" strokeDasharray="10 8" transform="translate(0 8)" />
-          {comparison.series.map((point, index) => {
-            const x = comparison.series.length === 1 ? width / 2 : (index / (comparison.series.length - 1)) * width;
-            return (
-              <text
-                key={point.label}
-                x={x}
-                y={height + 22}
-                fill="rgba(255,255,255,0.72)"
-                fontSize="12"
-                textAnchor={index === 0 ? "start" : index === comparison.series.length - 1 ? "end" : "middle"}
-              >
-                {point.label}
-              </text>
-            );
-          })}
+          {(() => {
+            const labelIndices = getLabelIndices(comparison.series.length);
+            return comparison.series.map((point, index) => {
+              if (!labelIndices.has(index)) {
+                return null;
+              }
+              const x = comparison.series.length === 1 ? width / 2 : (index / (comparison.series.length - 1)) * width;
+              return (
+                <text
+                  key={point.label}
+                  x={x}
+                  y={height + 22}
+                  fill="rgba(255,255,255,0.72)"
+                  fontSize="12"
+                  textAnchor={index === 0 ? "start" : index === comparison.series.length - 1 ? "end" : "middle"}
+                >
+                  {point.label}
+                </text>
+              );
+            });
+          })()}
         </svg>
       </div>
     </div>
@@ -635,26 +660,29 @@ export function CalculatorForm({ calculatorSlug }) {
 
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+    <div className="grid gap-6">
       <section className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)] sm:p-8">
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{calculator.category}</p>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#1d3128]">Try the calculator</h2>
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setValues(normalizeDefaults(calculator));
-              setShowAdvanced(false);
-            }}
-            className="rounded-full border border-[#d0d9d8] px-4 py-2 text-sm font-medium text-[#3f5950] transition hover:border-[#8d9ca5] hover:text-[#556874]"
-          >
-            Reset
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <CalculatorSwitchButton currentSlug={calculatorSlug} />
+            <button
+              type="button"
+              onClick={() => {
+                setValues(normalizeDefaults(calculator));
+                setShowAdvanced(false);
+              }}
+              className="rounded-full border border-[#d0d9d8] px-4 py-2 text-sm font-medium text-[#3f5950] transition hover:border-[#8d9ca5] hover:text-[#556874]"
+            >
+              Reset
+            </button>
+          </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {(calculator.inputs || []).map((input) => (
             <InputGroup
               key={input.name}
@@ -685,7 +713,7 @@ export function CalculatorForm({ calculatorSlug }) {
               </button>
             </div>
             {showAdvanced ? (
-              <div className="mt-4 grid gap-5 sm:grid-cols-2">
+              <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {advancedInputs.map((input) => (
                   <InputGroup
                     key={input.name}
@@ -741,7 +769,7 @@ export function CalculatorForm({ calculatorSlug }) {
 
       <section className="rounded-[2rem] bg-[#223832] p-6 text-white shadow-[0_18px_42px_-30px_rgba(34,56,50,0.34)] sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b8cbc3]">Results</p>
-        <div className="mt-6 grid gap-4">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {result.summary.map((item) => (
             <div key={item.label} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
               <p className="text-sm text-slate-300">{item.label}</p>
@@ -750,37 +778,41 @@ export function CalculatorForm({ calculatorSlug }) {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-3">
-          {result.details.map((item) => (
-            <div key={item.label} className="flex items-center justify-between gap-4 border-b border-white/10 py-3 text-sm">
-              <span className="text-slate-300">{item.label}</span>
-              <span className="font-medium text-white">{item.value}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-sm font-semibold text-white">Projection</p>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-              {getTimelineMode(result.timeline) === "line" ? "Trend view" : "Distribution view"}
-            </p>
-          </div>
-          <TrendChart timeline={result.timeline} />
-        </div>
-
-        {result.milestones?.length ? (
-          <div className="mt-8 grid gap-3">
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm font-semibold text-white">Milestones</p>
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Decision cues</p>
-            </div>
-            {result.milestones.map((item) => (
-              <div key={item.label} className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-white/10 bg-white/5 px-4 py-4 text-sm">
+        <div className="mt-8 grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="grid content-start gap-3">
+            {result.details.map((item) => (
+              <div key={item.label} className="flex items-center justify-between gap-4 border-b border-white/10 py-3 text-sm">
                 <span className="text-slate-300">{item.label}</span>
                 <span className="font-medium text-white">{item.value}</span>
               </div>
             ))}
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-semibold text-white">Projection</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                {getTimelineMode(result.timeline) === "line" ? "Trend view" : "Distribution view"}
+              </p>
+            </div>
+            <TrendChart timeline={result.timeline} />
+          </div>
+        </div>
+
+        {result.milestones?.length ? (
+          <div className="mt-8">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-semibold text-white">Milestones</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Decision cues</p>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {result.milestones.map((item) => (
+                <div key={item.label} className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-white/10 bg-white/5 px-4 py-4 text-sm">
+                  <span className="text-slate-300">{item.label}</span>
+                  <span className="font-medium text-white">{item.value}</span>
+                </div>
+              ))}
+            </div>
           </div>
         ) : null}
 
@@ -788,7 +820,7 @@ export function CalculatorForm({ calculatorSlug }) {
         <AmortizationTable rows={result.amortizationTable} />
         <ComparisonChart comparison={result.comparison} />
 
-        <div className="mt-8 grid gap-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {narrative.map((item) => (
             <div key={item.title} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
               <p className="text-sm font-semibold text-white">{item.title}</p>

@@ -1,0 +1,29 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#FFF7ED"/>
+  <rect x="36" y="36" width="1128" height="558" rx="36" fill="url(#bg)"/>
+  <circle cx="1022" cy="120" r="132" fill="#FCA5A5" fill-opacity="0.18"/>
+  <circle cx="114" cy="548" r="176" fill="#FDBA74" fill-opacity="0.2"/>
+  <rect x="96" y="92" width="136" height="44" rx="22" fill="#0F766E"/>
+  <text x="164" y="121" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">Housing</text>
+  <text x="96" y="222" font-family="Georgia, 'Times New Roman', serif" font-size="66" font-weight="700" fill="#0F172A">
+    <tspan x="96" dy="0">Extra Payment</tspan>
+    <tspan x="96" dy="78">Mortgage</tspan>
+  </text>
+  <text x="96" y="362" font-family="Arial, sans-serif" font-size="30" fill="#334155">
+    <tspan x="96" dy="0">See the interest saved and years cut</tspan>
+    <tspan x="96" dy="42">by paying a little extra each month.</tspan>
+  </text>
+  <rect x="96" y="452" width="420" height="74" rx="28" fill="#FFFFFF"/>
+  <text x="126" y="497" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#0F172A">Everyday Money Tools</text>
+  <text x="126" y="529" font-family="Arial, sans-serif" font-size="20" fill="#64748B">moneytools.51nav.com</text>
+  <path d="M840 430V310L964 212L1088 310V430" stroke="#0F172A" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M878 430V346H1050V430" stroke="#0F172A" stroke-width="18" stroke-linejoin="round"/>
+  <rect x="944" y="360" width="44" height="70" rx="12" fill="#991B1B"/>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="70" x2="1130" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#ECFEFF"/>
+      <stop offset="1" stop-color="#FFEDD5"/>
+    </linearGradient>
+  </defs>
+</svg>

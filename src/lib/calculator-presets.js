@@ -1,4 +1,89 @@
 export const calculatorPresets = {
+  "mortgage-amortization-calculator": [
+    {
+      label: "Starter home",
+      description: "$240k at 6.1%, 30 years",
+      values: { loanAmount: 240000, annualRate: 6.1, years: 30 }
+    },
+    {
+      label: "Typical",
+      description: "$360k at 6.4%, 30 years",
+      values: { loanAmount: 360000, annualRate: 6.4, years: 30 }
+    },
+    {
+      label: "15-year",
+      description: "$360k at 5.9%, 15 years",
+      values: { loanAmount: 360000, annualRate: 5.9, years: 15 }
+    }
+  ],
+  "refinance-calculator": [
+    {
+      label: "Small drop",
+      description: "7.5% to 6.9%",
+      values: { currentBalance: 320000, currentRate: 7.5, remainingYears: 27, newRate: 6.9, newTerm: 30, closingCosts: 6000 }
+    },
+    {
+      label: "Big drop",
+      description: "7.5% to 6.1%",
+      values: { currentBalance: 320000, currentRate: 7.5, remainingYears: 27, newRate: 6.1, newTerm: 30, closingCosts: 6000 }
+    },
+    {
+      label: "Shorter term",
+      description: "Refi into 15 years",
+      values: { currentBalance: 320000, currentRate: 7.5, remainingYears: 27, newRate: 5.9, newTerm: 15, closingCosts: 6000 }
+    }
+  ],
+  "home-affordability-calculator": [
+    {
+      label: "Conservative",
+      description: "Low debt, big down payment",
+      values: { annualIncome: 120000, monthlyDebts: 300, downPayment: 90000, annualRate: 6.4, years: 30 }
+    },
+    {
+      label: "Typical",
+      description: "$120k income, $600 debts",
+      values: { annualIncome: 120000, monthlyDebts: 600, downPayment: 60000, annualRate: 6.4, years: 30 }
+    },
+    {
+      label: "Stretch",
+      description: "Higher debt, smaller down",
+      values: { annualIncome: 120000, monthlyDebts: 1000, downPayment: 30000, annualRate: 6.9, years: 30 }
+    }
+  ],
+  "rent-vs-buy-calculator": [
+    {
+      label: "Short stay",
+      description: "3 years, renting often wins",
+      values: { homePrice: 450000, downPayment: 90000, annualRate: 6.4, monthlyRent: 2200, years: 3 }
+    },
+    {
+      label: "Medium stay",
+      description: "7 years in the home",
+      values: { homePrice: 450000, downPayment: 90000, annualRate: 6.4, monthlyRent: 2200, years: 7 }
+    },
+    {
+      label: "Long stay",
+      description: "12 years, buying often wins",
+      values: { homePrice: 450000, downPayment: 90000, annualRate: 6.4, monthlyRent: 2200, years: 12 }
+    }
+  ],
+  "extra-payment-mortgage-calculator": [
+    {
+      label: "Modest extra",
+      description: "$150 extra per month",
+      values: { loanAmount: 360000, annualRate: 6.4, years: 30, extraMonthly: 150 }
+    },
+    {
+      label: "Steady extra",
+      description: "$300 extra per month",
+      values: { loanAmount: 360000, annualRate: 6.4, years: 30, extraMonthly: 300 }
+    },
+    {
+      label: "Aggressive",
+      description: "$600 extra per month",
+      values: { loanAmount: 360000, annualRate: 6.4, years: 30, extraMonthly: 600 }
+    }
+  ],
   "compound-interest-calculator": [
     {
       label: "Starter",
