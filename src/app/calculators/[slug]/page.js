@@ -66,13 +66,13 @@ export default async function CalculatorPage({ params }) {
       <Container className="space-y-18 pt-16">
         <CalculatorForm calculatorSlug={calculator.slug} />
 
-        <section className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="space-y-8">
           <SectionHeading
             eyebrow="How it works"
             title="What the result is showing you"
             description="These sections explain what the calculator measures, which assumptions matter most, and where the number can be misleading."
           />
-          <div className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-3">
             {calculator.sections.map((section) => (
               <div key={section.title} className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
                 <h2 className="text-2xl font-semibold tracking-tight text-[#1d3128]">{section.title}</h2>
@@ -82,27 +82,35 @@ export default async function CalculatorPage({ params }) {
           </div>
         </section>
 
-        <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-[2rem] border border-[#d8e1dd] bg-[#edf2f0] p-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Common questions</p>
-            <ul className="mt-4 space-y-3 text-lg leading-8 text-[#556a61]">
-              {calculator.keywords.map((keyword) => (
-                <li key={keyword}>{keyword}</li>
-              ))}
-            </ul>
+        <section className="space-y-8">
+          <SectionHeading
+            eyebrow="FAQ"
+            title="Frequently asked questions"
+            description="Quick answers to the questions people ask most about this calculator."
+          />
+          <div className="grid gap-6 md:grid-cols-2">
+            {calculator.faqs.map((faq) => (
+              <div key={faq.question} className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-7 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
+                <h2 className="text-xl font-semibold tracking-tight text-[#1d3128]">{faq.question}</h2>
+                <p className="mt-3 text-lg leading-8 text-[#556a61]">{faq.answer}</p>
+              </div>
+            ))}
           </div>
-
-          <div className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-7 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Frequently asked questions</p>
-            <div className="mt-4 space-y-5">
-              {calculator.faqs.map((faq) => (
-                <div key={faq.question} className="border-b border-[#d9e2e0] pb-5 last:border-b-0 last:pb-0">
-                  <h2 className="text-xl font-semibold tracking-tight text-[#1d3128]">{faq.question}</h2>
-                  <p className="mt-2 text-lg leading-8 text-[#556a61]">{faq.answer}</p>
-                </div>
-              ))}
+          {calculator.keywords?.length ? (
+            <div className="rounded-[2rem] border border-[#d8e1dd] bg-[#edf2f0] p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">People also search for</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {calculator.keywords.map((keyword) => (
+                  <span
+                    key={keyword}
+                    className="rounded-full border border-[#d0d9d8] bg-[#fcfcfb] px-3 py-1.5 text-sm text-[#556a61]"
+                  >
+                    {keyword}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
         </section>
 
         <section className="space-y-8">
