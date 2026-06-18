@@ -1,6 +1,7 @@
 import { Container } from "@/components/container";
 import { FeatureCard } from "@/components/cards";
-import { SectionHeading } from "@/components/section-heading";
+import { PageHero } from "@/components/page-hero";
+import { BlogArt } from "@/components/page-art";
 import { blogArticles } from "@/lib/articles";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -22,15 +23,13 @@ export const metadata = buildPageMetadata({
 export default function BlogPage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
-        <Container>
-          <SectionHeading
-            eyebrow="Blog"
-            title="Shorter posts on current rules, timelines, and planning details"
-            description="This section covers narrower money questions that sit between the calculators and the longer guides."
-          />
-        </Container>
-      </section>
+      <PageHero
+        eyebrow="Blog"
+        title="Shorter posts on current rules, timelines, and planning details"
+        description="This section covers narrower money questions that sit between the calculators and the longer guides."
+        art={<BlogArt />}
+        band="bg-band-cream"
+      />
 
       <Container className="space-y-10 pt-16">
         <div className="max-w-3xl rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-8 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">

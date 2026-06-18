@@ -1,18 +1,48 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f4f7f6;
-  --foreground: #213530;
-  --surface: #fcfcfb;
-  --surface-muted: #edf1f0;
-  --surface-strong: #223832;
-  --border-soft: #d7dfde;
-  --accent: #4b665d;
-  --accent-strong: #314841;
-  --accent-soft: #e4ebe8;
-  --accent-soft-strong: #d1ddd8;
-  --secondary-soft: #e5eaee;
-  --secondary-soft-strong: #d6dde3;
+@theme {
+  /* Brand: deep ink green ramp */
+  --color-ink-900: #0f1d19;
+  --color-ink-800: #152521;
+  --color-ink-700: #1d3128;
+  --color-ink-600: #243d35;
+  --color-ink-500: #314841;
+  --color-ink-400: #3f5950;
+  --color-ink-300: #4b665d;
+  --color-ink-200: #5c7065;
+
+  /* Text */
+  --color-content-strong: #152521;
+  --color-content: #36473f;
+  --color-content-muted: #5c7065;
+  --color-content-faint: #708178;
+
+  /* Surfaces */
+  --color-surface: #fcfcfb;
+  --color-surface-muted: #eff3f1;
+  --color-surface-sunken: #1f342d;
+  --color-surface-panel: #223832;
+
+  /* Borders */
+  --color-line: #d7dfde;
+  --color-line-strong: #cdd8d4;
+  --color-line-bold: #314841;
+
+  /* Accent: warm amber gold */
+  --color-accent: #c8821e;
+  --color-accent-strong: #a86a12;
+  --color-accent-bright: #e0992c;
+  --color-accent-soft: #f7ecd8;
+  --color-accent-line: #ecd4a8;
+
+  /* Section band backgrounds (NerdWallet-style full-width zones) */
+  --color-band-mint: #e8f3ec;
+  --color-band-cream: #fbf4e6;
+  --color-band-sky: #e9f0f4;
+  --color-band-sage: #eef3ee;
+
+  /* Heading font (Inter via next/font) */
+  --font-display: var(--font-heading), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 html {
@@ -24,13 +54,148 @@ body {
     radial-gradient(circle at top left, rgba(216, 226, 222, 0.74), transparent 30%),
     radial-gradient(circle at top right, rgba(226, 232, 237, 0.62), transparent 36%),
     linear-gradient(180deg, #f4f7f6 0%, #f8fafb 54%, #ffffff 100%);
-  color: var(--foreground);
+  color: var(--color-content);
   font-family: Georgia, "Times New Roman", serif;
   min-height: 100vh;
 }
 
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.018em;
+}
+
 ::selection {
-  background: rgba(75, 102, 93, 0.16);
+  background: rgba(200, 130, 30, 0.18);
+}
+
+@keyframes emt-reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes emt-draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes emt-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes emt-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes emt-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.emt-art-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: emt-draw-line 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.4s forwards;
+}
+
+.emt-art-rise {
+  opacity: 0;
+  animation: emt-reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+.emt-reveal {
+  opacity: 0;
+}
+
+.emt-reveal.is-visible {
+  animation: emt-reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.emt-hero-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: emt-draw-line 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.2s forwards;
+}
+
+.emt-hero-area {
+  opacity: 0;
+  animation: emt-fade-in 1s ease 1s forwards;
+}
+
+.emt-hero-dot {
+  opacity: 0;
+  animation: emt-fade-in 0.4s ease forwards;
+}
+
+.emt-hero-bar {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: emt-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.emt-float {
+  animation: emt-float 5s ease-in-out infinite;
+}
+
+.emt-icon-card:hover .emt-icon {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.emt-icon {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.emt-float-soft {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.group:hover .emt-float-soft {
+  transform: translateY(-4px) rotate(-2deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .emt-reveal,
+  .emt-hero-line,
+  .emt-hero-area,
+  .emt-hero-dot,
+  .emt-hero-bar,
+  .emt-art-line,
+  .emt-art-rise,
+  .emt-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
 }
 
 .emt-search {

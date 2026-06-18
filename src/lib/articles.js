@@ -4,6 +4,13 @@ import DebtGuide from "@/content/guides/how-to-pay-off-debt-fast.mdx";
 import BudgetGuide from "@/content/guides/budgeting-for-beginners.mdx";
 import MortgageGuide from "@/content/guides/mortgage-guide.mdx";
 import SinkingFundGuide from "@/content/guides/how-to-start-a-sinking-fund.mdx";
+import InvestmentReturnsGuide from "@/content/guides/investment-returns-explained.mdx";
+import DividendInvestingGuide from "@/content/guides/dividend-investing-basics.mdx";
+import How401kGuide from "@/content/guides/how-401k-works.mdx";
+import RothIraGuide from "@/content/guides/roth-ira-explained.mdx";
+import AmortizationGuide from "@/content/guides/how-mortgage-amortization-works.mdx";
+import RefinanceGuide from "@/content/guides/when-refinancing-is-worth-it.mdx";
+import AffordabilityGuide from "@/content/guides/how-much-house-can-you-afford.mdx";
 import HsaLimitsBlog from "@/content/blog/2026-hsa-contribution-limits.mdx";
 import RetirementLimitsBlog from "@/content/blog/2026-retirement-contribution-limits.mdx";
 import CreditReportsBlog from "@/content/blog/check-credit-reports-for-free.mdx";
@@ -83,7 +90,7 @@ export const guides = [
     category: "Housing",
     audience: "First-time buyers comparing affordability before house hunting seriously",
     takeaway: "Approval is not the same as affordability, and the safest payment is the one your monthly life can still support.",
-    relatedCalculators: ["mortgage-calculator", "loan-calculator", "budget-calculator"],
+    relatedCalculators: ["mortgage-calculator", "home-affordability-calculator", "loan-calculator"],
     Content: MortgageGuide
   },
   {
@@ -98,6 +105,97 @@ export const guides = [
     takeaway: "A sinking fund works best when it covers a few real upcoming costs and moves money automatically before those bills arrive.",
     relatedCalculators: ["budget-calculator", "savings-goal-calculator", "emergency-fund-calculator"],
     Content: SinkingFundGuide
+  },
+  {
+    slug: "investment-returns-explained",
+    title: "Investment Returns Explained: ROI, CAGR, and Annualized Growth",
+    description: "Understand the difference between ROI, annualized return, and CAGR, and learn which return measure to use when comparing investments.",
+    readingTime: "6 min read",
+    publishedAt: "June 15, 2026",
+    updatedAt: "June 15, 2026",
+    category: "Investing",
+    audience: "Investors trying to compare returns across investments and time periods fairly",
+    takeaway: "ROI shows the total gain, but annualized return and CAGR are what let you compare investments with different time spans on equal footing.",
+    relatedCalculators: ["roi-calculator", "cagr-calculator", "compound-interest-calculator"],
+    Content: InvestmentReturnsGuide
+  },
+  {
+    slug: "dividend-investing-basics",
+    title: "How Dividend Investing and Reinvestment Work",
+    description: "A plain-language guide to dividends, yield, total return, and how reinvesting dividends through a DRIP compounds over time.",
+    readingTime: "6 min read",
+    publishedAt: "June 16, 2026",
+    updatedAt: "June 16, 2026",
+    category: "Investing",
+    audience: "Readers deciding whether dividend stocks and reinvestment fit their strategy",
+    takeaway: "Yield is only half of total return, and reinvesting dividends is where the long-term compounding really comes from.",
+    relatedCalculators: ["dividend-calculator", "compound-interest-calculator", "retirement-calculator"],
+    Content: DividendInvestingGuide
+  },
+  {
+    slug: "how-401k-works",
+    title: "How a 401(k) Works: Contributions, Employer Match, and Growth",
+    description: "Learn how 401(k) contributions, the employer match, vesting, and decades of compounding combine to build a retirement balance.",
+    readingTime: "7 min read",
+    publishedAt: "June 17, 2026",
+    updatedAt: "June 17, 2026",
+    category: "Retirement",
+    audience: "Workers setting up or revisiting a workplace 401(k) plan",
+    takeaway: "Contribute at least enough to capture the full employer match, then let early, consistent contributions do the heavy lifting over time.",
+    relatedCalculators: ["401k-calculator", "roth-ira-calculator", "retirement-calculator"],
+    Content: How401kGuide
+  },
+  {
+    slug: "roth-ira-explained",
+    title: "Roth IRA Explained: Tax-Free Growth and the Rules That Matter",
+    description: "How a Roth IRA works, when it beats a traditional account, the contribution and income rules, and the five-year withdrawal rule.",
+    readingTime: "6 min read",
+    publishedAt: "June 17, 2026",
+    updatedAt: "June 17, 2026",
+    category: "Retirement",
+    audience: "Savers deciding whether tax-free retirement income is worth giving up a deduction today",
+    takeaway: "A Roth trades today's deduction for decades of tax-free growth, which usually favors younger savers and anyone expecting similar or higher future taxes.",
+    relatedCalculators: ["roth-ira-calculator", "401k-calculator", "retirement-calculator"],
+    Content: RothIraGuide
+  },
+  {
+    slug: "how-mortgage-amortization-works",
+    title: "How Mortgage Amortization Works",
+    description: "Understand how a mortgage payment splits between principal and interest, why early payments feel slow, and how extra payments save interest.",
+    readingTime: "6 min read",
+    publishedAt: "June 17, 2026",
+    updatedAt: "June 17, 2026",
+    category: "Housing",
+    audience: "Homeowners who want to understand where their mortgage payment actually goes",
+    takeaway: "Early payments are mostly interest because interest is charged on the balance, so anything that lowers the balance faster pays off twice.",
+    relatedCalculators: ["mortgage-amortization-calculator", "extra-payment-mortgage-calculator", "mortgage-calculator"],
+    Content: AmortizationGuide
+  },
+  {
+    slug: "when-refinancing-is-worth-it",
+    title: "When Refinancing Your Mortgage Is Worth It",
+    description: "How to decide if refinancing pays off, using the break-even point on closing costs and watching out for a reset loan term.",
+    readingTime: "6 min read",
+    publishedAt: "June 18, 2026",
+    updatedAt: "June 18, 2026",
+    category: "Housing",
+    audience: "Homeowners weighing a refinance and trying to tell real savings from a lower headline rate",
+    takeaway: "A lower rate only helps if you keep the loan past the break-even point and avoid quietly adding interest by restarting the term.",
+    relatedCalculators: ["refinance-calculator", "mortgage-calculator", "mortgage-amortization-calculator"],
+    Content: RefinanceGuide
+  },
+  {
+    slug: "how-much-house-can-you-afford",
+    title: "How Much House Can You Afford?",
+    description: "How affordability is really estimated from income, debts, and down payment, the costs people forget, and how renting versus buying fits in.",
+    readingTime: "7 min read",
+    publishedAt: "June 18, 2026",
+    updatedAt: "June 18, 2026",
+    category: "Housing",
+    audience: "Buyers setting a realistic price range before house hunting",
+    takeaway: "The most a lender approves is not the same as a payment you can live with once taxes, insurance, and maintenance are included.",
+    relatedCalculators: ["home-affordability-calculator", "rent-vs-buy-calculator", "mortgage-calculator"],
+    Content: AffordabilityGuide
   }
 ];
 
@@ -112,7 +210,7 @@ export const compareArticles = [
     category: "Retirement",
     audience: "Savers deciding whether taxes are likely to be better now or later",
     takeaway: "The core decision is whether the upfront deduction or future tax-free withdrawals are more valuable for your situation.",
-    relatedCalculators: ["retirement-calculator", "compound-interest-calculator", "net-worth-calculator"],
+    relatedCalculators: ["roth-ira-calculator", "401k-calculator", "retirement-calculator"],
     Content: RothVsTraditional
   },
   {
@@ -138,7 +236,7 @@ export const compareArticles = [
     category: "Housing",
     audience: "Readers deciding whether homeownership fits their timeline and cash flow",
     takeaway: "The better option depends less on identity and more on time horizon, monthly margin, and risk tolerance.",
-    relatedCalculators: ["mortgage-calculator", "budget-calculator", "emergency-fund-calculator"],
+    relatedCalculators: ["rent-vs-buy-calculator", "home-affordability-calculator", "mortgage-calculator"],
     Content: RentingVsBuying
   }
 ];
@@ -155,7 +253,7 @@ export const blogArticles = [
     category: "Retirement",
     audience: "Workers changing jobs who want to understand how much of the employer-funded 401(k) balance is truly theirs",
     takeaway: "Your own 401(k) contributions are always yours, but employer contributions may follow a vesting schedule that is worth checking before you leave.",
-    relatedCalculators: ["retirement-calculator", "net-worth-calculator", "compound-interest-calculator"],
+    relatedCalculators: ["401k-calculator", "retirement-calculator", "net-worth-calculator"],
     Content: VestingBeforeExitBlog
   },
   {
@@ -194,7 +292,7 @@ export const blogArticles = [
     category: "Retirement",
     audience: "Workers deciding whether to increase 2026 retirement contributions",
     takeaway: "The 2026 limits matter even if you will not max them, because they give you a clean ceiling for pacing and automation.",
-    relatedCalculators: ["retirement-calculator", "compound-interest-calculator", "net-worth-calculator"],
+    relatedCalculators: ["401k-calculator", "roth-ira-calculator", "retirement-calculator"],
     Content: RetirementLimitsBlog
   },
   {

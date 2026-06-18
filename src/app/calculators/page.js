@@ -1,6 +1,8 @@
 import { Container } from "@/components/container";
-import { FeatureCard } from "@/components/cards";
-import { SectionHeading } from "@/components/section-heading";
+import { CalculatorCard } from "@/components/cards";
+import { PageHero } from "@/components/page-hero";
+import { CalculatorsArt } from "@/components/page-art";
+import { CategoryIcon } from "@/components/illustrations";
 import { calculatorCategories, getCalculatorsBySlugs } from "@/lib/calculator-registry";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -23,25 +25,28 @@ export const metadata = buildPageMetadata({
 export default function CalculatorsPage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
-        <Container>
-          <SectionHeading
-            eyebrow="Calculator library"
-            title="Money calculators organized around the decisions that tend to come up first"
-            description="Find tools for questions about mortgage affordability, debt payoff timelines, savings goals, retirement growth, and emergency fund targets."
-          />
-        </Container>
-      </section>
+      <PageHero
+        eyebrow="Calculator library"
+        title="Every calculator, grouped by decision"
+        description="Find tools for mortgage affordability, debt payoff timelines, savings goals, retirement growth, and emergency fund targets."
+        art={<CalculatorsArt />}
+        band="bg-band-sky"
+      />
 
       <Container className="space-y-16 pt-16">
         {calculatorCategories.map((category) => (
           <section key={category.title} className="space-y-6">
-            <h2 className="text-3xl font-semibold tracking-tight text-[#1d3128]">{category.title}</h2>
+            <h2 className="flex items-center gap-3 text-3xl font-semibold tracking-tight text-content-strong">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-ink-500 text-[#eef3f0]">
+                <CategoryIcon category={category.title} />
+              </span>
+              {category.title}
+            </h2>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {getCalculatorsBySlugs(category.slugs).map((calculator) => (
-                <FeatureCard
+                <CalculatorCard
                   key={calculator.slug}
-                  href={`/calculators/${calculator.slug}`}
+                  slug={calculator.slug}
                   title={calculator.name}
                   description={calculator.description}
                   meta={calculator.category}

@@ -1719,6 +1719,486 @@ export const calculatorRegistry = [
         note: "Track net worth periodically so the direction matters more than the exact number."
       };
     }
+  },
+  {
+    slug: "roi-calculator",
+    name: "ROI Calculator",
+    category: "Investing",
+    description: "Calculate the return on an investment, including total ROI, net profit, and the annualized rate of return over your holding period.",
+    intro:
+      "Enter what you put in, what it is worth now, and how long you held it to see both the total return and the smoother annualized rate.",
+    keywords: [
+      "roi calculator",
+      "return on investment calculator",
+      "annualized return calculator"
+    ],
+    defaults: {
+      initialInvestment: 10000,
+      finalValue: 18000,
+      years: 5
+    },
+    inputs: [
+      { name: "initialInvestment", label: "Amount invested", prefix: "$", min: 100, step: 100 },
+      { name: "finalValue", label: "Current or final value", prefix: "$", min: 0, step: 100 },
+      { name: "years", label: "Holding period", suffix: "years", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "Turning $10,000 into $18,000 over five years is an 80% total return, but only about a 12.5% annualized return.",
+    sections: [
+      {
+        title: "Total ROI versus annualized return",
+        body:
+          "Total ROI is the full percentage gain from start to finish. Annualized return spreads that gain evenly across each year you held the investment, which makes it the fairer way to compare deals with different time spans."
+      },
+      {
+        title: "Why time changes the story",
+        body:
+          "A 50% total return sounds great, but it is very different over one year than over ten. The annualized figure shown here lets you line up a quick flip and a long hold on the same scale."
+      },
+      {
+        title: "What ROI leaves out",
+        body:
+          "Simple ROI ignores taxes, trading fees, and any money you added or withdrew partway through. For investments with ongoing contributions, a compound growth or CAGR view will describe the result more accurately."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is a good ROI?",
+        answer: "It depends on risk and time horizon. Broad stock market averages have historically landed somewhere around 7% to 10% annualized over long periods, so comparing your annualized return to that range is more useful than judging total ROI alone."
+      },
+      {
+        question: "Is ROI the same as annualized return?",
+        answer: "No. ROI is the total percentage gain over the whole period, while annualized return is the equivalent steady yearly rate. This calculator shows both so short and long holds can be compared fairly."
+      }
+    ],
+    related: ["cagr-calculator", "compound-interest-calculator", "dividend-calculator"],
+    compute(values) {
+      const initial = Number(values.initialInvestment);
+      const finalValue = Number(values.finalValue);
+      const years = Number(values.years);
+      const gain = finalValue - initial;
+      const roi = initial > 0 ? (gain / initial) * 100 : 0;
+      const annualized = initial > 0 && years > 0 ? ((finalValue / initial) ** (1 / years) - 1) * 100 : 0;
+      const timeline = Array.from({ length: years }, (_, index) => ({
+        label: `Year ${index + 1}`,
+        amount: roundCurrency(initial * (1 + annualized / 100) ** (index + 1))
+      }));
+
+      return {
+        summary: [
+          { label: "Total ROI", value: formatPercent(roi) },
+          { label: "Net profit", value: formatCurrency(gain) },
+          { label: "Annualized return", value: formatPercent(annualized) }
+        ],
+        details: [
+          { label: "Amount invested", value: formatCurrency(initial) },
+          { label: "Final value", value: formatCurrency(finalValue) },
+          { label: "Holding period", value: `${years} years` }
+        ],
+        timeline,
+        breakdown: [
+          { label: "Invested", amount: roundCurrency(initial) },
+          { label: gain >= 0 ? "Gain" : "Loss", amount: roundCurrency(Math.abs(gain)) }
+        ],
+        milestones: [
+          { label: "Total return", value: formatPercent(roi) },
+          { label: "Annualized return", value: formatPercent(annualized) },
+          { label: "Value multiple", value: `${(initial > 0 ? finalValue / initial : 0).toFixed(2)}x` }
+        ],
+        note: "ROI ignores taxes, fees, and the timing of any cash added or withdrawn along the way."
+      };
+    }
+  },
+  {
+    slug: "cagr-calculator",
+    name: "CAGR Calculator",
+    category: "Investing",
+    description: "Calculate the compound annual growth rate (CAGR) that connects a starting value and an ending value over a number of years.",
+    intro:
+      "Enter a beginning value, an ending value, and the number of years to find the steady annual rate that links them together.",
+    keywords: [
+      "cagr calculator",
+      "compound annual growth rate calculator",
+      "average annual growth rate"
+    ],
+    defaults: {
+      beginningValue: 10000,
+      endingValue: 25000,
+      years: 8
+    },
+    inputs: [
+      { name: "beginningValue", label: "Beginning value", prefix: "$", min: 1, step: 100 },
+      { name: "endingValue", label: "Ending value", prefix: "$", min: 0, step: 100 },
+      { name: "years", label: "Number of years", suffix: "years", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "Growing $10,000 into $25,000 over eight years works out to a CAGR of roughly 12.1% per year.",
+    sections: [
+      {
+        title: "What CAGR measures",
+        body:
+          "CAGR is the single steady growth rate that would take the beginning value to the ending value over the period, as if it grew the same amount every year. It smooths out the bumps so different investments can be compared on equal footing."
+      },
+      {
+        title: "Why it beats a simple average",
+        body:
+          "Averaging yearly returns can be misleading because gains and losses compound on each other. CAGR accounts for that compounding, so it reflects the real path from start to finish rather than a naive average."
+      },
+      {
+        title: "Where CAGR can mislead",
+        body:
+          "Because CAGR only looks at the first and last values, it hides the volatility in between. Two investments can share a CAGR while one took a calm path and the other swung wildly. Use it alongside a sense of the risk involved."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the difference between CAGR and average return?",
+        answer: "A simple average just adds the yearly returns and divides by the number of years. CAGR accounts for compounding, so it reflects the actual rate that connects the starting and ending values, which is usually lower than a simple average when returns are volatile."
+      },
+      {
+        question: "Can CAGR be negative?",
+        answer: "Yes. If the ending value is lower than the beginning value, CAGR is negative, describing the steady annual rate of decline over the period."
+      }
+    ],
+    related: ["roi-calculator", "compound-interest-calculator", "inflation-calculator"],
+    compute(values) {
+      const begin = Number(values.beginningValue);
+      const end = Number(values.endingValue);
+      const years = Number(values.years);
+      const cagr = begin > 0 && years > 0 ? ((end / begin) ** (1 / years) - 1) * 100 : 0;
+      const totalGrowth = begin > 0 ? ((end - begin) / begin) * 100 : 0;
+      const timeline = Array.from({ length: years }, (_, index) => ({
+        label: `Year ${index + 1}`,
+        amount: roundCurrency(begin * (1 + cagr / 100) ** (index + 1))
+      }));
+
+      return {
+        summary: [
+          { label: "CAGR", value: formatPercent(cagr) },
+          { label: "Total growth", value: formatPercent(totalGrowth) },
+          { label: "Ending value", value: formatCurrency(end) }
+        ],
+        details: [
+          { label: "Beginning value", value: formatCurrency(begin) },
+          { label: "Ending value", value: formatCurrency(end) },
+          { label: "Period", value: `${years} years` }
+        ],
+        timeline,
+        breakdown: [
+          { label: "Starting", amount: roundCurrency(begin) },
+          { label: end >= begin ? "Growth" : "Decline", amount: roundCurrency(Math.abs(end - begin)) }
+        ],
+        milestones: [
+          { label: "Annual growth rate", value: formatPercent(cagr) },
+          { label: "Total change", value: formatPercent(totalGrowth) },
+          { label: "Value multiple", value: `${(begin > 0 ? end / begin : 0).toFixed(2)}x` }
+        ],
+        note: "CAGR describes the smooth annual rate that connects the start and end values. Real year-to-year returns are usually bumpier."
+      };
+    }
+  },
+  {
+    slug: "dividend-calculator",
+    name: "Dividend Calculator",
+    category: "Investing",
+    description: "Estimate dividend income and long-term portfolio growth when dividends are reinvested each year through a DRIP.",
+    intro:
+      "Enter an investment, a dividend yield, and an expected price growth rate to see your first-year income and how reinvested dividends compound over time.",
+    keywords: [
+      "dividend calculator",
+      "dividend reinvestment calculator",
+      "drip calculator"
+    ],
+    defaults: {
+      investmentAmount: 50000,
+      dividendYield: 3.5,
+      annualPriceGrowth: 4,
+      years: 20
+    },
+    inputs: [
+      { name: "investmentAmount", label: "Amount invested", prefix: "$", min: 100, step: 500 },
+      { name: "dividendYield", label: "Dividend yield", suffix: "%", min: 0, step: 0.1 },
+      { name: "annualPriceGrowth", label: "Annual price growth", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Years reinvested", suffix: "years", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "A $50,000 portfolio yielding 3.5% pays about $1,750 in the first year, and reinvesting those dividends speeds up the growth from there.",
+    sections: [
+      {
+        title: "How dividend reinvestment compounds",
+        body:
+          "When dividends are reinvested, each payout buys more shares, and those shares then pay their own dividends. Over many years this loop can turn a steady yield into a meaningfully larger portfolio than price growth alone would produce."
+      },
+      {
+        title: "Yield is not the whole return",
+        body:
+          "Total return combines the dividend yield with any change in share price. A high yield with falling prices can lag a modest yield paired with steady growth, so it helps to look at both numbers together."
+      },
+      {
+        title: "What this model simplifies",
+        body:
+          "This estimate assumes a constant yield, steady price growth, and dividends reinvested once a year. Real dividends can be cut or raised, prices move unevenly, and taxes on dividends in a regular account will lower the net result."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is a DRIP?",
+        answer: "A DRIP, or dividend reinvestment plan, automatically uses each dividend payment to buy more shares instead of paying you cash. It is a simple way to keep compounding without having to act on every payout."
+      },
+      {
+        question: "Are reinvested dividends taxed?",
+        answer: "In a regular taxable account, dividends are generally taxable in the year they are paid even if you reinvest them. In tax-advantaged accounts like an IRA, that yearly tax is deferred or avoided. This tool does not subtract taxes."
+      }
+    ],
+    related: ["compound-interest-calculator", "roi-calculator", "retirement-calculator"],
+    compute(values) {
+      const principal = Number(values.investmentAmount);
+      const dividendRate = Number(values.dividendYield) / 100;
+      const growthRate = Number(values.annualPriceGrowth) / 100;
+      const years = Number(values.years);
+      let value = principal;
+      let totalDividends = 0;
+      const timeline = [];
+
+      for (let year = 1; year <= years; year += 1) {
+        const dividend = value * dividendRate;
+        totalDividends += dividend;
+        value = value * (1 + growthRate) + dividend;
+        timeline.push({ label: `Year ${year}`, amount: roundCurrency(value) });
+      }
+
+      const firstYearIncome = principal * dividendRate;
+      const priceGrowthPortion = value - principal - totalDividends;
+
+      return {
+        summary: [
+          { label: "Final portfolio value", value: formatCurrency(value) },
+          { label: "Total dividends earned", value: formatCurrency(totalDividends) },
+          { label: "First-year income", value: formatCurrency(firstYearIncome) }
+        ],
+        details: [
+          { label: "Amount invested", value: formatCurrency(principal) },
+          { label: "Dividend yield", value: formatPercent(values.dividendYield) },
+          { label: "Annual price growth", value: formatPercent(values.annualPriceGrowth) },
+          { label: "Years reinvested", value: `${years} years` }
+        ],
+        timeline,
+        breakdown: [
+          { label: "Invested", amount: roundCurrency(principal) },
+          { label: "Dividends", amount: roundCurrency(totalDividends) },
+          { label: "Price growth", amount: roundCurrency(Math.max(0, priceGrowthPortion)) }
+        ],
+        milestones: [
+          { label: "First-year income", value: formatCurrency(firstYearIncome) },
+          { label: "Total dividends", value: formatCurrency(totalDividends) },
+          { label: "Ending value", value: formatCurrency(value) }
+        ],
+        note: "Assumes dividends are reinvested once a year and that the yield and growth rates stay constant. Taxes are not included."
+      };
+    }
+  },
+  {
+    slug: "401k-calculator",
+    name: "401(k) Calculator",
+    category: "Retirement",
+    description: "Project your 401(k) balance at retirement, including your contributions, the employer match, and long-term investment growth.",
+    intro:
+      "Enter your salary, contribution rate, and employer match to see how much your 401(k) could grow and how much of it is free matching money.",
+    keywords: [
+      "401k calculator",
+      "401k growth calculator",
+      "employer match calculator"
+    ],
+    defaults: {
+      currentBalance: 40000,
+      annualSalary: 75000,
+      contributionPercent: 8,
+      employerMatchPercent: 4,
+      annualReturn: 7,
+      years: 30
+    },
+    inputs: [
+      { name: "currentBalance", label: "Current 401(k) balance", prefix: "$", min: 0, step: 1000 },
+      { name: "annualSalary", label: "Annual salary", prefix: "$", min: 10000, step: 1000 },
+      { name: "contributionPercent", label: "Your contribution", suffix: "%", min: 0, step: 0.5 },
+      { name: "employerMatchPercent", label: "Employer match cap", suffix: "%", min: 0, step: 0.5 }
+    ],
+    advancedInputs: [
+      { name: "annualReturn", label: "Expected return", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Years to retirement", suffix: "years", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "Contributing 8% on a $75,000 salary with a 4% match means thousands of dollars in free employer money added every year.",
+    sections: [
+      {
+        title: "The employer match is free money",
+        body:
+          "Most employers match a portion of what you contribute, commonly dollar for dollar up to a few percent of your salary. Contributing at least enough to capture the full match is one of the most reliable returns in personal finance."
+      },
+      {
+        title: "Why starting early matters so much",
+        body:
+          "Because 401(k) money compounds for decades, contributions made in your twenties and thirties do far more heavy lifting than the same dollars added later. Time in the market is the largest single driver of the final balance."
+      },
+      {
+        title: "What this projection assumes",
+        body:
+          "This model holds your salary, contribution rate, and return steady, and treats the match as dollar for dollar up to the cap you set. Raises, contribution limit changes, and market swings will all move the real outcome."
+      }
+    ],
+    faqs: [
+      {
+        question: "How much should I contribute to my 401(k)?",
+        answer: "A common starting point is to contribute at least enough to get the full employer match, then work toward 10% to 15% of your salary including the match. The right number depends on your budget and other goals."
+      },
+      {
+        question: "How does the employer match work?",
+        answer: "Employers typically match your contributions up to a percentage of your salary. This calculator models a dollar-for-dollar match up to the cap you enter, so if you contribute less than the cap, the match shrinks to match your rate."
+      }
+    ],
+    related: ["roth-ira-calculator", "retirement-calculator", "compound-interest-calculator"],
+    compute(values) {
+      const years = Number(values.years) || 30;
+      const months = years * 12;
+      const monthlyRate = Number(values.annualReturn) / 100 / 12;
+      const salary = Number(values.annualSalary);
+      const contribRate = Number(values.contributionPercent) / 100;
+      const matchRate = Math.min(Number(values.contributionPercent), Number(values.employerMatchPercent)) / 100;
+      const employeeMonthly = (salary * contribRate) / 12;
+      const employerMonthly = (salary * matchRate) / 12;
+      const series = buildBalanceSeries({
+        openingBalance: Number(values.currentBalance),
+        months,
+        monthlyRate,
+        monthlyContribution: employeeMonthly + employerMonthly
+      });
+      const finalBalance = series.at(-1)?.amount ?? Number(values.currentBalance);
+      const employeeTotal = employeeMonthly * months;
+      const employerTotal = employerMonthly * months;
+      const totalContributions = Number(values.currentBalance) + employeeTotal + employerTotal;
+      const growth = finalBalance - totalContributions;
+
+      return {
+        summary: [
+          { label: "Projected 401(k) balance", value: formatCurrency(finalBalance) },
+          { label: "Employer match added", value: formatCurrency(employerTotal) },
+          { label: "Investment growth", value: formatCurrency(growth) }
+        ],
+        details: [
+          { label: "Current balance", value: formatCurrency(values.currentBalance) },
+          { label: "Your yearly contribution", value: formatCurrency(salary * contribRate) },
+          { label: "Employer yearly match", value: formatCurrency(salary * matchRate) },
+          { label: "Expected return", value: formatPercent(values.annualReturn) }
+        ],
+        timeline: series,
+        breakdown: [
+          { label: "Your money", amount: roundCurrency(Number(values.currentBalance) + employeeTotal) },
+          { label: "Employer match", amount: roundCurrency(employerTotal) },
+          { label: "Growth", amount: roundCurrency(Math.max(0, growth)) }
+        ],
+        milestones: [
+          { label: "Your contributions", value: formatCurrency(employeeTotal) },
+          { label: "Employer match", value: formatCurrency(employerTotal) },
+          { label: "Free match each year", value: formatCurrency(salary * matchRate) }
+        ],
+        note: "Employer match is modeled as a dollar-for-dollar match up to the cap you set. Salary growth and contribution limits are not modeled."
+      };
+    }
+  },
+  {
+    slug: "roth-ira-calculator",
+    name: "Roth IRA Calculator",
+    category: "Retirement",
+    description: "Project the tax-free balance a Roth IRA could reach at retirement based on your contributions and expected return.",
+    intro:
+      "Enter your current balance, yearly contribution, and time horizon to estimate the tax-free nest egg a Roth IRA could build.",
+    keywords: [
+      "roth ira calculator",
+      "roth ira growth calculator",
+      "tax free retirement calculator"
+    ],
+    defaults: {
+      currentBalance: 15000,
+      annualContribution: 7000,
+      annualReturn: 7,
+      years: 30
+    },
+    inputs: [
+      { name: "currentBalance", label: "Current balance", prefix: "$", min: 0, step: 500 },
+      { name: "annualContribution", label: "Annual contribution", prefix: "$", min: 0, step: 500 },
+      { name: "annualReturn", label: "Expected return", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Years invested", suffix: "years", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "Contributing $7,000 a year for 30 years at 7% can grow into a sizable balance you can generally withdraw tax-free in retirement.",
+    sections: [
+      {
+        title: "Why tax-free growth matters",
+        body:
+          "Roth IRA contributions are made with money you have already paid tax on. In exchange, qualified withdrawals in retirement, including all the growth, are generally tax-free. Over decades, that untaxed growth can be worth a great deal."
+      },
+      {
+        title: "Roth versus traditional",
+        body:
+          "A traditional account gives you a tax break now and taxes withdrawals later, while a Roth does the opposite. A Roth often wins if you expect to be in a similar or higher tax bracket in retirement, or simply value predictable tax-free income."
+      },
+      {
+        title: "Contribution limits and rules",
+        body:
+          "Roth IRAs have annual contribution limits and income eligibility rules that change over time. This calculator does not enforce those limits, so confirm the current year's caps before planning your contributions."
+      }
+    ],
+    faqs: [
+      {
+        question: "How much can I contribute to a Roth IRA?",
+        answer: "Annual contribution limits are set each year and are higher for savers age 50 and over. Eligibility also phases out at higher incomes. Check the current year's official limits, since this tool does not cap the amount you enter."
+      },
+      {
+        question: "When can I withdraw from a Roth IRA tax-free?",
+        answer: "Qualified withdrawals are generally tax-free once the account has been open at least five years and you are age 59 and a half or older. Contributions can usually be withdrawn at any time, but earnings have stricter rules."
+      }
+    ],
+    related: ["401k-calculator", "retirement-calculator", "compound-interest-calculator"],
+    compute(values) {
+      const years = Number(values.years);
+      const months = years * 12;
+      const monthlyRate = Number(values.annualReturn) / 100 / 12;
+      const monthlyContribution = Number(values.annualContribution) / 12;
+      const series = buildBalanceSeries({
+        openingBalance: Number(values.currentBalance),
+        months,
+        monthlyRate,
+        monthlyContribution
+      });
+      const finalBalance = series.at(-1)?.amount ?? Number(values.currentBalance);
+      const totalContributions = Number(values.currentBalance) + Number(values.annualContribution) * years;
+      const growth = finalBalance - totalContributions;
+
+      return {
+        summary: [
+          { label: "Tax-free balance at retirement", value: formatCurrency(finalBalance) },
+          { label: "Total contributions", value: formatCurrency(totalContributions) },
+          { label: "Tax-free growth", value: formatCurrency(growth) }
+        ],
+        details: [
+          { label: "Current balance", value: formatCurrency(values.currentBalance) },
+          { label: "Annual contribution", value: formatCurrency(values.annualContribution) },
+          { label: "Expected return", value: formatPercent(values.annualReturn) },
+          { label: "Years invested", value: `${years} years` }
+        ],
+        timeline: series,
+        breakdown: [
+          { label: "Contributions", amount: roundCurrency(totalContributions) },
+          { label: "Growth", amount: roundCurrency(Math.max(0, growth)) }
+        ],
+        milestones: [
+          { label: "Total contributed", value: formatCurrency(totalContributions) },
+          { label: "Tax-free growth", value: formatCurrency(growth) },
+          { label: "Ending balance", value: formatCurrency(finalBalance) }
+        ],
+        note: "Roth contributions are made with after-tax money, so qualified withdrawals in retirement are generally tax-free. Annual limits are not enforced here."
+      };
+    }
   }
 ];
 
@@ -1742,11 +2222,17 @@ export const calculatorCategories = [
   },
   {
     title: "Investing",
-    slugs: ["compound-interest-calculator", "inflation-calculator"]
+    slugs: [
+      "compound-interest-calculator",
+      "roi-calculator",
+      "cagr-calculator",
+      "dividend-calculator",
+      "inflation-calculator"
+    ]
   },
   {
     title: "Retirement",
-    slugs: ["retirement-calculator"]
+    slugs: ["retirement-calculator", "401k-calculator", "roth-ira-calculator"]
   },
   {
     title: "Savings",

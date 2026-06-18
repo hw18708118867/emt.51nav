@@ -1,5 +1,6 @@
 import { Container } from "@/components/container";
-import { SectionHeading } from "@/components/section-heading";
+import { PageHero } from "@/components/page-hero";
+import { AboutArt } from "@/components/page-art";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata = buildPageMetadata({
@@ -41,15 +42,13 @@ const quickFacts = [
 export default function AboutPage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
-        <Container>
-          <SectionHeading
-            eyebrow="About"
-            title="A money site built for the questions people usually have before they take action"
-            description="The site combines calculators, guides, and comparison pages so readers can move from a quick estimate to a clearer decision."
-          />
-        </Container>
-      </section>
+      <PageHero
+        eyebrow="About"
+        title="A money site built for the questions people usually have before they take action"
+        description="The site combines calculators, guides, and comparison pages so readers can move from a quick estimate to a clearer decision."
+        art={<AboutArt />}
+        band="bg-band-sage"
+      />
 
       <Container className="grid gap-10 pt-16 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-6">

@@ -28,10 +28,10 @@ export function SiteFooter() {
   ]);
 
   return (
-    <footer className="border-t border-[#d7dfde] bg-[#223832] text-[#d6dcd9]">
+    <footer className="border-t-2 border-accent bg-surface-panel text-[#d6dcd9]">
       <Container className="grid gap-10 py-14 xl:grid-cols-[1.2fr_0.75fr_0.85fr_0.8fr_1fr]">
         <div className="space-y-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b8cbc3]">{siteConfig.name}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-bright">{siteConfig.name}</p>
           <h2 className="max-w-xl text-2xl font-semibold text-white">
             Money tools and readable guidance for the decisions people run into all the time.
           </h2>

@@ -403,6 +403,91 @@ export const calculatorPresets = {
         creditCards: 1500
       }
     }
+  ],
+  "roi-calculator": [
+    {
+      label: "Quick flip",
+      description: "$10k to $13k in 2 years",
+      values: { initialInvestment: 10000, finalValue: 13000, years: 2 }
+    },
+    {
+      label: "Steady hold",
+      description: "$10k to $18k in 5 years",
+      values: { initialInvestment: 10000, finalValue: 18000, years: 5 }
+    },
+    {
+      label: "Long hold",
+      description: "$10k to $30k in 10 years",
+      values: { initialInvestment: 10000, finalValue: 30000, years: 10 }
+    }
+  ],
+  "cagr-calculator": [
+    {
+      label: "Modest",
+      description: "$10k to $16k in 6 years",
+      values: { beginningValue: 10000, endingValue: 16000, years: 6 }
+    },
+    {
+      label: "Strong",
+      description: "$10k to $25k in 8 years",
+      values: { beginningValue: 10000, endingValue: 25000, years: 8 }
+    },
+    {
+      label: "Aggressive",
+      description: "$10k to $40k in 10 years",
+      values: { beginningValue: 10000, endingValue: 40000, years: 10 }
+    }
+  ],
+  "dividend-calculator": [
+    {
+      label: "Income tilt",
+      description: "5% yield, slow growth",
+      values: { investmentAmount: 50000, dividendYield: 5, annualPriceGrowth: 2, years: 20 }
+    },
+    {
+      label: "Balanced",
+      description: "3.5% yield, 4% growth",
+      values: { investmentAmount: 50000, dividendYield: 3.5, annualPriceGrowth: 4, years: 20 }
+    },
+    {
+      label: "Growth tilt",
+      description: "2% yield, 7% growth",
+      values: { investmentAmount: 50000, dividendYield: 2, annualPriceGrowth: 7, years: 20 }
+    }
+  ],
+  "401k-calculator": [
+    {
+      label: "Match only",
+      description: "Capture the 4% match",
+      values: { currentBalance: 40000, annualSalary: 75000, contributionPercent: 4, employerMatchPercent: 4, annualReturn: 7, years: 30 }
+    },
+    {
+      label: "Steady saver",
+      description: "8% with 4% match",
+      values: { currentBalance: 40000, annualSalary: 75000, contributionPercent: 8, employerMatchPercent: 4, annualReturn: 7, years: 30 }
+    },
+    {
+      label: "Max effort",
+      description: "15% with 5% match",
+      values: { currentBalance: 40000, annualSalary: 75000, contributionPercent: 15, employerMatchPercent: 5, annualReturn: 7, years: 30 }
+    }
+  ],
+  "roth-ira-calculator": [
+    {
+      label: "Catch-up",
+      description: "Later start, max contribution",
+      values: { currentBalance: 10000, annualContribution: 8000, annualReturn: 7, years: 20 }
+    },
+    {
+      label: "Steady",
+      description: "$7k a year for 30 years",
+      values: { currentBalance: 15000, annualContribution: 7000, annualReturn: 7, years: 30 }
+    },
+    {
+      label: "Early start",
+      description: "Long runway, $6k a year",
+      values: { currentBalance: 5000, annualContribution: 6000, annualReturn: 8, years: 40 }
+    }
   ]
 };
 

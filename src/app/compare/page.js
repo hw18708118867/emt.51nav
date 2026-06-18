@@ -1,6 +1,7 @@
 import { Container } from "@/components/container";
 import { FeatureCard } from "@/components/cards";
-import { SectionHeading } from "@/components/section-heading";
+import { PageHero } from "@/components/page-hero";
+import { CompareArt } from "@/components/page-art";
 import { compareArticles } from "@/lib/articles";
 import { buildPageMetadata } from "@/lib/metadata";
 
@@ -21,15 +22,13 @@ export const metadata = buildPageMetadata({
 export default function ComparePage() {
   return (
     <div className="pb-20">
-      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
-        <Container>
-          <SectionHeading
-            eyebrow="Compare"
-            title="Side-by-side guides for choices that make more sense when the tradeoffs sit next to each other"
-            description="Review the upside, downside, and planning impact of common money decisions before you commit."
-          />
-        </Container>
-      </section>
+      <PageHero
+        eyebrow="Compare"
+        title="Side-by-side guides for choices that make more sense when the tradeoffs sit next to each other"
+        description="Review the upside, downside, and planning impact of common money decisions before you commit."
+        art={<CompareArt />}
+        band="bg-band-sky"
+      />
 
       <Container className="grid gap-6 pt-16 md:grid-cols-2 xl:grid-cols-3">
         {compareArticles.map((article) => (

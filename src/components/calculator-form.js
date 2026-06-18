@@ -308,7 +308,7 @@ function TrendChart({ timeline }) {
             <span className="text-sm text-slate-300">{point.label}</span>
             <div className="h-3 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-300 via-sky-200 to-slate-100"
+                className="h-full rounded-full bg-gradient-to-r from-[#5c7a6f] via-[#d8c08a] to-[#e0992c]"
                 style={{
                   width: `${Math.max(6, Math.min(100, (Math.abs(point.amount) / Math.max(Math.abs(max), Math.abs(min), 1)) * 100))}%`
                 }}
@@ -326,13 +326,13 @@ function TrendChart({ timeline }) {
       <svg viewBox={`0 0 ${width} ${height + 24}`} className="h-56 w-full" role="img" aria-label="Projection chart">
         <defs>
           <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(133,161,149,0.2)" />
-            <stop offset="100%" stopColor="rgba(133,161,149,0.02)" />
+            <stop offset="0%" stopColor="rgba(224,153,44,0.22)" />
+            <stop offset="100%" stopColor="rgba(224,153,44,0.02)" />
           </linearGradient>
           <linearGradient id="chartLine" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0%" stopColor="#8ba79b" />
-            <stop offset="50%" stopColor="#9bafbd" />
-            <stop offset="100%" stopColor="#d8dde1" />
+            <stop offset="0%" stopColor="#9bafbd" />
+            <stop offset="55%" stopColor="#d8c08a" />
+            <stop offset="100%" stopColor="#e0992c" />
           </linearGradient>
         </defs>
         {[0.25, 0.5, 0.75].map((fraction) => (
@@ -354,9 +354,17 @@ function TrendChart({ timeline }) {
             const x = timeline.length === 1 ? width / 2 : (index / (timeline.length - 1)) * width;
             const y = height - ((point.amount - min) / Math.max(max - min, 1)) * height + 8;
 
+            const isLast = index === timeline.length - 1;
             return (
               <g key={point.label}>
-                <circle cx={x} cy={y} r="5" fill="#f6f7f5" stroke="#7f998e" strokeWidth="3" />
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={isLast ? 6 : 5}
+                  fill={isLast ? "#e0992c" : "#f6f7f5"}
+                  stroke={isLast ? "#a86a12" : "#7f998e"}
+                  strokeWidth="3"
+                />
                 {labelIndices.has(index) ? (
                   <text
                     x={x}

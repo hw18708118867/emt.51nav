@@ -1,9 +1,17 @@
 import "./globals.css";
+import localFont from "next/font/local";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { siteConfig } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/metadata";
+
+const headingFont = localFont({
+  src: "./fonts/InterVariable.woff2",
+  display: "swap",
+  weight: "100 900",
+  variable: "--font-heading"
+});
 
 const siteTitle = `${siteConfig.name} | Calculators, Guides, and Money Planning Tools`;
 const googleSearchConsoleId = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
@@ -57,7 +65,7 @@ export default function RootLayout({ children }) {
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" className={headingFont.variable}>
       <body>
         <SiteHeader />
         <main data-pagefind-body>{children}</main>

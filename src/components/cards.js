@@ -1,28 +1,58 @@
 import Link from "next/link";
 import clsx from "clsx";
+import { CalculatorArt } from "@/components/calculator-art";
 
-export function FeatureCard({ href, title, description, meta, accent = "red" }) {
+export function CalculatorCard({ slug, title, description, meta, className }) {
   return (
     <Link
-      href={href}
+      href={`/calculators/${slug}`}
       className={clsx(
-        "group rounded-[2rem] border bg-[#fcfcfb] p-6 shadow-[0_12px_32px_-30px_rgba(33,53,48,0.12)] transition hover:-translate-y-0.5 hover:border-[#bcc7cd] hover:shadow-[0_16px_38px_-28px_rgba(33,53,48,0.14)]",
-        accent === "red" ? "border-[#dde4e8]" : "border-[#d7dfde]"
+        "group flex h-full flex-col rounded-[2rem] border border-line-strong bg-surface p-6 shadow-[0_14px_34px_-28px_rgba(33,53,48,0.28)] transition hover:-translate-y-1 hover:border-accent hover:shadow-[0_22px_46px_-26px_rgba(33,53,48,0.42)]",
+        className
       )}
     >
-      {meta ? <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4b665d]">{meta}</p> : null}
-      <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#1d3128]">{title}</h3>
-      <p className="mt-3 text-base leading-7 text-[#556a61]">{description}</p>
-      <div className="mt-6 text-sm font-semibold text-[#556874]">Explore</div>
+      <div className="emt-float-soft mb-4 h-28 w-28">
+        <CalculatorArt slug={slug} category={meta} />
+      </div>
+      {meta ? (
+        <p className="inline-flex w-fit rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-ink-500">
+          {meta}
+        </p>
+      ) : null}
+      <h3 className="mt-4 text-xl font-semibold leading-snug tracking-tight text-content-strong">{title}</h3>
+      <p className="mt-3 text-base leading-7 text-content">{description}</p>
+      <div className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-accent-strong transition group-hover:gap-2.5">
+        <span className="border-b border-transparent group-hover:border-accent">Open calculator</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M3 8h9M9 4.5 12.5 8 9 11.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
     </Link>
   );
 }
 
-export function StatCard({ label, value }) {
+export function FeatureCard({ href, title, description, meta, className }) {
   return (
-    <div className="rounded-[1.75rem] border border-[#d7dfde] bg-[#fcfcfb] p-5 shadow-[0_10px_24px_-28px_rgba(33,53,48,0.14)]">
-      <p className="text-sm text-[#708178]">{label}</p>
-      <p className="mt-2 text-2xl font-semibold tracking-tight text-[#1d3128]">{value}</p>
-    </div>
+    <Link
+      href={href}
+      className={clsx(
+        "group flex h-full flex-col rounded-[2rem] border border-line-strong bg-surface p-6 shadow-[0_14px_34px_-28px_rgba(33,53,48,0.28)] transition hover:-translate-y-1 hover:border-accent hover:shadow-[0_22px_46px_-26px_rgba(33,53,48,0.42)]",
+        className
+      )}
+    >
+      {meta ? (
+        <p className="inline-flex w-fit rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-ink-500">
+          {meta}
+        </p>
+      ) : null}
+      <h3 className="mt-4 text-xl font-semibold leading-snug tracking-tight text-content-strong">{title}</h3>
+      <p className="mt-3 text-base leading-7 text-content">{description}</p>
+      <div className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-accent-strong transition group-hover:gap-2.5">
+        <span className="border-b border-transparent group-hover:border-accent">Explore</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M3 8h9M9 4.5 12.5 8 9 11.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </Link>
   );
 }

@@ -140,7 +140,7 @@ export function CalculatorSwitchButton({ currentSlug }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full bg-[#223832] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#2c473f]"
+        className="inline-flex items-center gap-2 rounded-full bg-ink-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-ink-600"
       >
         <svg viewBox="0 0 16 16" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
           <path d="M2.5 5h9L9 2.5M13.5 11h-9L7 13.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -234,7 +234,7 @@ function CalculatorSwitchModal({ currentSlug, open, onClose }) {
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
             <div key={category.title} className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4b665d]">{category.title}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">{category.title}</p>
               <div className="flex flex-col gap-2">
                 {category.calculators.map((calculator) => {
                   const isCurrent = calculator.slug === currentSlug;
@@ -244,10 +244,10 @@ function CalculatorSwitchModal({ currentSlug, open, onClose }) {
                       <span
                         key={calculator.slug}
                         aria-current="page"
-                        className="rounded-2xl border border-[#c4d2cb] bg-[#e7efeb] px-4 py-3 text-sm font-semibold text-[#27413a]"
+                        className="rounded-2xl border border-accent-line bg-accent-soft px-4 py-3 text-sm font-semibold text-accent-strong"
                       >
                         {calculator.name}
-                        <span className="ml-2 text-xs font-medium uppercase tracking-[0.16em] text-[#5c7a6f]">Now</span>
+                        <span className="ml-2 text-xs font-medium uppercase tracking-[0.16em] text-accent">Now</span>
                       </span>
                     );
                   }

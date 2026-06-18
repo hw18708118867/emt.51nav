@@ -1,163 +1,215 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
-import { FeatureCard, StatCard } from "@/components/cards";
-import { CalculatorQuickStart } from "@/components/calculator-navigation";
+import { FeatureCard } from "@/components/cards";
 import { SectionHeading } from "@/components/section-heading";
 import { StructuredData } from "@/components/structured-data";
-import { calculatorCategories, getCalculatorsBySlugs, getFeaturedCalculators } from "@/lib/calculator-registry";
+import { Reveal } from "@/components/reveal";
+import { CategoryArt, HeroArt } from "@/components/spot-art";
+import { calculatorCategories, calculatorRegistry, getCalculatorsBySlugs, getFeaturedCalculators } from "@/lib/calculator-registry";
 import { blogArticles, compareArticles, guides } from "@/lib/articles";
 import { siteConfig } from "@/lib/site-config";
 import { buildWebsiteStructuredData } from "@/lib/structured-data";
+
+const heroStats = [
+  { label: "Calculators", value: calculatorRegistry.length },
+  { label: "Categories", value: calculatorCategories.length },
+  { label: "Guides", value: guides.length },
+  { label: "Articles", value: blogArticles.length }
+];
 
 export default function HomePage() {
   const featuredCalculators = getFeaturedCalculators();
   const websiteStructuredData = buildWebsiteStructuredData();
 
   return (
-    <div className="pb-20">
+    <div>
       <StructuredData data={websiteStructuredData} />
-      <section className="relative overflow-hidden border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)]">
-        <Container className="grid gap-14 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div className="space-y-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{siteConfig.hero.eyebrow}</p>
-            <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-[#1d3128] sm:text-7xl">
-              {siteConfig.hero.title}
+
+      {/* HERO */}
+      <section className="bg-band-mint">
+        <Container className="grid items-center gap-12 py-20 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
+          <div className="space-y-7">
+            <p className="inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              {siteConfig.hero.eyebrow}
+            </p>
+            <h1 className="text-5xl font-extrabold leading-[1.04] tracking-tight text-ink-900 sm:text-6xl xl:text-7xl">
+              Make every money decision with confidence.
             </h1>
-            <p className="max-w-2xl text-xl leading-9 text-[#556a61]">
-              Check a payment, compare a few scenarios, or read the next step before you make a call on your budget,
-              debt, savings, or housing plan.
+            <p className="max-w-xl text-xl leading-9 text-content">
+              Free calculators and clear, no-jargon guides for mortgages, debt, investing, retirement, and savings.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/calculators/"
-                className="rounded-full bg-[#314841] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#283c36]"
+                className="rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-14px_rgba(168,106,18,0.7)] transition hover:bg-accent-strong"
               >
                 Explore calculators
               </Link>
               <Link
                 href="/guides/"
-                className="rounded-full border border-[#d0d9d8] bg-[#fcfcfb]/86 px-6 py-3 text-sm font-semibold text-[#3f5950] transition hover:border-[#8d9ca5] hover:text-[#556874]"
+                className="rounded-full border-2 border-ink-700 bg-transparent px-7 py-3.5 text-sm font-bold text-ink-700 transition hover:bg-ink-700 hover:text-white"
               >
-                Read latest guides
+                Read the guides
               </Link>
             </div>
-            <CalculatorQuickStart />
+            <dl className="flex flex-wrap gap-x-10 gap-y-4 pt-3">
+              {heroStats.map((stat) => (
+                <div key={stat.label}>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.2em] text-content-muted">{stat.label}</dt>
+                  <dd className="mt-1 text-3xl font-extrabold tracking-tight text-ink-900">{stat.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <StatCard label="Calculator topics" value="10 essential tools" />
-            <StatCard label="Money guides" value="5 in-depth guides" />
-            <StatCard label="Compare pages" value="3 side-by-side choices" />
-            <StatCard label="Everyday focus" value="Budget, debt, saving" />
+          <div className="relative mx-auto w-full max-w-md">
+            <HeroArt />
           </div>
         </Container>
       </section>
 
-      <Container className="space-y-20 pt-18">
-        <section className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <SectionHeading
-            eyebrow="Core categories"
-            title="The money decisions people come back to when the numbers need a second look"
-            description="Start with the decision in front of you, whether that means a home purchase, paying down debt, investing, planning retirement, or building savings."
-          />
-          <div className="grid gap-4">
-            {calculatorCategories.map((category) => (
-              <div key={category.title} className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_12px_30px_-30px_rgba(33,53,48,0.12)]">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{category.title}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {getCalculatorsBySlugs(category.slugs).map((calculator) => (
-                    <Link
-                      key={calculator.slug}
-                      href={`/calculators/${calculator.slug}/`}
-                      className="rounded-full border border-[#d0d9d8] bg-[#f8faf9] px-3 py-2 text-sm font-medium text-[#3f5950] transition hover:border-[#bec8ce] hover:bg-white hover:text-[#556874]"
-                    >
-                      {calculator.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+      {/* CATEGORIES */}
+      <section className="bg-surface">
+        <Container className="space-y-12 py-20">
+          <Reveal>
+            <SectionHeading eyebrow="Browse by topic" title="Pick the decision in front of you" />
+          </Reveal>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {calculatorCategories.map((category, index) => {
+              const tools = getCalculatorsBySlugs(category.slugs);
+              return (
+                <Reveal key={category.title} delay={index * 70} className="h-full">
+                  <div className="group flex h-full flex-col rounded-[2rem] border border-line-strong bg-surface p-7 shadow-[0_14px_34px_-28px_rgba(33,53,48,0.26)] transition hover:-translate-y-1 hover:border-accent hover:shadow-[0_24px_50px_-26px_rgba(33,53,48,0.4)]">
+                    <div className="emt-float-soft h-24 w-24">
+                      <CategoryArt category={category.title} />
+                    </div>
+                    <h3 className="mt-5 text-2xl font-bold tracking-tight text-content-strong">{category.title}</h3>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {tools.map((calculator) => (
+                        <Link
+                          key={calculator.slug}
+                          href={`/calculators/${calculator.slug}/`}
+                          className="rounded-full border border-line-strong bg-surface-muted px-3 py-1.5 text-sm font-medium text-ink-400 transition hover:border-ink-500 hover:bg-ink-500 hover:text-white"
+                        >
+                          {calculator.name.replace(/ Calculator$/, "")}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
-        </section>
+        </Container>
+      </section>
 
-        <section className="space-y-8">
-          <SectionHeading
-            eyebrow="Popular calculators"
-            title="Popular tools for the questions that usually come first"
-            description="Run the numbers from here, then use the page notes and related tools to see what the result actually means."
-          />
+      {/* POPULAR */}
+      <section className="bg-band-cream">
+        <Container className="space-y-12 py-20">
+          <Reveal>
+            <SectionHeading eyebrow="Most used" title="Popular calculators" />
+          </Reveal>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {featuredCalculators.map((calculator) => (
-              <FeatureCard
-                key={calculator.slug}
-                href={`/calculators/${calculator.slug}`}
-                title={calculator.name}
-                description={calculator.description}
-                meta={calculator.category}
-              />
+            {featuredCalculators.map((calculator, index) => (
+              <Reveal key={calculator.slug} delay={index * 70} className="h-full">
+                <FeatureCard
+                  href={`/calculators/${calculator.slug}`}
+                  title={calculator.name}
+                  description={calculator.description}
+                  meta={calculator.category}
+                />
+              </Reveal>
             ))}
           </div>
-        </section>
+        </Container>
+      </section>
 
-        <section className="grid gap-10 lg:grid-cols-2">
+      {/* GUIDES + COMPARE */}
+      <section className="bg-surface">
+        <Container className="grid gap-12 py-20 lg:grid-cols-2">
           <div className="space-y-8">
-            <SectionHeading
-              eyebrow="Latest guides"
-              title="Guides for the part that starts after the calculator"
-              description="These longer reads cover saving, budgeting, debt payoff, and housing decisions in plain language."
-            />
+            <Reveal>
+              <SectionHeading eyebrow="Guides" title="Go deeper after the math" />
+            </Reveal>
             <div className="grid gap-5">
-              {guides.slice(0, 3).map((guide) => (
-                <FeatureCard
-                  key={guide.slug}
-                  href={`/guides/${guide.slug}`}
-                  title={guide.title}
-                  description={guide.description}
-                  meta={guide.readingTime}
-                />
+              {guides.slice(0, 3).map((guide, index) => (
+                <Reveal key={guide.slug} delay={index * 70} className="h-full">
+                  <FeatureCard
+                    href={`/guides/${guide.slug}`}
+                    title={guide.title}
+                    description={guide.description}
+                    meta={guide.readingTime}
+                  />
+                </Reveal>
               ))}
             </div>
           </div>
 
           <div className="space-y-8">
-            <SectionHeading
-              eyebrow="Compare"
-              title="Side-by-side pages for choices that are easier to judge in one view"
-              description="Compare tradeoffs before you commit to a payoff method, retirement account, or housing path."
-            />
+            <Reveal>
+              <SectionHeading eyebrow="Compare" title="Two options, side by side" />
+            </Reveal>
             <div className="grid gap-5">
-              {compareArticles.map((article) => (
+              {compareArticles.map((article, index) => (
+                <Reveal key={article.slug} delay={index * 70} className="h-full">
+                  <FeatureCard
+                    href={`/compare/${article.slug}`}
+                    title={article.title}
+                    description={article.description}
+                    meta={article.category}
+                  />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* BLOG */}
+      <section className="bg-band-sage">
+        <Container className="space-y-12 py-20">
+          <Reveal>
+            <SectionHeading eyebrow="From the blog" title="Latest posts" />
+          </Reveal>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            {blogArticles.slice(0, 4).map((article, index) => (
+              <Reveal key={article.slug} delay={index * 70} className="h-full">
                 <FeatureCard
-                  key={article.slug}
-                  href={`/compare/${article.slug}`}
+                  href={`/blog/${article.slug}/`}
                   title={article.title}
                   description={article.description}
                   meta={article.category}
                 />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="space-y-8">
-          <SectionHeading
-            eyebrow="From the blog"
-            title="Recent posts tied to current rules, limits, and planning questions"
-            description="These shorter articles cover things like contribution limits, filing details, credit checks, and other smaller decisions that still affect the bigger plan."
-          />
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {blogArticles.slice(0, 4).map((article) => (
-              <FeatureCard
-                key={article.slug}
-                href={`/blog/${article.slug}/`}
-                title={article.title}
-                description={article.description}
-                meta={article.category}
-              />
+              </Reveal>
             ))}
           </div>
-        </section>
-      </Container>
+        </Container>
+      </section>
+
+      {/* CTA BAND */}
+      <section className="bg-surface-panel">
+        <Container className="py-20">
+          <Reveal>
+            <div className="flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-2xl space-y-3">
+                <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                  Start with the number, then make the call.
+                </h2>
+                <p className="text-lg leading-8 text-[#bcd0c7]">
+                  Run a quick calculation, compare a few scenarios, and read the context before you decide.
+                </p>
+              </div>
+              <Link
+                href="/calculators/"
+                className="shrink-0 rounded-full bg-accent px-7 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_-14px_rgba(168,106,18,0.7)] transition hover:bg-accent-bright"
+              >
+                Browse all calculators
+              </Link>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
     </div>
   );
 }

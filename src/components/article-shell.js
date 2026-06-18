@@ -10,13 +10,13 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
 
   return (
     <div className="pb-20">
-      <section className="border-b border-[#d7dfde] bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
+      <section className="border-b border-line bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
         <Container>
           <div className="max-w-4xl space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">{sectionLabel}</p>
-            <h1 className="text-4xl font-semibold tracking-tight text-[#1d3128] sm:text-6xl">{article.title}</h1>
-            <p className="max-w-3xl text-lg leading-8 text-[#556a61]">{article.description}</p>
-            <div className="flex flex-wrap gap-3 text-sm text-[#6f8178]">
+            <p className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">{sectionLabel}</p>
+            <h1 className="text-4xl font-semibold tracking-tight text-ink-900 sm:text-6xl">{article.title}</h1>
+            <p className="max-w-3xl text-lg leading-8 text-content">{article.description}</p>
+            <div className="flex flex-wrap gap-3 text-sm text-content-muted">
               <span>{article.category}</span>
               <span>|</span>
               <span>{article.readingTime}</span>
@@ -36,9 +36,12 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
       <Container className="grid gap-16 pt-16 lg:grid-cols-[minmax(0,1fr)_320px]">
         <article className="max-w-3xl">
           {article.takeaway ? (
-            <div className="mb-8 rounded-[2rem] border border-[#d8e1dd] bg-[#edf2f0] p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Key takeaway</p>
-              <p className="mt-3 text-lg leading-8 text-[#556a61]">{article.takeaway}</p>
+            <div className="mb-8 rounded-[2rem] border border-accent-line bg-accent-soft/60 p-6">
+              <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent-strong">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                Key takeaway
+              </p>
+              <p className="mt-3 text-lg leading-8 text-content">{article.takeaway}</p>
             </div>
           ) : null}
           <Content />
@@ -46,41 +49,41 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
 
         <aside className="space-y-5">
           {(article.audience || article.publishedAt || article.updatedAt) ? (
-            <div className="rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">At a glance</p>
-              <div className="mt-4 space-y-4 text-sm leading-7 text-[#556a61]">
+            <div className="rounded-[2rem] border border-line bg-surface p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-strong">At a glance</p>
+              <div className="mt-4 space-y-4 text-sm leading-7 text-content">
                 {article.audience ? (
                   <div>
-                    <p className="font-semibold text-[#1d3128]">Who this is for</p>
+                    <p className="font-semibold text-content-strong">Who this is for</p>
                     <p>{article.audience}</p>
                   </div>
                 ) : null}
                 {article.publishedAt ? (
                   <div>
-                    <p className="font-semibold text-[#1d3128]">Published</p>
+                    <p className="font-semibold text-content-strong">Published</p>
                     <p>{article.publishedAt}</p>
                   </div>
                 ) : null}
                 <div>
-                  <p className="font-semibold text-[#1d3128]">Updated</p>
+                  <p className="font-semibold text-content-strong">Updated</p>
                   <p>{article.updatedAt}</p>
                 </div>
                 <div>
-                  <p className="font-semibold text-[#1d3128]">Format</p>
+                  <p className="font-semibold text-content-strong">Format</p>
                   <p>{article.readingTime}</p>
                 </div>
               </div>
             </div>
           ) : null}
 
-          <div className="rounded-[2rem] border border-[#dce2e4] bg-[#f1f4f5] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Related calculators</p>
+          <div className="rounded-[2rem] border border-line bg-surface-muted p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-strong">Related calculators</p>
             <div className="mt-4 space-y-3">
               {relatedCalculators.map((calculator) => (
                 <Link
                   key={calculator.slug}
                   href={`/calculators/${calculator.slug}/`}
-                  className="block rounded-2xl border border-[#dde3e5] bg-[#fcfcfb] px-4 py-4 text-sm font-medium text-[#3f5950] transition hover:border-[#bec8ce] hover:text-[#556874]"
+                  className="block rounded-2xl border border-line-strong bg-surface px-4 py-4 text-sm font-medium text-ink-400 transition hover:border-accent hover:text-ink-600"
                 >
                   {calculator.name}
                 </Link>
