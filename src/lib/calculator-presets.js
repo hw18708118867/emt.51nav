@@ -488,6 +488,91 @@ export const calculatorPresets = {
       description: "Long runway, $6k a year",
       values: { currentBalance: 5000, annualContribution: 6000, annualReturn: 8, years: 40 }
     }
+  ],
+  "paycheck-calculator": [
+    {
+      label: "Entry level",
+      description: "$45k, biweekly",
+      values: { annualSalary: 45000, preTaxDeductions: 1500, payPeriods: 26, filingStatus: 0 }
+    },
+    {
+      label: "Typical",
+      description: "$60k, biweekly",
+      values: { annualSalary: 60000, preTaxDeductions: 3000, payPeriods: 26, filingStatus: 0 }
+    },
+    {
+      label: "Married, higher",
+      description: "$120k household earner",
+      values: { annualSalary: 120000, preTaxDeductions: 12000, payPeriods: 26, filingStatus: 1 }
+    }
+  ],
+  "salary-calculator": [
+    {
+      label: "Part-time",
+      description: "$18/hr, 25 hrs",
+      values: { hourlyRate: 18, hoursPerWeek: 25, weeksPerYear: 50 }
+    },
+    {
+      label: "Full-time",
+      description: "$25/hr, 40 hrs",
+      values: { hourlyRate: 25, hoursPerWeek: 40, weeksPerYear: 52 }
+    },
+    {
+      label: "Skilled trade",
+      description: "$42/hr, 40 hrs",
+      values: { hourlyRate: 42, hoursPerWeek: 40, weeksPerYear: 50 }
+    }
+  ],
+  "income-tax-calculator": [
+    {
+      label: "Single, $55k",
+      description: "Common single filer",
+      values: { annualIncome: 55000, filingStatus: 0 }
+    },
+    {
+      label: "Single, $90k",
+      description: "Higher single earner",
+      values: { annualIncome: 90000, filingStatus: 0 }
+    },
+    {
+      label: "Married, $150k",
+      description: "Joint filers",
+      values: { annualIncome: 150000, filingStatus: 1 }
+    }
+  ],
+  "sales-tax-calculator": [
+    {
+      label: "Add tax",
+      description: "$100 at 7.25%",
+      values: { amount: 100, taxRate: 7.25, mode: 0 }
+    },
+    {
+      label: "Big purchase",
+      description: "$2,500 at 8.5%",
+      values: { amount: 2500, taxRate: 8.5, mode: 0 }
+    },
+    {
+      label: "Reverse from total",
+      description: "$107.25 back to pre-tax",
+      values: { amount: 107.25, taxRate: 7.25, mode: 1 }
+    }
+  ],
+  "self-employment-tax-calculator": [
+    {
+      label: "Side gig",
+      description: "$20k net earnings",
+      values: { netEarnings: 20000 }
+    },
+    {
+      label: "Full-time freelance",
+      description: "$50k net earnings",
+      values: { netEarnings: 50000 }
+    },
+    {
+      label: "Established",
+      description: "$100k net earnings",
+      values: { netEarnings: 100000 }
+    }
   ]
 };
 

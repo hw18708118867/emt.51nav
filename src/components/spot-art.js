@@ -139,9 +139,36 @@ export function BudgetArt() {
   );
 }
 
+export function IncomeTaxArt() {
+  const id = "sa-incometax";
+  return (
+    <Frame label="Income and taxes" id={id}>
+      <circle cx="100" cy="100" r="92" fill={`url(#${id}-cream)`} />
+      <ellipse cx="100" cy="162" rx="56" ry="9" fill={palette.ink} opacity="0.08" />
+      {/* tax document */}
+      <rect x="54" y="52" width="74" height="100" rx="9" fill={`url(#${id}-white)`} stroke={palette.line} strokeWidth="5" />
+      <rect x="66" y="68" width="42" height="8" rx="4" fill={palette.greenSoft} />
+      <rect x="66" y="86" width="50" height="6" rx="3" fill="#cdd8d4" />
+      <rect x="66" y="100" width="50" height="6" rx="3" fill="#cdd8d4" />
+      <rect x="66" y="114" width="34" height="6" rx="3" fill="#cdd8d4" />
+      {/* coin */}
+      <g className="emt-float">
+        <circle cx="118" cy="138" r="16" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
+        <text x="118" y="144" textAnchor="middle" fontSize="15" fontWeight="700" fill={palette.white}>$</text>
+      </g>
+      {/* % badge */}
+      <g className="emt-pulse">
+        <circle cx="138" cy="68" r="17" fill="#ffffff" stroke={palette.gold} strokeWidth="4" />
+        <text x="138" y="74" textAnchor="middle" fontSize="15" fontWeight="700" fill={palette.ink}>%</text>
+      </g>
+    </Frame>
+  );
+}
+
 const categoryArt = {
   Mortgage: MortgageArt,
   Debt: DebtArt,
+  "Income & Tax": IncomeTaxArt,
   Investing: InvestingArt,
   Retirement: RetirementArt,
   Savings: SavingsArt,

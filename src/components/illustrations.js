@@ -65,9 +65,22 @@ function BudgetIcon() {
   );
 }
 
+function IncomeTaxIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={iconBase} aria-hidden="true" {...stroke}>
+      <path d="M7 3h7l4 4v14H7Z" />
+      <path d="M14 3v4h4" />
+      <path d="M10.5 12.5 14 16" />
+      <circle cx="10.5" cy="12.5" r="0.6" fill="currentColor" stroke="none" />
+      <circle cx="14" cy="16" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 const categoryIcons = {
   Mortgage: MortgageIcon,
   Debt: DebtIcon,
+  "Income & Tax": IncomeTaxIcon,
   Investing: InvestingIcon,
   Retirement: RetirementIcon,
   Savings: SavingsIcon,

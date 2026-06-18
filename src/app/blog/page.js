@@ -1,5 +1,6 @@
 import { Container } from "@/components/container";
 import { FeatureCard } from "@/components/cards";
+import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/page-hero";
 import { BlogArt } from "@/components/page-art";
 import { blogArticles } from "@/lib/articles";
@@ -41,14 +42,15 @@ export default function BlogPage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {blogArticles.map((article) => (
-            <FeatureCard
-              key={article.slug}
-              href={`/blog/${article.slug}/`}
-              title={article.title}
-              description={article.description}
-              meta={article.category}
-            />
+          {blogArticles.map((article, index) => (
+            <Reveal key={article.slug} delay={index * 70} className="h-full">
+              <FeatureCard
+                href={`/blog/${article.slug}/`}
+                title={article.title}
+                description={article.description}
+                meta={article.category}
+              />
+            </Reveal>
           ))}
         </div>
       </Container>

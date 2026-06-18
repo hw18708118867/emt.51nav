@@ -1,5 +1,6 @@
 import { Container } from "@/components/container";
 import { CalculatorCard } from "@/components/cards";
+import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/page-hero";
 import { CalculatorsArt } from "@/components/page-art";
 import { CategoryIcon } from "@/components/illustrations";
@@ -43,14 +44,15 @@ export default function CalculatorsPage() {
               {category.title}
             </h2>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {getCalculatorsBySlugs(category.slugs).map((calculator) => (
-                <CalculatorCard
-                  key={calculator.slug}
-                  slug={calculator.slug}
-                  title={calculator.name}
-                  description={calculator.description}
-                  meta={calculator.category}
-                />
+              {getCalculatorsBySlugs(category.slugs).map((calculator, index) => (
+                <Reveal key={calculator.slug} delay={index * 70} className="h-full">
+                  <CalculatorCard
+                    slug={calculator.slug}
+                    title={calculator.name}
+                    description={calculator.description}
+                    meta={calculator.category}
+                  />
+                </Reveal>
               ))}
             </div>
           </section>

@@ -502,6 +502,122 @@ function RothIraArt() {
   );
 }
 
+/* 21. Paycheck — a pay envelope/check with coins */
+function PaycheckArt() {
+  const id = "ca-paycheck";
+  return (
+    <Frame id={id} label="Take-home paycheck">
+      <Backdrop id={id} tone="cream" />
+      <rect x="44" y="78" width="112" height="62" rx="8" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <rect x="56" y="92" width="58" height="7" rx="3.5" fill={P.greenSoft} />
+      <rect x="56" y="106" width="74" height="6" rx="3" fill="#cdd8d4" />
+      <rect x="56" y="120" width="44" height="6" rx="3" fill="#cdd8d4" />
+      <g className="emt-pulse">
+        <circle cx="138" cy="120" r="16" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <text x="138" y="126" textAnchor="middle" fontSize="15" fontWeight="700" fill="#fff">$</text>
+      </g>
+      <g className="emt-float" style={{ animationDelay: "0.4s" }}>
+        <Coin id={id} cx="64" cy="156" r="12" />
+      </g>
+    </Frame>
+  );
+}
+
+/* 22. Salary — clock and calendar with a two-way conversion arrow */
+function SalaryArt() {
+  const id = "ca-salary";
+  return (
+    <Frame id={id} label="Hourly to salary conversion">
+      <Backdrop id={id} tone="sky" />
+      {/* clock */}
+      <circle cx="68" cy="92" r="30" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <path className="emt-spin" style={{ transformBox: "view-box", transformOrigin: "68px 92px" }} d="M68 74v18l12 8" fill="none" stroke={P.ink} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="68" cy="92" r="3.5" fill={P.gold} />
+      {/* calendar */}
+      <g transform="translate(106 64)">
+        <rect x="0" y="6" width="56" height="52" rx="7" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+        <rect x="0" y="6" width="56" height="15" rx="7" fill={P.greenSoft} stroke={P.ink} strokeWidth="5" />
+        <rect x="12" y="0" width="5" height="12" rx="2.5" fill={P.ink} />
+        <rect x="39" y="0" width="5" height="12" rx="2.5" fill={P.ink} />
+        <circle cx="28" cy="40" r="9" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="3.5" />
+      </g>
+      {/* two-way arrow */}
+      <g className="emt-pulse">
+        <path d="M70 140h60M70 140l8-7M70 140l8 7M130 140l-8-7M130 140l-8 7" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    </Frame>
+  );
+}
+
+/* 23. Income tax — a tax form with a % stamp and progressive bars */
+function IncomeTaxArt() {
+  const id = "ca-income-tax";
+  return (
+    <Frame id={id} label="Federal income tax estimate">
+      <Backdrop id={id} tone="cream" />
+      <rect x="52" y="56" width="84" height="108" rx="9" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <rect x="66" y="72" width="44" height="7" rx="3.5" fill={P.greenSoft} />
+      {[90, 104, 118].map((y, i) => (
+        <rect key={y} x="66" y={y} width={i === 1 ? 56 : 44} height="6" rx="3" fill="#cdd8d4" />
+      ))}
+      {/* progressive mini bars */}
+      {[[70, 150, 8], [82, 144, 14], [94, 138, 20]].map(([x, y, h]) => (
+        <rect key={x} x={x} y={y} width="8" height={h} rx="2" fill={P.greenSoft} stroke={P.ink} strokeWidth="2.5" />
+      ))}
+      {/* % stamp */}
+      <g className="emt-pulse">
+        <circle cx="132" cy="118" r="20" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <text x="132" y="125" textAnchor="middle" fontSize="18" fontWeight="700" fill="#fff">%</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 24. Sales tax — a price tag with a % badge and a shopping bag */
+function SalesTaxArt() {
+  const id = "ca-sales-tax";
+  return (
+    <Frame id={id} label="Sales tax on a purchase">
+      <Backdrop id={id} tone="sky" />
+      {/* price tag */}
+      <g transform="rotate(-12 92 104)">
+        <path d="M54 78h44l30 30-46 46-44-44V92a14 14 0 0 1 14-14Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
+        <circle cx="74" cy="98" r="8" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="4" />
+        <text x="104" y="120" textAnchor="middle" fontSize="20" fontWeight="700" fill="#fff">$</text>
+      </g>
+      {/* shopping bag */}
+      <g className="emt-float">
+        <path d="M118 116h36l-5 40a6 6 0 0 1-6 5h-14a6 6 0 0 1-6-5Z" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
+        <path d="M127 116a9 9 0 0 1 18 0" fill="none" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
+      </g>
+      {/* % badge */}
+      <g className="emt-pulse">
+        <circle cx="146" cy="70" r="16" fill="#ffffff" stroke={P.gold} strokeWidth="4" />
+        <text x="146" y="76" textAnchor="middle" fontSize="14" fontWeight="700" fill={P.ink}>%</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 25. Self-employment tax — a briefcase with a coin */
+function SelfEmploymentArt() {
+  const id = "ca-se-tax";
+  return (
+    <Frame id={id} label="Self-employment tax">
+      <Backdrop id={id} tone="cream" />
+      <rect x="50" y="92" width="100" height="62" rx="10" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <path d="M82 92v-12a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v12" fill="none" stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
+      <rect x="50" y="112" width="100" height="10" fill={P.greenSoft} opacity="0.6" />
+      <g className="emt-float">
+        <Coin id={id} cx="100" cy="118" r="16" />
+      </g>
+      <g className="emt-twinkle">
+        <path d="M150 64c.8 6 2.2 7.4 8 8-5.8.8-7.2 2.2-8 8-.8-5.8-2.2-7.2-8-8 5.8-.8 7.2-2.2 8-8Z" fill={P.gold} stroke={P.ink} strokeWidth="2" strokeLinejoin="round" />
+      </g>
+    </Frame>
+  );
+}
+
 const artBySlug = {
   "mortgage-amortization-calculator": MortgageAmortizationArt,
   "refinance-calculator": RefinanceArt,
@@ -522,7 +638,12 @@ const artBySlug = {
   "cagr-calculator": CagrArt,
   "dividend-calculator": DividendArt,
   "401k-calculator": FourOhOneKArt,
-  "roth-ira-calculator": RothIraArt
+  "roth-ira-calculator": RothIraArt,
+  "paycheck-calculator": PaycheckArt,
+  "salary-calculator": SalaryArt,
+  "income-tax-calculator": IncomeTaxArt,
+  "sales-tax-calculator": SalesTaxArt,
+  "self-employment-tax-calculator": SelfEmploymentArt
 };
 
 export function CalculatorArt({ slug, category }) {

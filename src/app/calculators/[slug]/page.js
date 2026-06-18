@@ -53,6 +53,7 @@ export default async function CalculatorPage({ params }) {
     Mortgage: "bg-band-mint",
     Investing: "bg-band-sky",
     Debt: "bg-band-cream",
+    "Income & Tax": "bg-band-sage",
     Retirement: "bg-band-sky",
     Savings: "bg-band-cream",
     Budgeting: "bg-band-sage"

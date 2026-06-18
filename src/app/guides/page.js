@@ -1,5 +1,6 @@
 import { Container } from "@/components/container";
 import { FeatureCard } from "@/components/cards";
+import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/page-hero";
 import { GuidesArt } from "@/components/page-art";
 import { guides } from "@/lib/articles";
@@ -33,14 +34,15 @@ export default function GuidesPage() {
       />
 
       <Container className="grid gap-6 pt-16 md:grid-cols-2 xl:grid-cols-3">
-        {guides.map((guide) => (
-          <FeatureCard
-            key={guide.slug}
-            href={`/guides/${guide.slug}`}
-            title={guide.title}
-            description={guide.description}
-            meta={guide.readingTime}
-          />
+        {guides.map((guide, index) => (
+          <Reveal key={guide.slug} delay={index * 70} className="h-full">
+            <FeatureCard
+              href={`/guides/${guide.slug}`}
+              title={guide.title}
+              description={guide.description}
+              meta={guide.readingTime}
+            />
+          </Reveal>
         ))}
       </Container>
     </div>

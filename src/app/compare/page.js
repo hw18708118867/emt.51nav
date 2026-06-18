@@ -1,5 +1,6 @@
 import { Container } from "@/components/container";
 import { FeatureCard } from "@/components/cards";
+import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/page-hero";
 import { CompareArt } from "@/components/page-art";
 import { compareArticles } from "@/lib/articles";
@@ -31,14 +32,15 @@ export default function ComparePage() {
       />
 
       <Container className="grid gap-6 pt-16 md:grid-cols-2 xl:grid-cols-3">
-        {compareArticles.map((article) => (
-          <FeatureCard
-            key={article.slug}
-            href={`/compare/${article.slug}`}
-            title={article.title}
-            description={article.description}
-            meta={article.category}
-          />
+        {compareArticles.map((article, index) => (
+          <Reveal key={article.slug} delay={index * 70} className="h-full">
+            <FeatureCard
+              href={`/compare/${article.slug}`}
+              title={article.title}
+              description={article.description}
+              meta={article.category}
+            />
+          </Reveal>
         ))}
       </Container>
     </div>

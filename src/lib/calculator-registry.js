@@ -24,6 +24,57 @@ function paymentForLoan(principal, annualRate, years) {
   );
 }
 
+// 2025 federal brackets and standard deductions (estimate; state tax excluded).
+const FEDERAL_BRACKETS_2025 = {
+  single: [
+    [0, 0.1],
+    [11925, 0.12],
+    [48475, 0.22],
+    [103350, 0.24],
+    [197300, 0.32],
+    [250525, 0.35],
+    [626350, 0.37]
+  ],
+  married: [
+    [0, 0.1],
+    [23850, 0.12],
+    [96950, 0.22],
+    [206700, 0.24],
+    [394600, 0.32],
+    [501050, 0.35],
+    [751600, 0.37]
+  ]
+};
+
+const STANDARD_DEDUCTION_2025 = { single: 15000, married: 30000 };
+const SOCIAL_SECURITY_WAGE_BASE_2025 = 176100;
+
+function federalIncomeTax(taxableIncome, status = "single") {
+  const brackets = FEDERAL_BRACKETS_2025[status] || FEDERAL_BRACKETS_2025.single;
+  const income = Math.max(0, taxableIncome);
+  let tax = 0;
+
+  for (let i = 0; i < brackets.length; i += 1) {
+    const [floor, rate] = brackets[i];
+    const ceiling = i + 1 < brackets.length ? brackets[i + 1][0] : Infinity;
+
+    if (income > floor) {
+      tax += (Math.min(income, ceiling) - floor) * rate;
+    } else {
+      break;
+    }
+  }
+
+  return tax;
+}
+
+function ficaTax(gross) {
+  const wages = Math.max(0, gross);
+  const socialSecurity = Math.min(wages, SOCIAL_SECURITY_WAGE_BASE_2025) * 0.062;
+  const medicare = wages * 0.0145;
+  return { socialSecurity, medicare, total: socialSecurity + medicare };
+}
+
 function buildBalanceSeries({ openingBalance, months, monthlyRate, monthlyContribution = 0 }) {
   let balance = openingBalance;
   const series = [];
@@ -2199,6 +2250,454 @@ export const calculatorRegistry = [
         note: "Roth contributions are made with after-tax money, so qualified withdrawals in retirement are generally tax-free. Annual limits are not enforced here."
       };
     }
+  },
+  {
+    slug: "paycheck-calculator",
+    name: "Paycheck Calculator",
+    category: "Income & Tax",
+    description: "Estimate your take-home pay after federal income tax withholding, Social Security, Medicare, and pre-tax deductions.",
+    intro:
+      "Enter your salary and pre-tax contributions to estimate the federal portion of each paycheck and what actually lands in your account.",
+    keywords: [
+      "paycheck calculator",
+      "take home pay calculator",
+      "net pay after taxes"
+    ],
+    defaults: {
+      annualSalary: 60000,
+      preTaxDeductions: 3000,
+      payPeriods: 26,
+      filingStatus: 0
+    },
+    inputs: [
+      { name: "annualSalary", label: "Annual salary", prefix: "$", min: 0, step: 1000 },
+      { name: "preTaxDeductions", label: "Annual pre-tax deductions", prefix: "$", min: 0, step: 500 },
+      { name: "payPeriods", label: "Pay periods per year", min: 1, max: 52, step: 1 }
+    ],
+    advancedInputs: [
+      { name: "filingStatus", label: "Filing (0 single, 1 married)", min: 0, max: 1, step: 1 }
+    ],
+    presets: true,
+    example: "On a $60,000 salary, federal income tax plus FICA can take a meaningful slice before pre-tax 401(k) or health deductions are even counted.",
+    sections: [
+      {
+        title: "What comes out of a paycheck",
+        body:
+          "Gross pay is reduced by pre-tax deductions like 401(k) and health premiums, then by federal income tax withholding and FICA taxes for Social Security and Medicare. What remains is your take-home, or net, pay."
+      },
+      {
+        title: "Why pre-tax deductions help twice",
+        body:
+          "Money you route into pre-tax accounts lowers the income that federal tax is calculated on, so a dollar saved there costs you less than a dollar in take-home pay. That is part of why workplace retirement and HSA contributions are efficient."
+      },
+      {
+        title: "What this estimate leaves out",
+        body:
+          "This is a federal-level estimate. It does not include state or local income tax, and real withholding depends on your W-4, credits, and other details. Treat it as a planning baseline, not an exact paystub."
+      }
+    ],
+    faqs: [
+      {
+        question: "Does this include state taxes?",
+        answer: "No. This calculator estimates federal income tax withholding plus Social Security and Medicare only. State and local income taxes vary widely and are not included, so your actual take-home may be lower."
+      },
+      {
+        question: "Why is my real paycheck different?",
+        answer: "Actual withholding depends on your W-4 elections, tax credits, additional withholding, and benefit choices. This tool uses 2025 federal brackets and the standard deduction as a simplified baseline."
+      }
+    ],
+    related: ["income-tax-calculator", "salary-calculator", "budget-calculator"],
+    compute(values) {
+      const salary = Number(values.annualSalary);
+      const preTax = Math.min(Number(values.preTaxDeductions), salary);
+      const status = Number(values.filingStatus) === 1 ? "married" : "single";
+      const periods = Math.max(1, Number(values.payPeriods));
+      const deduction = STANDARD_DEDUCTION_2025[status];
+      const taxable = Math.max(0, salary - preTax - deduction);
+      const incomeTax = federalIncomeTax(taxable, status);
+      const fica = ficaTax(salary - preTax);
+      const totalTax = incomeTax + fica.total;
+      const netAnnual = salary - preTax - totalTax;
+      const effectiveRate = salary > 0 ? (totalTax / salary) * 100 : 0;
+
+      return {
+        summary: [
+          { label: "Take-home per paycheck", value: formatCurrencyPrecise(netAnnual / periods) },
+          { label: "Annual take-home", value: formatCurrency(netAnnual) },
+          { label: "Effective tax rate", value: formatPercent(effectiveRate) }
+        ],
+        details: [
+          { label: "Gross salary", value: formatCurrency(salary) },
+          { label: "Pre-tax deductions", value: formatCurrency(preTax) },
+          { label: "Federal income tax", value: formatCurrency(incomeTax) },
+          { label: "Social Security + Medicare", value: formatCurrency(fica.total) }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "Take-home", amount: roundCurrency(netAnnual) },
+          { label: "Income tax", amount: roundCurrency(incomeTax) },
+          { label: "FICA", amount: roundCurrency(fica.total) },
+          { label: "Pre-tax", amount: roundCurrency(preTax) }
+        ],
+        milestones: [
+          { label: "Per paycheck", value: formatCurrencyPrecise(netAnnual / periods) },
+          { label: "Monthly take-home", value: formatCurrency(netAnnual / 12) },
+          { label: "Total federal tax", value: formatCurrency(totalTax) }
+        ],
+        note: "Federal estimate only, using 2025 brackets and the standard deduction. State and local taxes are not included."
+      };
+    }
+  },
+  {
+    slug: "salary-calculator",
+    name: "Salary Calculator",
+    category: "Income & Tax",
+    description: "Convert an hourly wage into weekly, monthly, and annual pay, or work back from a salary to an hourly rate.",
+    intro:
+      "Enter an hourly wage and your usual schedule to see what it adds up to across a week, month, and year before taxes.",
+    keywords: [
+      "salary calculator",
+      "hourly to salary calculator",
+      "hourly wage to annual income"
+    ],
+    defaults: {
+      hourlyRate: 25,
+      hoursPerWeek: 40,
+      weeksPerYear: 52
+    },
+    inputs: [
+      { name: "hourlyRate", label: "Hourly rate", prefix: "$", min: 0, step: 0.5 },
+      { name: "hoursPerWeek", label: "Hours per week", min: 1, max: 80, step: 1 },
+      { name: "weeksPerYear", label: "Weeks worked per year", min: 1, max: 52, step: 1 }
+    ],
+    presets: true,
+    example: "At $25 an hour for a standard 40-hour week, the annual figure lands around $52,000 before taxes.",
+    sections: [
+      {
+        title: "Hourly and salary are two views of the same pay",
+        body:
+          "An hourly rate becomes an annual salary once you multiply by the hours you work each week and the weeks you work each year. Going the other direction, a salary divided by those same hours gives an effective hourly rate."
+      },
+      {
+        title: "Watch the weeks and hours assumptions",
+        body:
+          "A full year is 52 weeks, but unpaid time off, part-time schedules, or overtime all change the real total. Adjusting weeks worked and hours per week is what makes the comparison match your actual situation."
+      },
+      {
+        title: "This is gross, not take-home",
+        body:
+          "These figures are before taxes and deductions. To see what actually reaches your bank account, run the result through a paycheck or income tax estimate."
+      }
+    ],
+    faqs: [
+      {
+        question: "How do I convert hourly pay to a yearly salary?",
+        answer: "Multiply your hourly rate by hours worked per week, then by weeks worked per year. For example, $25 times 40 hours times 52 weeks is $52,000 per year before taxes."
+      },
+      {
+        question: "Is this before or after taxes?",
+        answer: "These amounts are gross pay, before income tax and other deductions. Use the paycheck calculator to estimate take-home pay."
+      }
+    ],
+    related: ["paycheck-calculator", "income-tax-calculator", "budget-calculator"],
+    compute(values) {
+      const rate = Number(values.hourlyRate);
+      const hours = Number(values.hoursPerWeek);
+      const weeks = Number(values.weeksPerYear);
+      const weekly = rate * hours;
+      const annual = weekly * weeks;
+      const monthly = annual / 12;
+      const daily = rate * (hours / 5);
+
+      return {
+        summary: [
+          { label: "Annual salary", value: formatCurrency(annual) },
+          { label: "Monthly pay", value: formatCurrency(monthly) },
+          { label: "Weekly pay", value: formatCurrency(weekly) }
+        ],
+        details: [
+          { label: "Hourly rate", value: formatCurrencyPrecise(rate) },
+          { label: "Hours per week", value: `${hours} hours` },
+          { label: "Weeks per year", value: `${weeks} weeks` },
+          { label: "Estimated daily pay", value: formatCurrencyPrecise(daily) }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "Weekly", amount: roundCurrency(weekly) },
+          { label: "Monthly", amount: roundCurrency(monthly) },
+          { label: "Annual", amount: roundCurrency(annual) }
+        ],
+        milestones: [
+          { label: "Per week", value: formatCurrency(weekly) },
+          { label: "Per month", value: formatCurrency(monthly) },
+          { label: "Per year", value: formatCurrency(annual) }
+        ],
+        note: "These amounts are gross pay before taxes and deductions."
+      };
+    }
+  },
+  {
+    slug: "income-tax-calculator",
+    name: "Income Tax Calculator",
+    category: "Income & Tax",
+    description: "Estimate your federal income tax, effective tax rate, and after-tax income using 2025 brackets and the standard deduction.",
+    intro:
+      "Enter your income and filing status to estimate federal income tax, your marginal and effective rates, and what is left after tax.",
+    keywords: [
+      "income tax calculator",
+      "federal income tax estimator",
+      "effective tax rate calculator"
+    ],
+    defaults: {
+      annualIncome: 75000,
+      filingStatus: 0
+    },
+    inputs: [
+      { name: "annualIncome", label: "Annual income", prefix: "$", min: 0, step: 1000 },
+      { name: "filingStatus", label: "Filing (0 single, 1 married)", min: 0, max: 1, step: 1 }
+    ],
+    presets: true,
+    example: "On $75,000 of income, the standard deduction lowers the taxable amount before the bracket rates ever apply, so the effective rate is well below the top bracket.",
+    sections: [
+      {
+        title: "Marginal versus effective tax rate",
+        body:
+          "Your marginal rate is the bracket your last dollar falls into; your effective rate is total tax divided by total income. Because the system is progressive, the effective rate is always lower than the marginal rate."
+      },
+      {
+        title: "The standard deduction comes first",
+        body:
+          "Most filers subtract the standard deduction before any bracket applies. That means a chunk of income is taxed at zero, which is why the first dollars of salary are not taxed at your top rate."
+      },
+      {
+        title: "What this estimate excludes",
+        body:
+          "This tool models federal income tax with the standard deduction only. It does not include credits, itemized deductions, capital gains rates, the additional Medicare tax, or any state tax, so treat it as a planning estimate."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the difference between marginal and effective rate?",
+        answer: "The marginal rate is the tax on your next dollar of income, set by your top bracket. The effective rate is your total tax divided by total income, which is lower because earlier income is taxed at lower bracket rates."
+      },
+      {
+        question: "Does this include the standard deduction?",
+        answer: "Yes. This estimate subtracts the 2025 standard deduction for your filing status before applying the brackets. It does not model itemized deductions, credits, or state taxes."
+      }
+    ],
+    related: ["paycheck-calculator", "salary-calculator", "self-employment-tax-calculator"],
+    compute(values) {
+      const income = Number(values.annualIncome);
+      const status = Number(values.filingStatus) === 1 ? "married" : "single";
+      const deduction = STANDARD_DEDUCTION_2025[status];
+      const taxable = Math.max(0, income - deduction);
+      const tax = federalIncomeTax(taxable, status);
+      const afterTax = income - tax;
+      const effectiveRate = income > 0 ? (tax / income) * 100 : 0;
+      const brackets = FEDERAL_BRACKETS_2025[status];
+      let marginalRate = brackets[0][1];
+      for (let i = 0; i < brackets.length; i += 1) {
+        if (taxable > brackets[i][0]) {
+          marginalRate = brackets[i][1];
+        }
+      }
+
+      return {
+        summary: [
+          { label: "Federal income tax", value: formatCurrency(tax) },
+          { label: "After-tax income", value: formatCurrency(afterTax) },
+          { label: "Effective rate", value: formatPercent(effectiveRate) }
+        ],
+        details: [
+          { label: "Gross income", value: formatCurrency(income) },
+          { label: "Standard deduction", value: formatCurrency(deduction) },
+          { label: "Taxable income", value: formatCurrency(taxable) },
+          { label: "Marginal bracket", value: formatPercent(marginalRate * 100) }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "After-tax income", amount: roundCurrency(afterTax) },
+          { label: "Federal tax", amount: roundCurrency(tax) }
+        ],
+        milestones: [
+          { label: "Total federal tax", value: formatCurrency(tax) },
+          { label: "Effective rate", value: formatPercent(effectiveRate) },
+          { label: "Marginal rate", value: formatPercent(marginalRate * 100) }
+        ],
+        note: "Federal estimate using 2025 brackets and the standard deduction. Credits, itemized deductions, and state taxes are not included."
+      };
+    }
+  },
+  {
+    slug: "sales-tax-calculator",
+    name: "Sales Tax Calculator",
+    category: "Income & Tax",
+    description: "Add sales tax to a price to get the total, or work backward from a total to find the pre-tax price and tax amount.",
+    intro:
+      "Enter a price and a sales tax rate to see the tax and final total, or reverse it to pull the pre-tax price out of a receipt total.",
+    keywords: [
+      "sales tax calculator",
+      "reverse sales tax calculator",
+      "price plus tax calculator"
+    ],
+    defaults: {
+      amount: 100,
+      taxRate: 7.25,
+      mode: 0
+    },
+    inputs: [
+      { name: "amount", label: "Amount", prefix: "$", min: 0, step: 1 },
+      { name: "taxRate", label: "Sales tax rate", suffix: "%", min: 0, step: 0.05 }
+    ],
+    advancedInputs: [
+      { name: "mode", label: "Mode (0 add tax, 1 remove tax)", min: 0, max: 1, step: 1 }
+    ],
+    presets: true,
+    example: "A $100 purchase at a 7.25% sales tax rate comes to $107.25, with $7.25 going to tax.",
+    sections: [
+      {
+        title: "Adding tax versus removing tax",
+        body:
+          "Adding tax multiplies the price by one plus the rate. Removing tax does the reverse: it divides a tax-included total by one plus the rate to recover the original pre-tax price, which is useful for expense reports and reconciling receipts."
+      },
+      {
+        title: "Rates vary a lot by location",
+        body:
+          "Combined state and local sales tax rates differ widely and some items are exempt. Enter the rate that applies where the purchase happens rather than assuming a single national number."
+      },
+      {
+        title: "Sales tax is separate from income tax",
+        body:
+          "Sales tax is charged at the point of purchase on goods and some services. It is unrelated to the income tax taken from your paycheck, even though both reduce what your money ultimately buys."
+      }
+    ],
+    faqs: [
+      {
+        question: "How do I calculate the pre-tax price from a total?",
+        answer: "Divide the tax-included total by one plus the tax rate. For example, a $107.25 total at 7.25% divided by 1.0725 gives a $100 pre-tax price. Switch this calculator to remove-tax mode to do it automatically."
+      },
+      {
+        question: "Why is sales tax different where I shop?",
+        answer: "Sales tax combines state, county, and city rates, which vary by location, and some categories like groceries may be taxed differently or exempt. Always use the local combined rate."
+      }
+    ],
+    related: ["income-tax-calculator", "budget-calculator", "paycheck-calculator"],
+    compute(values) {
+      const amount = Number(values.amount);
+      const rate = Number(values.taxRate) / 100;
+      const removeMode = Number(values.mode) === 1;
+      const preTax = removeMode ? amount / (1 + rate) : amount;
+      const taxAmount = removeMode ? amount - preTax : amount * rate;
+      const total = removeMode ? amount : amount + taxAmount;
+
+      return {
+        summary: [
+          { label: removeMode ? "Pre-tax price" : "Total with tax", value: formatCurrencyPrecise(removeMode ? preTax : total) },
+          { label: "Sales tax", value: formatCurrencyPrecise(taxAmount) },
+          { label: "Tax rate", value: formatPercent(Number(values.taxRate)) }
+        ],
+        details: [
+          { label: "Pre-tax price", value: formatCurrencyPrecise(preTax) },
+          { label: "Tax amount", value: formatCurrencyPrecise(taxAmount) },
+          { label: "Total", value: formatCurrencyPrecise(total) },
+          { label: "Mode", value: removeMode ? "Remove tax from total" : "Add tax to price" }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "Pre-tax", amount: roundCurrency(preTax) },
+          { label: "Tax", amount: roundCurrency(taxAmount) }
+        ],
+        milestones: [
+          { label: "Pre-tax price", value: formatCurrencyPrecise(preTax) },
+          { label: "Tax", value: formatCurrencyPrecise(taxAmount) },
+          { label: "Total", value: formatCurrencyPrecise(total) }
+        ],
+        note: "Enter the combined state and local rate for the purchase location. Item exemptions are not modeled."
+      };
+    }
+  },
+  {
+    slug: "self-employment-tax-calculator",
+    name: "Self-Employment Tax Calculator",
+    category: "Income & Tax",
+    description: "Estimate the self-employment tax you owe on freelance or business net earnings, including the Social Security and Medicare portions.",
+    intro:
+      "Enter your net self-employment earnings to estimate the 15.3% self-employment tax and the deductible employer-equivalent half.",
+    keywords: [
+      "self employment tax calculator",
+      "1099 tax calculator",
+      "freelance tax calculator"
+    ],
+    defaults: {
+      netEarnings: 50000
+    },
+    inputs: [
+      { name: "netEarnings", label: "Net self-employment earnings", prefix: "$", min: 0, step: 1000 }
+    ],
+    presets: true,
+    example: "On $50,000 of net earnings, self-employment tax is calculated on 92.35% of that amount at a combined 15.3% rate.",
+    sections: [
+      {
+        title: "What self-employment tax covers",
+        body:
+          "When you work for yourself, you pay both the employee and employer share of Social Security and Medicare. That combined 15.3% is the self-employment tax, charged on 92.35% of your net business earnings."
+      },
+      {
+        title: "Half of it is deductible",
+        body:
+          "You can deduct the employer-equivalent half of self-employment tax when figuring your income tax. It does not reduce the self-employment tax itself, but it lowers the income that your federal income tax is based on."
+      },
+      {
+        title: "Plan for quarterly payments",
+        body:
+          "Because no employer withholds taxes for you, self-employment tax and income tax are usually paid through quarterly estimated payments. Setting money aside as you earn it avoids a large bill and potential penalties at filing time."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the self-employment tax rate?",
+        answer: "It is 15.3% total: 12.4% for Social Security on earnings up to the annual wage base, plus 2.9% for Medicare with no cap. It applies to 92.35% of your net self-employment earnings."
+      },
+      {
+        question: "Is this the same as income tax?",
+        answer: "No. Self-employment tax funds Social Security and Medicare and is separate from federal income tax. A self-employed person generally owes both on the same earnings, which is why setting money aside matters."
+      }
+    ],
+    related: ["income-tax-calculator", "paycheck-calculator", "budget-calculator"],
+    compute(values) {
+      const net = Number(values.netEarnings);
+      const taxableBase = net * 0.9235;
+      const socialSecurity = Math.min(taxableBase, SOCIAL_SECURITY_WAGE_BASE_2025) * 0.124;
+      const medicare = taxableBase * 0.029;
+      const seTax = socialSecurity + medicare;
+      const deductibleHalf = seTax / 2;
+      const effectiveRate = net > 0 ? (seTax / net) * 100 : 0;
+
+      return {
+        summary: [
+          { label: "Self-employment tax", value: formatCurrency(seTax) },
+          { label: "Deductible half", value: formatCurrency(deductibleHalf) },
+          { label: "Effective rate", value: formatPercent(effectiveRate) }
+        ],
+        details: [
+          { label: "Net earnings", value: formatCurrency(net) },
+          { label: "Taxable base (92.35%)", value: formatCurrency(taxableBase) },
+          { label: "Social Security portion", value: formatCurrency(socialSecurity) },
+          { label: "Medicare portion", value: formatCurrency(medicare) }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "Social Security", amount: roundCurrency(socialSecurity) },
+          { label: "Medicare", amount: roundCurrency(medicare) }
+        ],
+        milestones: [
+          { label: "Total SE tax", value: formatCurrency(seTax) },
+          { label: "Deductible half", value: formatCurrency(deductibleHalf) },
+          { label: "Set aside per quarter", value: formatCurrency(seTax / 4) }
+        ],
+        note: "Estimate of self-employment tax only, using the 15.3% combined rate on 92.35% of net earnings. Federal and state income taxes are separate."
+      };
+    }
   }
 ];
 
@@ -2219,6 +2718,16 @@ export const calculatorCategories = [
   {
     title: "Debt",
     slugs: ["loan-calculator", "debt-payoff-calculator"]
+  },
+  {
+    title: "Income & Tax",
+    slugs: [
+      "paycheck-calculator",
+      "salary-calculator",
+      "income-tax-calculator",
+      "sales-tax-calculator",
+      "self-employment-tax-calculator"
+    ]
   },
   {
     title: "Investing",
