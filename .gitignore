@@ -1,4 +1,5 @@
 .next/
+.claude/
 out/
 node_modules/
 .local/

@@ -79,8 +79,8 @@ export function AboutArt() {
         <circle cx="256" cy="252" r="9" fill={SKIN} stroke={INK} strokeWidth="4" />
       </g>
 
-      {/* floating heart accent */}
-      <g className="emt-float" style={{ animationDelay: "0.5s" }}>
+      {/* heartbeat accent */}
+      <g className="emt-pulse">
         <path d="M388 168c-4-9-18-7-18 3 0 7 12 14 18 18 6-4 18-11 18-18 0-10-14-12-18-3Z" fill={GOLD} stroke={INK} strokeWidth="4" strokeLinejoin="round" />
       </g>
     </Svg>
@@ -198,7 +198,7 @@ export function BlogArt() {
       </g>
 
       {/* sparkle */}
-      <g className="emt-float">
+      <g className="emt-twinkle" style={{ transformBox: "view-box", transformOrigin: "368px 216px" }}>
         <path d="M348 196c2 14 6 18 20 20-14 2-18 6-20 20-2-14-6-18-20-20 14-2 18-6 20-20Z" fill={GOLD} stroke={INK} strokeWidth="3.5" strokeLinejoin="round" />
       </g>
     </Svg>
@@ -245,7 +245,7 @@ export function GuidesArt() {
       {/* small compass accent */}
       <g className="emt-float" style={{ animationDelay: "0.5s" }}>
         <circle cx="96" cy="150" r="22" fill="#ffffff" stroke={INK} strokeWidth="5" />
-        <path d="M96 138l6 14-6 6-6-6Z" fill={GOLD} stroke={INK} strokeWidth="2.5" strokeLinejoin="round" />
+        <path className="emt-spin" style={{ transformBox: "view-box", transformOrigin: "96px 150px" }} d="M96 138l6 14-6 6-6-6Z" fill={GOLD} stroke={INK} strokeWidth="2.5" strokeLinejoin="round" />
         <circle cx="96" cy="150" r="3" fill={INK} />
       </g>
     </Svg>
@@ -277,7 +277,8 @@ export function CompareArt() {
       <path d="M176 300h88l-12-14h-64Z" fill={GREEN} stroke={INK} strokeWidth="5" strokeLinejoin="round" />
       <circle cx="220" cy="92" r="12" fill={GOLD} stroke={INK} strokeWidth="5" />
 
-      {/* beam (slight tilt) */}
+      {/* beam (gentle balance sway around the fulcrum) */}
+      <g className="emt-sway" style={{ transformBox: "view-box", transformOrigin: "220px 100px" }}>
       <g transform="rotate(-5 220 100)">
         <rect x="96" y="94" width="248" height="12" rx="6" fill={INK} />
         {/* left pan: house */}
@@ -298,6 +299,7 @@ export function CompareArt() {
           <ellipse cx="0" cy="-6" rx="26" ry="9" fill={GOLD_SOFT} stroke={INK} strokeWidth="4" />
           <text x="0" y="0" textAnchor="middle" fontSize="13" fontWeight="700" fill={GOLD}>$</text>
         </g>
+      </g>
       </g>
 
       {/* vs badge */}

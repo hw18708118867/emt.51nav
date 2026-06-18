@@ -117,6 +117,45 @@ h4,
   }
 }
 
+/* Idle-loop micro-motions (seamless: 0% state == 100% state) */
+@keyframes emt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes emt-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes emt-twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes emt-sway {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
 .emt-art-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -162,6 +201,30 @@ h4,
   animation: emt-float 5s ease-in-out infinite;
 }
 
+.emt-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: emt-spin 9s linear infinite;
+}
+
+.emt-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: emt-pulse 2.6s ease-in-out infinite;
+}
+
+.emt-twinkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: emt-twinkle 2.4s ease-in-out infinite;
+}
+
+.emt-sway {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: emt-sway 3.6s ease-in-out infinite;
+}
+
 .emt-icon-card:hover .emt-icon {
   transform: translateY(-2px) scale(1.06);
 }
@@ -190,7 +253,11 @@ h4,
   .emt-hero-bar,
   .emt-art-line,
   .emt-art-rise,
-  .emt-float {
+  .emt-float,
+  .emt-spin,
+  .emt-pulse,
+  .emt-twinkle,
+  .emt-sway {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

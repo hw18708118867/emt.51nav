@@ -84,8 +84,10 @@ function MortgageAmortizationArt() {
         <rect key={x} x={x - 9} y={y} width="18" height={150 - y} rx="3" fill={i === 4 ? `url(#${id}-gold)` : P.greenSoft} stroke={P.ink} strokeWidth="3.5" />
       ))}
       <path d="M52 92 76 106l24 12 24 10 24 8" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-      <g transform="translate(58 -2) scale(0.46)">
-        <House id={id} />
+      <g className="emt-float">
+        <g transform="translate(58 -2) scale(0.46)">
+          <House id={id} />
+        </g>
       </g>
     </Frame>
   );
@@ -100,11 +102,13 @@ function RefinanceArt() {
       <g transform="translate(0 6)">
         <House id={id} />
       </g>
-      <path d="M58 70a48 48 0 0 1 78-14" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" />
-      <path d="M132 44l8 14-16 2Z" fill={P.gold} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
-      <path d="M142 132a48 48 0 0 1-78 14" fill="none" stroke={P.green} strokeWidth="5" strokeLinecap="round" />
-      <path d="M68 158l-8-14 16-2Z" fill={P.green} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
-      <g>
+      <g className="emt-spin">
+        <path d="M58 70a48 48 0 0 1 78-14" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" />
+        <path d="M132 44l8 14-16 2Z" fill={P.gold} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
+        <path d="M142 132a48 48 0 0 1-78 14" fill="none" stroke={P.green} strokeWidth="5" strokeLinecap="round" />
+        <path d="M68 158l-8-14 16-2Z" fill={P.green} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
+      </g>
+      <g className="emt-pulse">
         <circle cx="150" cy="64" r="17" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
         <text x="150" y="70" textAnchor="middle" fontSize="15" fontWeight="700" fill="#fff">%</text>
         <path d="M150 78v8M145 82l5 4 5-4" fill="none" stroke={P.ink} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -122,9 +126,11 @@ function HomeAffordabilityArt() {
       <path d="M48 138a52 52 0 0 1 104 0" fill="none" stroke="#cdd8d4" strokeWidth="10" strokeLinecap="round" />
       <path d="M48 138a52 52 0 0 1 70-49" fill="none" stroke={P.gold} strokeWidth="10" strokeLinecap="round" />
       <circle cx="100" cy="138" r="7" fill={P.ink} />
-      <path d="M100 138 124 104" stroke={P.ink} strokeWidth="5" strokeLinecap="round" />
-      <g transform="translate(0 -34) scale(0.62)" style={{ transformOrigin: "100px 100px" }}>
-        <House id={id} />
+      <path className="emt-sway" style={{ transformOrigin: "0% 100%" }} d="M100 138 124 104" stroke={P.ink} strokeWidth="5" strokeLinecap="round" />
+      <g className="emt-float">
+        <g transform="translate(0 -34) scale(0.62)" style={{ transformOrigin: "100px 100px" }}>
+          <House id={id} />
+        </g>
       </g>
     </Frame>
   );
@@ -140,13 +146,15 @@ function RentVsBuyArt() {
         <House id={id} />
       </g>
       {/* rental sign */}
-      <g transform="translate(118 0)">
-        <rect x="6" y="92" width="6" height="58" rx="3" fill={P.ink} />
-        <rect x="-14" y="64" width="48" height="34" rx="6" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="4" />
-        <rect x="-6" y="74" width="32" height="5" rx="2.5" fill={P.green} />
-        <rect x="-6" y="84" width="22" height="5" rx="2.5" fill="#cdd8d4" />
+      <g className="emt-float" style={{ animationDelay: "0.4s" }}>
+        <g transform="translate(118 0)">
+          <rect x="6" y="92" width="6" height="58" rx="3" fill={P.ink} />
+          <rect x="-14" y="64" width="48" height="34" rx="6" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="4" />
+          <rect x="-6" y="74" width="32" height="5" rx="2.5" fill={P.green} />
+          <rect x="-6" y="84" width="22" height="5" rx="2.5" fill="#cdd8d4" />
+        </g>
       </g>
-      <g>
+      <g className="emt-pulse">
         <circle cx="100" cy="150" r="17" fill="#ffffff" stroke={P.gold} strokeWidth="4" />
         <text x="100" y="156" textAnchor="middle" fontSize="13" fontWeight="700" fill={P.ink}>vs</text>
       </g>
@@ -164,8 +172,10 @@ function ExtraPaymentArt() {
         <House id={id} />
       </g>
       {/* fast-forward chevrons */}
-      <path d="M140 70l18 16-18 16M158 70l18 16-18 16" fill="none" stroke={P.gold} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-      <Coin id={id} cx="150" cy="140" r="15" />
+      <path className="emt-pulse" d="M140 70l18 16-18 16M158 70l18 16-18 16" fill="none" stroke={P.gold} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+      <g className="emt-float">
+        <Coin id={id} cx="150" cy="140" r="15" />
+      </g>
       <path d="M150 116v10M145 121l5 5 5-5" fill="none" stroke={P.ink} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
     </Frame>
   );
@@ -178,11 +188,13 @@ function MortgageBaseArt() {
     <Frame id={id} label="Mortgage payment">
       <Backdrop id={id} tone="mint" />
       <circle cx="146" cy="62" r="13" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
-      <path d="M146 40v8M146 76v8M124 62h8M160 62h8M131 47l6 6M161 71l-6-6" stroke={P.gold} strokeWidth="3" strokeLinecap="round" />
+      <path className="emt-spin" d="M146 40v8M146 76v8M124 62h8M160 62h8M131 47l6 6M161 71l-6-6" stroke={P.gold} strokeWidth="3" strokeLinecap="round" />
       <g transform="translate(-6 8)">
         <House id={id} />
       </g>
-      <Coin id={id} cx="60" cy="150" r="15" />
+      <g className="emt-float">
+        <Coin id={id} cx="60" cy="150" r="15" />
+      </g>
     </Frame>
   );
 }
@@ -211,7 +223,7 @@ function CompoundInterestArt() {
       ))}
       <path d="M50 128 92 104l40-34" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M118 64h18v18" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M150 58c1 8 3 10 11 11-8 1-10 3-11 11-1-8-3-10-11-11 8-1 10-3 11-11Z" fill={P.gold} stroke={P.ink} strokeWidth="2.6" strokeLinejoin="round" />
+      <path className="emt-twinkle" d="M150 58c1 8 3 10 11 11-8 1-10 3-11 11-1-8-3-10-11-11 8-1 10-3 11-11Z" fill={P.gold} stroke={P.ink} strokeWidth="2.6" strokeLinejoin="round" />
     </Frame>
   );
 }
@@ -223,11 +235,13 @@ function InflationArt() {
     <Frame id={id} label="Inflation over time">
       <Backdrop id={id} tone="cream" />
       <path d="M100 96c8 0 16 12 16 28s-8 30-16 30-16-14-16-30 8-28 16-28Z" fill="none" />
-      <ellipse cx="108" cy="78" rx="30" ry="34" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" />
-      <text x="108" y="86" textAnchor="middle" fontSize="26" fontWeight="700" fill="#fff">$</text>
+      <g className="emt-float">
+        <ellipse cx="108" cy="78" rx="30" ry="34" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" />
+        <text x="108" y="86" textAnchor="middle" fontSize="26" fontWeight="700" fill="#fff">$</text>
+      </g>
       <path d="M108 112c0 14-10 16-10 28" fill="none" stroke={P.ink} strokeWidth="3" strokeLinecap="round" />
       <path d="M50 150l16-16 14 10 18-22" fill="none" stroke={P.green} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M86 116l8-8 8 8" fill="none" stroke={P.green} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="emt-twinkle" d="M86 116l8-8 8 8" fill="none" stroke={P.green} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
     </Frame>
   );
 }
@@ -239,8 +253,10 @@ function LoanArt() {
     <Frame id={id} label="Loan amount and payments">
       <Backdrop id={id} tone="cream" />
       <rect x="50" y="84" width="100" height="56" rx="10" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
-      <circle cx="100" cy="112" r="15" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
-      <text x="100" y="118" textAnchor="middle" fontSize="15" fontWeight="700" fill="#fff">$</text>
+      <g className="emt-pulse">
+        <circle cx="100" cy="112" r="15" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <text x="100" y="118" textAnchor="middle" fontSize="15" fontWeight="700" fill="#fff">$</text>
+      </g>
       <circle cx="64" cy="98" r="3.4" fill={P.green} />
       <circle cx="136" cy="126" r="3.4" fill={P.green} />
       <path d="M64 150a44 44 0 0 1 72-12" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" strokeDasharray="2 11" />
@@ -257,7 +273,7 @@ function RetirementCalcArt() {
       <Backdrop id={id} tone="sky" />
       <path d="M58 90a42 42 0 0 0 84 0" fill="none" stroke={P.gold} strokeWidth="6" strokeLinecap="round" opacity="0.5" />
       <path d="M54 92h92M62 78h76M70 64h60" stroke={P.gold} strokeWidth="5" strokeLinecap="round" opacity="0.7" />
-      <circle cx="100" cy="64" r="14" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+      <circle className="emt-twinkle" cx="100" cy="64" r="14" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
       {/* nest */}
       <path d="M48 132c0-18 23-30 52-30s52 12 52 30c0 14-23 22-52 22s-52-8-52-22Z" fill="#a9743a" opacity="0.18" />
       <path d="M50 130c8-12 30-10 50-10s42-2 50 10c-8 14-30 20-50 20s-42-6-50-20Z" fill={P.green} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
@@ -278,12 +294,16 @@ function DebtPayoffArt() {
       ))}
       <path d="M60 74 92 94l32 20 32 20" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" opacity="0" />
       {/* finish flag on last step */}
-      <g transform="translate(150 96)">
-        <rect x="0" y="0" width="5" height="42" rx="2.5" fill={P.ink} />
-        <path d="M5 2h26l-7 9 7 9H5Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
+      <g className="emt-sway">
+        <g transform="translate(150 96)">
+          <rect x="0" y="0" width="5" height="42" rx="2.5" fill={P.ink} />
+          <path d="M5 2h26l-7 9 7 9H5Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
+        </g>
       </g>
       {/* rolling coin */}
-      <Coin id={id} cx="44" cy="62" r="12" />
+      <g className="emt-float">
+        <Coin id={id} cx="44" cy="62" r="12" />
+      </g>
     </Frame>
   );
 }
@@ -298,12 +318,16 @@ function SavingsGoalArt() {
       <rect x="62" y="66" width="76" height="14" rx="7" fill={P.greenSoft} stroke={P.ink} strokeWidth="4" />
       {/* fill */}
       <path d="M71 118h58l-4 28a8 8 0 0 1-8 7H83a8 8 0 0 1-8-7Z" fill={P.goldSoft} />
-      <ellipse cx="90" cy="128" rx="8" ry="5" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="2.4" />
-      <ellipse cx="112" cy="138" rx="8" ry="5" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="2.4" />
+      <g className="emt-float" style={{ animationDelay: "0.5s" }}>
+        <ellipse cx="90" cy="128" rx="8" ry="5" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="2.4" />
+        <ellipse cx="112" cy="138" rx="8" ry="5" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="2.4" />
+      </g>
       {/* goal flag */}
-      <g transform="translate(124 34)">
-        <rect x="0" y="0" width="5" height="40" rx="2.5" fill={P.ink} />
-        <path d="M5 3h24l-6 8 6 8H5Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
+      <g className="emt-sway">
+        <g transform="translate(124 34)">
+          <rect x="0" y="0" width="5" height="40" rx="2.5" fill={P.ink} />
+          <path d="M5 3h24l-6 8 6 8H5Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="3" strokeLinejoin="round" />
+        </g>
       </g>
     </Frame>
   );
@@ -318,11 +342,11 @@ function BudgetCalcArt() {
       <circle cx="92" cy="100" r="48" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
       <path d="M92 100 92 52a48 48 0 0 1 42 24Z" fill={P.goldSoft} stroke={P.ink} strokeWidth="4" strokeLinejoin="round" />
       <path d="M92 100 134 76a48 48 0 0 1-14 66Z" fill={P.greenSoft} stroke={P.ink} strokeWidth="4" strokeLinejoin="round" />
-      <circle cx="92" cy="100" r="18" fill={`url(#${id}-mint)`} stroke={P.ink} strokeWidth="4" />
+      <circle className="emt-pulse" cx="92" cy="100" r="18" fill={`url(#${id}-mint)`} stroke={P.ink} strokeWidth="4" />
       <g>
-        <circle cx="150" cy="74" r="5" fill={P.gold} />
-        <circle cx="150" cy="98" r="5" fill={P.green} />
-        <circle cx="150" cy="122" r="5" fill={P.greenSoft} stroke={P.ink} strokeWidth="2" />
+        <circle className="emt-twinkle" cx="150" cy="74" r="5" fill={P.gold} />
+        <circle className="emt-twinkle" style={{ animationDelay: "0.5s" }} cx="150" cy="98" r="5" fill={P.green} />
+        <circle className="emt-twinkle" style={{ animationDelay: "1s" }} cx="150" cy="122" r="5" fill={P.greenSoft} stroke={P.ink} strokeWidth="2" />
         <rect x="160" y="71" width="20" height="6" rx="3" fill="#cdd8d4" />
         <rect x="160" y="95" width="16" height="6" rx="3" fill="#cdd8d4" />
         <rect x="160" y="119" width="18" height="6" rx="3" fill="#cdd8d4" />
@@ -337,10 +361,12 @@ function EmergencyFundArt() {
   return (
     <Frame id={id} label="Emergency fund cushion">
       <Backdrop id={id} tone="sky" />
-      <path d="M100 50c30 0 54 22 56 50H44c2-28 26-50 56-50Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
-      <path d="M70 100c2-26 14-46 30-50M130 100c-2-26-14-46-30-50" fill="none" stroke={P.ink} strokeWidth="3" opacity="0.3" />
-      <path d="M100 50v8" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
-      <path d="M100 100v40a10 10 0 0 0 18 6" fill="none" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
+      <g className="emt-sway">
+        <path d="M100 50c30 0 54 22 56 50H44c2-28 26-50 56-50Z" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
+        <path d="M70 100c2-26 14-46 30-50M130 100c-2-26-14-46-30-50" fill="none" stroke={P.ink} strokeWidth="3" opacity="0.3" />
+        <path d="M100 50v8" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
+        <path d="M100 100v40a10 10 0 0 0 18 6" fill="none" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
+      </g>
       <ellipse cx="90" cy="160" rx="16" ry="6" fill={P.goldSoft} stroke={P.ink} strokeWidth="3" />
       <ellipse cx="90" cy="152" rx="16" ry="6" fill={P.cream} stroke={P.ink} strokeWidth="3" />
       <circle cx="146" cy="70" r="3" fill={P.green} />
@@ -357,7 +383,7 @@ function NetWorthArt() {
       <Backdrop id={id} tone="mint" />
       <rect x="54" y="72" width="34" height="78" rx="6" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" />
       <rect x="112" y="108" width="34" height="42" rx="6" fill={P.greenSoft} stroke={P.ink} strokeWidth="5" />
-      <path d="M71 72V56M64 63l7-7 7 7" fill="none" stroke={P.ink} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="emt-float" d="M71 72V56M64 63l7-7 7 7" fill="none" stroke={P.ink} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M129 108v-8" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
       <line x1="44" y1="150" x2="156" y2="150" stroke={P.ink} strokeWidth="5" strokeLinecap="round" />
       <text x="71" y="166" textAnchor="middle" fontSize="11" fontWeight="700" fill={P.ink}>+</text>
@@ -372,11 +398,15 @@ function RoiArt() {
   return (
     <Frame id={id} label="Return on investment">
       <Backdrop id={id} tone="sky" />
-      <Coin id={id} cx="68" cy="130" r="17" />
-      <Coin id={id} cx="120" cy="98" r="24" />
+      <g className="emt-float" style={{ animationDelay: "0.3s" }}>
+        <Coin id={id} cx="68" cy="130" r="17" />
+      </g>
+      <g className="emt-float">
+        <Coin id={id} cx="120" cy="98" r="24" />
+      </g>
       <path d="M56 150 96 112l36-32" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M116 70h22v22" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <g>
+      <g className="emt-pulse">
         <circle cx="150" cy="58" r="15" fill="#ffffff" stroke={P.gold} strokeWidth="4" />
         <text x="150" y="64" textAnchor="middle" fontSize="14" fontWeight="700" fill={P.ink}>%</text>
       </g>
@@ -393,10 +423,10 @@ function CagrArt() {
       <path d="M52 150h100M52 150V58" fill="none" stroke="#cdd8d4" strokeWidth="4" strokeLinecap="round" />
       <path d="M56 142C86 140 110 120 150 64L150 150 56 150Z" fill={P.goldSoft} opacity="0.35" />
       <path d="M56 142C86 140 110 120 150 64" fill="none" stroke={P.gold} strokeWidth="5.5" strokeLinecap="round" />
-      <circle cx="88" cy="133" r="3.4" fill={P.green} />
-      <circle cx="120" cy="103" r="3.4" fill={P.green} />
+      <circle className="emt-twinkle" cx="88" cy="133" r="3.4" fill={P.green} />
+      <circle className="emt-twinkle" style={{ animationDelay: "0.6s" }} cx="120" cy="103" r="3.4" fill={P.green} />
       <circle cx="56" cy="142" r="6" fill="#ffffff" stroke={P.ink} strokeWidth="4" />
-      <circle cx="150" cy="64" r="8" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+      <circle className="emt-pulse" cx="150" cy="64" r="8" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
     </Frame>
   );
 }
@@ -407,11 +437,15 @@ function DividendArt() {
   return (
     <Frame id={id} label="Dividend reinvestment">
       <Backdrop id={id} tone="sky" />
-      <Coin id={id} cx="100" cy="72" r="22" />
-      <path d="M128 72a28 28 0 0 1-9 21" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" />
-      <path d="M119 97l1-12 11 5Z" fill={P.gold} stroke={P.ink} strokeWidth="2.2" strokeLinejoin="round" />
-      <path d="M72 72a28 28 0 0 1 9-21" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" />
-      <path d="M81 47l-1 12-11-5Z" fill={P.gold} stroke={P.ink} strokeWidth="2.2" strokeLinejoin="round" />
+      <g className="emt-spin">
+        <path d="M128 72a28 28 0 0 1-9 21" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" />
+        <path d="M119 97l1-12 11 5Z" fill={P.gold} stroke={P.ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M72 72a28 28 0 0 1 9-21" fill="none" stroke={P.gold} strokeWidth="4.5" strokeLinecap="round" />
+        <path d="M81 47l-1 12-11-5Z" fill={P.gold} stroke={P.ink} strokeWidth="2.2" strokeLinejoin="round" />
+      </g>
+      <g className="emt-pulse">
+        <Coin id={id} cx="100" cy="72" r="22" />
+      </g>
       {[[70, 2], [100, 3], [130, 4]].map(([cx, n]) => (
         <g key={cx}>
           {Array.from({ length: n }).map((_, i) => (
@@ -444,7 +478,9 @@ function FourOhOneKArt() {
       <rect x="96" y="80" width="58" height="70" rx="10" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
       <rect x="96" y="80" width="58" height="18" rx="9" fill={P.greenSoft} stroke={P.ink} strokeWidth="5" />
       <text x="125" y="132" textAnchor="middle" fontSize="15" fontWeight="700" fill={P.ink}>401k</text>
-      <Coin id={id} cx="125" cy="56" r="14" label="+" />
+      <g className="emt-pulse">
+        <Coin id={id} cx="125" cy="56" r="14" label="+" />
+      </g>
       <path d="M125 72v6" stroke={P.ink} strokeWidth="3" strokeLinecap="round" />
     </Frame>
   );
@@ -458,8 +494,10 @@ function RothIraArt() {
       <Backdrop id={id} tone="sky" />
       <path d="M96 48l44 15v36c0 30-22 47-44 56-22-9-44-26-44-56V63Z" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
       <path d="M96 48l44 15v36c0 30-22 47-44 56Z" fill={P.greenSofter} />
-      <path d="M78 100l13 13 24-29" fill="none" stroke={P.gold} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-      <Coin id={id} cx="150" cy="58" r="13" />
+      <path className="emt-pulse" d="M78 100l13 13 24-29" fill="none" stroke={P.gold} strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+      <g className="emt-float">
+        <Coin id={id} cx="150" cy="58" r="13" />
+      </g>
     </Frame>
   );
 }

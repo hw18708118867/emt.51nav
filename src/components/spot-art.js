@@ -51,8 +51,10 @@ export function MortgageArt() {
       <circle cx="106" cy="134" r="2.4" fill={palette.line} />
       <rect x="116" y="112" width="18" height="16" rx="3" fill={palette.greenSoft} stroke={palette.line} strokeWidth="4" />
       <path d="M118 116l14 8" stroke={palette.white} strokeWidth="2" opacity="0.7" />
-      <circle cx="128" cy="64" r="12" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
-      <path d="M124 64h8M128 60v8" stroke={palette.white} strokeWidth="3" strokeLinecap="round" />
+      <g className="emt-pulse">
+        <circle cx="128" cy="64" r="12" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
+        <path d="M124 64h8M128 60v8" stroke={palette.white} strokeWidth="3" strokeLinecap="round" />
+      </g>
     </Frame>
   );
 }
@@ -68,7 +70,7 @@ export function DebtArt() {
       <rect x="68" y="84" width="92" height="12" rx="2" fill={`url(#${id}-gold)`} transform="rotate(6 114 90)" />
       <rect x="70" y="108" width="40" height="6" rx="3" fill="#cdd8d4" transform="rotate(6 90 111)" />
       <circle cx="140" cy="118" r="9" fill={palette.goldSoft} stroke={palette.line} strokeWidth="3" transform="rotate(6 140 118)" />
-      <path d="M70 60l4 10" stroke={palette.gold} strokeWidth="3" strokeLinecap="round" opacity="0.6" />
+      <path className="emt-twinkle" d="M70 60l4 10" stroke={palette.gold} strokeWidth="3" strokeLinecap="round" opacity="0.6" />
     </Frame>
   );
 }
@@ -83,9 +85,9 @@ export function InvestingArt() {
       <rect x="86" y="100" width="20" height="54" rx="4" fill={palette.green} stroke={palette.line} strokeWidth="4" />
       <rect x="118" y="78" width="20" height="76" rx="4" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
       <path d="M54 96 92 74l24 12 36-34" fill="none" stroke={palette.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M138 52h16v16" fill="none" stroke={palette.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="92" cy="74" r="5" fill={palette.white} stroke={palette.ink} strokeWidth="3" />
-      <circle cx="116" cy="86" r="5" fill={palette.white} stroke={palette.ink} strokeWidth="3" />
+      <path className="emt-pulse" d="M138 52h16v16" fill="none" stroke={palette.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle className="emt-twinkle" cx="92" cy="74" r="5" fill={palette.white} stroke={palette.ink} strokeWidth="3" />
+      <circle className="emt-twinkle" style={{ animationDelay: "0.6s" }} cx="116" cy="86" r="5" fill={palette.white} stroke={palette.ink} strokeWidth="3" />
     </Frame>
   );
 }
@@ -98,7 +100,7 @@ export function RetirementArt() {
       <ellipse cx="100" cy="164" rx="52" ry="8" fill={palette.ink} opacity="0.08" />
       <circle cx="100" cy="100" r="50" fill={`url(#${id}-white)`} stroke={palette.line} strokeWidth="5" />
       <circle cx="100" cy="100" r="40" fill="none" stroke="#cdd8d4" strokeWidth="2" />
-      <path d="M100 70v32l22 14" fill="none" stroke={palette.line} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="emt-spin" style={{ transformBox: "view-box", transformOrigin: "100px 100px" }} d="M100 70v32l22 14" fill="none" stroke={palette.line} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx="100" cy="100" r="6" fill={palette.gold} stroke={palette.line} strokeWidth="2" />
       <path d="M100 38v10M100 152v10M38 100h10M152 100h10" stroke={palette.green} strokeWidth="5" strokeLinecap="round" />
     </Frame>
@@ -116,7 +118,7 @@ export function SavingsArt() {
       <circle cx="84" cy="104" r="6" fill={palette.white} />
       <circle cx="84" cy="104" r="2.4" fill={palette.ink} />
       <path d="M150 96c8-2 12-9 11-17" fill="none" stroke={palette.line} strokeWidth="5" strokeLinecap="round" />
-      <rect x="92" y="56" width="34" height="14" rx="7" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
+      <rect className="emt-float" x="92" y="56" width="34" height="14" rx="7" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
       <path d="M120 84h14" stroke={palette.white} strokeWidth="5" strokeLinecap="round" />
     </Frame>
   );
@@ -131,7 +133,7 @@ export function BudgetArt() {
       <circle cx="100" cy="100" r="52" fill={`url(#${id}-white)`} stroke={palette.line} strokeWidth="5" />
       <path d="M100 100 100 48a52 52 0 0 1 45 26Z" fill={palette.goldSoft} stroke={palette.line} strokeWidth="4" strokeLinejoin="round" />
       <path d="M100 100 145 74a52 52 0 0 1-15 70Z" fill={palette.greenSoft} stroke={palette.line} strokeWidth="4" strokeLinejoin="round" />
-      <circle cx="100" cy="100" r="12" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
+      <circle className="emt-pulse" cx="100" cy="100" r="12" fill={`url(#${id}-gold)`} stroke={palette.line} strokeWidth="4" />
       <circle cx="100" cy="100" r="4" fill={palette.white} opacity="0.7" />
     </Frame>
   );
