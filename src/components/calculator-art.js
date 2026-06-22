@@ -618,6 +618,114 @@ function SelfEmploymentArt() {
   );
 }
 
+/* 26. Debt-to-income — a gauge weighing income against debt */
+function DebtToIncomeArt() {
+  const id = "ca-dti";
+  return (
+    <Frame id={id} label="Debt-to-income ratio">
+      <Backdrop id={id} tone="cream" />
+      <path d="M48 134a52 52 0 0 1 104 0" fill="none" stroke="#cdd8d4" strokeWidth="11" strokeLinecap="round" />
+      <path d="M48 134a52 52 0 0 1 62-50" fill="none" stroke={P.gold} strokeWidth="11" strokeLinecap="round" />
+      <g className="emt-pulse" style={{ transformBox: "view-box", transformOrigin: "100px 134px" }}>
+        <path d="M100 134 70 96" stroke={P.ink} strokeWidth="5" strokeLinecap="round" />
+        <circle cx="100" cy="134" r="7" fill={P.ink} />
+      </g>
+      <text x="62" y="150" textAnchor="middle" fontSize="11" fontWeight="700" fill={P.green}>low</text>
+      <text x="140" y="150" textAnchor="middle" fontSize="11" fontWeight="700" fill={P.gold}>high</text>
+      <text x="100" y="76" textAnchor="middle" fontSize="13" fontWeight="700" fill={P.ink}>DTI</text>
+    </Frame>
+  );
+}
+
+/* 27. Credit card payoff — a card with a descending balance */
+function CreditCardPayoffArt() {
+  const id = "ca-ccpayoff";
+  return (
+    <Frame id={id} label="Credit card payoff">
+      <Backdrop id={id} tone="cream" />
+      <g transform="rotate(-8 100 92)">
+        <rect x="46" y="62" width="108" height="68" rx="10" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="5" />
+        <rect x="46" y="78" width="108" height="13" fill={P.ink} opacity="0.85" />
+        <rect x="58" y="104" width="34" height="9" rx="2" fill="#ffffff" opacity="0.8" />
+        <circle cx="138" cy="112" r="6" fill="#ffffff" opacity="0.55" />
+      </g>
+      {[[54, 150, 6], [74, 146, 10], [94, 140, 16], [114, 150, 6]].map(([x, y, h], i) => (
+        <rect key={x} className="emt-grow-bar" style={{ transformBox: "view-box", transformOrigin: `${x + 6}px 156px`, animationDelay: `${i * 0.12}s` }} x={x} y={y} width="12" height={156 - y} rx="2.5" fill={i === 3 ? P.greenSoft : P.gold} stroke={P.ink} strokeWidth="2.5" />
+      ))}
+    </Frame>
+  );
+}
+
+/* 28. Auto loan — a car with a coin */
+function AutoLoanArt() {
+  const id = "ca-auto";
+  return (
+    <Frame id={id} label="Auto loan payment">
+      <Backdrop id={id} tone="cream" />
+      <path d="M40 124l10-26a12 12 0 0 1 11-8h54a12 12 0 0 1 10 6l14 24" fill="none" stroke={P.ink} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M36 124h120a6 6 0 0 1 6 6v12a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4v-12a6 6 0 0 1 6-6Z" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
+      <path d="M52 98h44v18H46Z" fill={P.greenSoft} opacity="0.7" />
+      <circle cx="62" cy="148" r="13" fill={P.ink} />
+      <circle cx="62" cy="148" r="5" fill="#ffffff" />
+      <circle cx="134" cy="148" r="13" fill={P.ink} />
+      <circle cx="134" cy="148" r="5" fill="#ffffff" />
+      <g className="emt-float">
+        <Coin id={id} cx="150" cy="70" r="14" />
+      </g>
+    </Frame>
+  );
+}
+
+/* 29. CD — a padlocked deposit growing with a % tag */
+function CdArt() {
+  const id = "ca-cd";
+  return (
+    <Frame id={id} label="Certificate of deposit">
+      <Backdrop id={id} tone="mint" />
+      {[[64, 132, 4], [100, 118, 5], [136, 100, 6]].map(([cx, top, n]) => (
+        <g key={cx}>
+          {Array.from({ length: n }).map((_, i) => (
+            <ellipse key={i} cx={cx} cy={150 - i * 11} rx="20" ry="8" fill={i % 2 ? P.cream : P.goldSoft} stroke={P.ink} strokeWidth="3.5" />
+          ))}
+        </g>
+      ))}
+      {/* padlock = locked-in term */}
+      <g transform="translate(100 52)">
+        <rect x="-18" y="6" width="36" height="28" rx="6" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <path d="M-10 6v-6a10 10 0 0 1 20 0v6" fill="none" stroke={P.ink} strokeWidth="4" strokeLinecap="round" />
+        <circle cx="0" cy="19" r="3.4" fill={P.ink} />
+      </g>
+      <g className="emt-pulse">
+        <circle cx="150" cy="74" r="15" fill="#ffffff" stroke={P.gold} strokeWidth="4" />
+        <text x="150" y="80" textAnchor="middle" fontSize="13" fontWeight="700" fill={P.ink}>%</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 30. 50/30/20 budget — a donut split into three slices */
+function FiftyThirtyTwentyArt() {
+  const id = "ca-503020";
+  return (
+    <Frame id={id} label="50/30/20 budget split">
+      <Backdrop id={id} tone="mint" />
+      {/* 50% needs (top half), 30% wants, 20% savings — donut */}
+      <circle cx="92" cy="100" r="48" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <path d="M92 100 92 52a48 48 0 0 1 0 96Z" fill={P.goldSoft} stroke={P.ink} strokeWidth="4" strokeLinejoin="round" />
+      <path d="M92 100 92 148a48 48 0 0 1-41.6-24Z" fill={P.greenSoft} stroke={P.ink} strokeWidth="4" strokeLinejoin="round" />
+      <circle cx="92" cy="100" r="19" fill={`url(#${id}-mint)`} stroke={P.ink} strokeWidth="4" />
+      <g>
+        {[["50", P.gold, 70], ["30", "#cdb074", 96], ["20", P.green, 122]].map(([t, c, y]) => (
+          <g key={t}>
+            <circle cx="150" cy={y} r="5" fill={c} stroke={P.ink} strokeWidth="1.6" />
+            <text x="160" y={y + 4} fontSize="11" fontWeight="700" fill={P.ink}>{t}%</text>
+          </g>
+        ))}
+      </g>
+    </Frame>
+  );
+}
+
 const artBySlug = {
   "mortgage-amortization-calculator": MortgageAmortizationArt,
   "refinance-calculator": RefinanceArt,
@@ -643,7 +751,12 @@ const artBySlug = {
   "salary-calculator": SalaryArt,
   "income-tax-calculator": IncomeTaxArt,
   "sales-tax-calculator": SalesTaxArt,
-  "self-employment-tax-calculator": SelfEmploymentArt
+  "self-employment-tax-calculator": SelfEmploymentArt,
+  "debt-to-income-ratio-calculator": DebtToIncomeArt,
+  "credit-card-payoff-calculator": CreditCardPayoffArt,
+  "auto-loan-calculator": AutoLoanArt,
+  "cd-calculator": CdArt,
+  "50-30-20-budget-calculator": FiftyThirtyTwentyArt
 };
 
 export function CalculatorArt({ slug, category }) {

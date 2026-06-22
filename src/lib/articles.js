@@ -11,6 +11,14 @@ import RothIraGuide from "@/content/guides/roth-ira-explained.mdx";
 import AmortizationGuide from "@/content/guides/how-mortgage-amortization-works.mdx";
 import RefinanceGuide from "@/content/guides/when-refinancing-is-worth-it.mdx";
 import AffordabilityGuide from "@/content/guides/how-much-house-can-you-afford.mdx";
+import PaycheckGuide from "@/content/guides/understanding-your-paycheck.mdx";
+import FederalTaxGuide from "@/content/guides/federal-income-tax-explained.mdx";
+import SalesTaxGuide from "@/content/guides/how-sales-tax-works.mdx";
+import DtiGuide from "@/content/guides/debt-to-income-ratio-explained.mdx";
+import CreditCardDebtGuide from "@/content/guides/paying-off-credit-card-debt.mdx";
+import CarPaymentGuide from "@/content/guides/what-drives-your-car-payment.mdx";
+import CdGuide from "@/content/guides/how-cds-work.mdx";
+import BudgetRuleGuide from "@/content/guides/the-50-30-20-budget-rule.mdx";
 import HsaLimitsBlog from "@/content/blog/2026-hsa-contribution-limits.mdx";
 import RetirementLimitsBlog from "@/content/blog/2026-retirement-contribution-limits.mdx";
 import CreditReportsBlog from "@/content/blog/check-credit-reports-for-free.mdx";
@@ -196,6 +204,110 @@ export const guides = [
     takeaway: "The most a lender approves is not the same as a payment you can live with once taxes, insurance, and maintenance are included.",
     relatedCalculators: ["home-affordability-calculator", "rent-vs-buy-calculator", "mortgage-calculator"],
     Content: AffordabilityGuide
+  },
+  {
+    slug: "understanding-your-paycheck",
+    title: "Understanding Your Paycheck: Where the Money Goes",
+    description: "What separates gross pay from take-home pay, the taxes and deductions that come out, and why pre-tax contributions stretch further.",
+    readingTime: "6 min read",
+    publishedAt: "June 19, 2026",
+    updatedAt: "June 19, 2026",
+    category: "Taxes",
+    audience: "Workers trying to understand the gap between their salary and their take-home pay",
+    takeaway: "Build your budget around net pay, and use pre-tax contributions to lower the income your tax is based on.",
+    relatedCalculators: ["paycheck-calculator", "salary-calculator", "income-tax-calculator"],
+    Content: PaycheckGuide
+  },
+  {
+    slug: "federal-income-tax-explained",
+    title: "Federal Income Tax and Self-Employment Tax, Explained",
+    description: "How marginal tax brackets really work, the difference between marginal and effective rates, the standard deduction, and self-employment tax.",
+    readingTime: "7 min read",
+    publishedAt: "June 19, 2026",
+    updatedAt: "June 19, 2026",
+    category: "Taxes",
+    audience: "Filers who want to understand how their federal tax is actually calculated",
+    takeaway: "Brackets are marginal, so a raise never lowers your take-home pay, and the self-employed owe an extra 15.3% tax on top of income tax.",
+    relatedCalculators: ["income-tax-calculator", "self-employment-tax-calculator", "paycheck-calculator"],
+    Content: FederalTaxGuide
+  },
+  {
+    slug: "how-sales-tax-works",
+    title: "How Sales Tax Works, Including How to Back It Out of a Total",
+    description: "How sales tax is added at the register, why rates vary by location, and how to recover the pre-tax price from a tax-included total.",
+    readingTime: "5 min read",
+    publishedAt: "June 20, 2026",
+    updatedAt: "June 20, 2026",
+    category: "Taxes",
+    audience: "Shoppers and small sellers who need to add or remove sales tax accurately",
+    takeaway: "To find a pre-tax price from a total, divide by one plus the rate rather than subtracting the percentage.",
+    relatedCalculators: ["sales-tax-calculator", "income-tax-calculator", "budget-calculator"],
+    Content: SalesTaxGuide
+  },
+  {
+    slug: "debt-to-income-ratio-explained",
+    title: "What Your Debt-to-Income Ratio Says to Lenders",
+    description: "How front-end and back-end DTI are calculated, the thresholds lenders use, and the fastest ways to lower the ratio before you apply.",
+    readingTime: "6 min read",
+    publishedAt: "June 20, 2026",
+    updatedAt: "June 20, 2026",
+    category: "Debt",
+    audience: "Borrowers preparing for a mortgage, car loan, or other financing",
+    takeaway: "Lenders weigh your back-end DTI most, and clearing a monthly payment can lower it more than the balance alone suggests.",
+    relatedCalculators: ["debt-to-income-ratio-calculator", "credit-card-payoff-calculator", "auto-loan-calculator"],
+    Content: DtiGuide
+  },
+  {
+    slug: "paying-off-credit-card-debt",
+    title: "How to Pay Off Credit Card Debt Faster",
+    description: "Why credit card balances stall, what the minimum payment really costs, the payment threshold that matters, and how to order multiple cards.",
+    readingTime: "6 min read",
+    publishedAt: "June 21, 2026",
+    updatedAt: "June 21, 2026",
+    category: "Debt",
+    audience: "Readers carrying high-interest credit card balances",
+    takeaway: "Paying above the monthly interest is what creates real progress, and a small cash buffer keeps the payoff from relapsing.",
+    relatedCalculators: ["credit-card-payoff-calculator", "debt-payoff-calculator", "debt-to-income-ratio-calculator"],
+    Content: CreditCardDebtGuide
+  },
+  {
+    slug: "what-drives-your-car-payment",
+    title: "What Really Drives Your Car Payment",
+    description: "The four inputs behind a car payment, why negotiating the monthly number backfires, and how the loan term quietly raises total cost.",
+    readingTime: "6 min read",
+    publishedAt: "June 21, 2026",
+    updatedAt: "June 21, 2026",
+    category: "Debt",
+    audience: "Car buyers comparing financing offers",
+    takeaway: "Control the price, down payment, and rate, and treat the monthly payment as a result to check rather than a target to negotiate.",
+    relatedCalculators: ["auto-loan-calculator", "loan-calculator", "debt-to-income-ratio-calculator"],
+    Content: CarPaymentGuide
+  },
+  {
+    slug: "how-cds-work",
+    title: "How Certificates of Deposit Work",
+    description: "How a CD trades access for a fixed rate, why APY beats the stated rate for comparison, early-withdrawal penalties, and where a CD fits.",
+    readingTime: "6 min read",
+    publishedAt: "June 22, 2026",
+    updatedAt: "June 22, 2026",
+    category: "Savings",
+    audience: "Savers deciding whether a CD fits money with a known deadline",
+    takeaway: "A CD suits cash you can leave untouched until a set date, but not an emergency fund or long-term growth money.",
+    relatedCalculators: ["cd-calculator", "savings-goal-calculator", "emergency-fund-calculator"],
+    Content: CdGuide
+  },
+  {
+    slug: "the-50-30-20-budget-rule",
+    title: "The 50/30/20 Budget Rule, and When to Bend It",
+    description: "How the 50/30/20 split works, what belongs in needs, wants, and savings, and how to adjust the percentages for your situation.",
+    readingTime: "6 min read",
+    publishedAt: "June 22, 2026",
+    updatedAt: "June 22, 2026",
+    category: "Budgeting",
+    audience: "Readers who want a simple budget framework they can actually maintain",
+    takeaway: "The split is a benchmark for spotting where your money is tight, not a rule to obey exactly.",
+    relatedCalculators: ["50-30-20-budget-calculator", "budget-calculator", "savings-goal-calculator"],
+    Content: BudgetRuleGuide
   }
 ];
 

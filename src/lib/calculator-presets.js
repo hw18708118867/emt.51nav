@@ -573,6 +573,91 @@ export const calculatorPresets = {
       description: "$100k net earnings",
       values: { netEarnings: 100000 }
     }
+  ],
+  "debt-to-income-ratio-calculator": [
+    {
+      label: "Healthy",
+      description: "Low debt load",
+      values: { grossMonthlyIncome: 7000, housingPayment: 1500, otherDebtPayments: 300 }
+    },
+    {
+      label: "Typical",
+      description: "Mid-range obligations",
+      values: { grossMonthlyIncome: 7000, housingPayment: 1800, otherDebtPayments: 600 }
+    },
+    {
+      label: "Stretched",
+      description: "High monthly debt",
+      values: { grossMonthlyIncome: 7000, housingPayment: 2300, otherDebtPayments: 1100 }
+    }
+  ],
+  "credit-card-payoff-calculator": [
+    {
+      label: "Minimum-ish",
+      description: "Slow payoff",
+      values: { balance: 6000, annualRate: 22.9, monthlyPayment: 150 }
+    },
+    {
+      label: "Steady",
+      description: "$250 a month",
+      values: { balance: 6000, annualRate: 22.9, monthlyPayment: 250 }
+    },
+    {
+      label: "Aggressive",
+      description: "$450 a month",
+      values: { balance: 6000, annualRate: 22.9, monthlyPayment: 450 }
+    }
+  ],
+  "auto-loan-calculator": [
+    {
+      label: "Used car",
+      description: "$18k, 4 years",
+      values: { vehiclePrice: 18000, downPayment: 2000, tradeIn: 0, annualRate: 8.5, years: 4, salesTaxRate: 0 }
+    },
+    {
+      label: "New car",
+      description: "$32k, 5 years",
+      values: { vehiclePrice: 32000, downPayment: 4000, tradeIn: 0, annualRate: 7.5, years: 5, salesTaxRate: 0 }
+    },
+    {
+      label: "With trade-in",
+      description: "$40k, trade + tax",
+      values: { vehiclePrice: 40000, downPayment: 3000, tradeIn: 8000, annualRate: 6.9, years: 6, salesTaxRate: 6 }
+    }
+  ],
+  "cd-calculator": [
+    {
+      label: "1-year",
+      description: "$10k at 5%",
+      values: { deposit: 10000, annualRate: 5, years: 1, compoundingPerYear: 12 }
+    },
+    {
+      label: "2-year",
+      description: "$10k at 4.5%",
+      values: { deposit: 10000, annualRate: 4.5, years: 2, compoundingPerYear: 12 }
+    },
+    {
+      label: "5-year",
+      description: "$25k at 4%",
+      values: { deposit: 25000, annualRate: 4, years: 5, compoundingPerYear: 12 }
+    }
+  ],
+  "50-30-20-budget-calculator": [
+    {
+      label: "Lower income",
+      description: "$3,500 take-home",
+      values: { monthlyIncome: 3500 }
+    },
+    {
+      label: "Typical",
+      description: "$5,000 take-home",
+      values: { monthlyIncome: 5000 }
+    },
+    {
+      label: "Higher income",
+      description: "$8,000 take-home",
+      values: { monthlyIncome: 8000 }
+    }
   ]
 };
 

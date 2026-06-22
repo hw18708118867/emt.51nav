@@ -2698,6 +2698,485 @@ export const calculatorRegistry = [
         note: "Estimate of self-employment tax only, using the 15.3% combined rate on 92.35% of net earnings. Federal and state income taxes are separate."
       };
     }
+  },
+  {
+    slug: "debt-to-income-ratio-calculator",
+    name: "Debt-to-Income Ratio Calculator",
+    category: "Debt",
+    description: "Calculate your front-end and back-end debt-to-income ratios to see how lenders are likely to view your monthly obligations.",
+    intro:
+      "Enter your gross monthly income, housing payment, and other debt payments to see the ratios lenders use to judge how much room is left in your budget.",
+    keywords: [
+      "debt to income ratio calculator",
+      "dti calculator",
+      "how to calculate debt to income"
+    ],
+    defaults: {
+      grossMonthlyIncome: 7000,
+      housingPayment: 1800,
+      otherDebtPayments: 600
+    },
+    inputs: [
+      { name: "grossMonthlyIncome", label: "Gross monthly income", prefix: "$", min: 0, step: 100 },
+      { name: "housingPayment", label: "Housing payment", prefix: "$", min: 0, step: 50 },
+      { name: "otherDebtPayments", label: "Other monthly debt", prefix: "$", min: 0, step: 50 }
+    ],
+    presets: true,
+    example: "A $7,000 monthly income with $1,800 housing and $600 other debt gives a back-end DTI around 34%, which most lenders view as healthy.",
+    sections: [
+      {
+        title: "Front-end versus back-end DTI",
+        body:
+          "Front-end DTI is your housing payment divided by gross monthly income. Back-end DTI adds all other required debt payments. Lenders care most about the back-end number because it captures your full monthly obligation."
+      },
+      {
+        title: "The guidelines lenders use",
+        body:
+          "A common benchmark keeps back-end DTI at or below 36%, though many mortgage programs allow up to 43% or higher with strong credit and reserves. Lower is safer and usually unlocks better terms."
+      },
+      {
+        title: "Lowering your ratio",
+        body:
+          "Because DTI is a ratio, you can improve it by raising income or by reducing the monthly payments that count against it. Paying off a small loan often helps more than its size suggests, since it removes the whole monthly payment."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is a good debt-to-income ratio?",
+        answer: "Many lenders look for a back-end DTI at or below 36%. Some mortgage programs allow up to 43% or more, but a lower ratio generally means easier approval and better rates."
+      },
+      {
+        question: "What counts as debt in DTI?",
+        answer: "Required monthly payments like rent or mortgage, auto loans, student loans, minimum credit card payments, and other installment loans. Everyday expenses like groceries and utilities are not included."
+      }
+    ],
+    related: ["home-affordability-calculator", "budget-calculator", "debt-payoff-calculator"],
+    compute(values) {
+      const income = Number(values.grossMonthlyIncome);
+      const housing = Number(values.housingPayment);
+      const otherDebts = Number(values.otherDebtPayments);
+      const frontEnd = income > 0 ? (housing / income) * 100 : 0;
+      const backEnd = income > 0 ? ((housing + otherDebts) / income) * 100 : 0;
+      const room = Math.max(0, income * 0.36 - housing - otherDebts);
+      const rating = backEnd <= 36 ? "Healthy" : backEnd <= 43 ? "Manageable" : "High";
+
+      return {
+        summary: [
+          { label: "Back-end DTI", value: formatPercent(backEnd) },
+          { label: "Front-end DTI", value: formatPercent(frontEnd) },
+          { label: "Lender view", value: rating }
+        ],
+        details: [
+          { label: "Gross monthly income", value: formatCurrency(income) },
+          { label: "Housing payment", value: formatCurrency(housing) },
+          { label: "Other debt payments", value: formatCurrency(otherDebts) },
+          { label: "Room under 36% guideline", value: formatCurrencyPrecise(room) }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "Housing", amount: roundCurrency(housing) },
+          { label: "Other debt", amount: roundCurrency(otherDebts) },
+          { label: "Free income", amount: roundCurrency(Math.max(0, income - housing - otherDebts)) }
+        ],
+        milestones: [
+          { label: "Front-end (housing) DTI", value: formatPercent(frontEnd) },
+          { label: "Back-end (total) DTI", value: formatPercent(backEnd) },
+          { label: "Common limit", value: "36% to 43%" }
+        ],
+        note: "DTI uses gross (pre-tax) income and required debt payments only. Everyday spending like groceries and utilities is not counted."
+      };
+    }
+  },
+  {
+    slug: "credit-card-payoff-calculator",
+    name: "Credit Card Payoff Calculator",
+    category: "Debt",
+    description: "See how long it takes to clear a credit card balance and how much interest you pay based on your APR and monthly payment.",
+    intro:
+      "Enter your balance, APR, and a fixed monthly payment to see the payoff timeline and the total interest a high rate quietly adds.",
+    keywords: [
+      "credit card payoff calculator",
+      "how long to pay off credit card",
+      "credit card interest calculator"
+    ],
+    defaults: {
+      balance: 6000,
+      annualRate: 22.9,
+      monthlyPayment: 250
+    },
+    inputs: [
+      { name: "balance", label: "Card balance", prefix: "$", min: 0, step: 100 },
+      { name: "annualRate", label: "APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "monthlyPayment", label: "Monthly payment", prefix: "$", min: 0, step: 10 }
+    ],
+    presets: true,
+    example: "On a $6,000 balance at 22.9% APR, paying $250 a month takes well over two years and adds hundreds of dollars in interest.",
+    sections: [
+      {
+        title: "Why credit card interest is so costly",
+        body:
+          "Credit card APRs are far higher than most loans, and interest is charged on the remaining balance every month. When the payment is low, a large share goes to interest and the balance barely moves."
+      },
+      {
+        title: "The power of paying more than the minimum",
+        body:
+          "Minimum payments are designed to stretch repayment out for years. Adding even a modest fixed amount above the minimum can cut the payoff time dramatically and save a large chunk of interest."
+      },
+      {
+        title: "When the payment is too low",
+        body:
+          "If the monthly payment does not exceed the interest charged that month, the balance never falls. In that case the only fixes are a larger payment, a lower rate, or a balance transfer."
+      }
+    ],
+    faqs: [
+      {
+        question: "Should I pay more than the minimum?",
+        answer: "Almost always yes. Minimum payments keep you in debt far longer and maximize interest. A fixed payment above the minimum shortens the timeline and lowers total cost significantly."
+      },
+      {
+        question: "Does a balance transfer help?",
+        answer: "A lower-rate or 0% introductory balance transfer can let more of each payment hit principal, but watch for transfer fees and the rate after the promotional period ends."
+      }
+    ],
+    related: ["debt-payoff-calculator", "debt-to-income-ratio-calculator", "budget-calculator"],
+    compute(values) {
+      const balance = Number(values.balance);
+      const annualRate = Number(values.annualRate);
+      const payment = Number(values.monthlyPayment);
+      const result = buildPayoffSeries({ balance, annualRate, payment });
+
+      if (result.warning) {
+        const monthlyInterest = (balance * annualRate) / 1200;
+        return {
+          summary: [
+            { label: "Status", value: "Payment too low" },
+            { label: "Monthly interest", value: formatCurrencyPrecise(monthlyInterest) },
+            { label: "Next step", value: "Raise payment or rate" }
+          ],
+          details: [
+            { label: "Balance", value: formatCurrency(balance) },
+            { label: "APR", value: formatPercent(annualRate) },
+            { label: "Current payment", value: formatCurrency(payment) },
+            { label: "Interest each month", value: formatCurrencyPrecise(monthlyInterest) }
+          ],
+          timeline: [],
+          milestones: [
+            { label: "Interest due monthly", value: formatCurrencyPrecise(monthlyInterest) },
+            { label: "Current payment", value: formatCurrency(payment) },
+            { label: "Shortfall", value: formatCurrencyPrecise(monthlyInterest - payment) }
+          ],
+          note: result.warning
+        };
+      }
+
+      return {
+        summary: [
+          { label: "Time to payoff", value: formatYearsAndMonths(result.months) },
+          { label: "Total interest", value: formatCurrency(result.totalInterest) },
+          { label: "Total paid", value: formatCurrency(balance + result.totalInterest) }
+        ],
+        details: [
+          { label: "Starting balance", value: formatCurrency(balance) },
+          { label: "APR", value: formatPercent(annualRate) },
+          { label: "Monthly payment", value: formatCurrency(payment) },
+          { label: "Interest as share of balance", value: formatPercent((result.totalInterest / Math.max(balance, 1)) * 100) }
+        ],
+        timeline: result.series,
+        breakdown: [
+          { label: "Principal", amount: roundCurrency(balance) },
+          { label: "Interest", amount: roundCurrency(result.totalInterest) }
+        ],
+        milestones: [
+          { label: "Payoff length", value: formatYearsAndMonths(result.months) },
+          { label: "Monthly payment", value: formatCurrency(payment) },
+          { label: "Total interest", value: formatCurrency(result.totalInterest) }
+        ],
+        note: "Assumes a fixed monthly payment and no new charges on the card."
+      };
+    }
+  },
+  {
+    slug: "auto-loan-calculator",
+    name: "Auto Loan Calculator",
+    category: "Debt",
+    description: "Estimate a car loan payment and total cost from the vehicle price, down payment, trade-in, rate, and term.",
+    intro:
+      "Enter the price, what you put down, and the rate to see the monthly payment and how much interest the loan adds over its term.",
+    keywords: [
+      "auto loan calculator",
+      "car payment calculator",
+      "car loan monthly payment"
+    ],
+    defaults: {
+      vehiclePrice: 32000,
+      downPayment: 4000,
+      tradeIn: 0,
+      annualRate: 7.5,
+      years: 5,
+      salesTaxRate: 0
+    },
+    inputs: [
+      { name: "vehiclePrice", label: "Vehicle price", prefix: "$", min: 0, step: 500 },
+      { name: "downPayment", label: "Down payment", prefix: "$", min: 0, step: 500 },
+      { name: "tradeIn", label: "Trade-in value", prefix: "$", min: 0, step: 500 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 }
+    ],
+    advancedInputs: [
+      { name: "years", label: "Loan term", suffix: "years", min: 1, step: 1 },
+      { name: "salesTaxRate", label: "Sales tax rate", suffix: "%", min: 0, step: 0.1 }
+    ],
+    presets: true,
+    example: "On a $32,000 car with $4,000 down at 7.5% over five years, the monthly payment lands in the mid-$500s before taxes.",
+    sections: [
+      {
+        title: "What goes into a car payment",
+        body:
+          "The loan amount is the price plus any sales tax, minus your down payment and trade-in. That amount, your rate, and the term set the monthly payment. A bigger down payment or trade-in lowers both the payment and total interest."
+      },
+      {
+        title: "Term length is a trap to watch",
+        body:
+          "Longer car loans lower the monthly payment but raise total interest and increase the time you may owe more than the car is worth. The shortest term you can comfortably afford usually costs the least overall."
+      },
+      {
+        title: "Look past the monthly number",
+        body:
+          "Dealers often negotiate around a monthly payment, which can hide a long term or a high rate. Compare the total paid and the interest cost, not just the payment that fits your budget."
+      }
+    ],
+    faqs: [
+      {
+        question: "How much should I put down on a car?",
+        answer: "A larger down payment lowers your loan, payment, and interest, and reduces the risk of owing more than the car is worth. Many buyers aim for around 10% to 20% down, but more is better if affordable."
+      },
+      {
+        question: "Is a longer car loan a good idea?",
+        answer: "It lowers the monthly payment but increases total interest and the time spent underwater on the loan. Choose the shortest term whose payment still fits comfortably in your budget."
+      }
+    ],
+    related: ["loan-calculator", "debt-to-income-ratio-calculator", "budget-calculator"],
+    compute(values) {
+      const price = Number(values.vehiclePrice);
+      const down = Number(values.downPayment);
+      const tradeIn = Number(values.tradeIn);
+      const years = Number(values.years) || 5;
+      const salesTax = Math.max(0, price - tradeIn) * (Number(values.salesTaxRate) / 100);
+      const loanAmount = Math.max(0, price + salesTax - down - tradeIn);
+      const payment = paymentForLoan(loanAmount, Number(values.annualRate), years);
+      const totalPaid = payment * years * 12;
+      const totalInterest = totalPaid - loanAmount;
+      const breakdownData = buildLoanBreakdown({
+        principal: loanAmount,
+        totalPaid,
+        totalInterest,
+        years,
+        payment
+      });
+
+      return {
+        summary: [
+          { label: "Monthly payment", value: formatCurrencyPrecise(payment) },
+          { label: "Loan amount", value: formatCurrency(loanAmount) },
+          { label: "Total interest", value: formatCurrency(totalInterest) }
+        ],
+        details: [
+          { label: "Vehicle price", value: formatCurrency(price) },
+          { label: "Down payment", value: formatCurrency(down) },
+          { label: "Trade-in", value: formatCurrency(tradeIn) },
+          ...(salesTax > 0 ? [{ label: "Sales tax added", value: formatCurrencyPrecise(salesTax) }] : []),
+          { label: "Total of payments", value: formatCurrency(totalPaid) }
+        ],
+        timeline: buildAmortizationSeries({
+          principal: loanAmount,
+          annualRate: Number(values.annualRate),
+          years,
+          payment
+        }),
+        breakdown: breakdownData.breakdown,
+        milestones: breakdownData.milestones,
+        note: "Sales tax handling varies by state and is optional here. Title, registration, and dealer fees are not included."
+      };
+    }
+  },
+  {
+    slug: "cd-calculator",
+    name: "CD Calculator",
+    category: "Savings",
+    description: "Estimate the maturity value and interest earned on a certificate of deposit based on the rate, term, and compounding.",
+    intro:
+      "Enter a deposit, rate, and term to see what a CD grows to at maturity and the effective annual yield behind the headline rate.",
+    keywords: [
+      "cd calculator",
+      "certificate of deposit calculator",
+      "cd interest calculator"
+    ],
+    defaults: {
+      deposit: 10000,
+      annualRate: 4.5,
+      years: 2,
+      compoundingPerYear: 12
+    },
+    inputs: [
+      { name: "deposit", label: "Initial deposit", prefix: "$", min: 0, step: 500 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.05 },
+      { name: "years", label: "Term", suffix: "years", min: 1, step: 1 }
+    ],
+    advancedInputs: [
+      { name: "compoundingPerYear", label: "Compounds per year", min: 1, max: 365, step: 1 }
+    ],
+    presets: true,
+    example: "A $10,000 CD at 4.5% compounded monthly for two years grows to roughly $10,940 at maturity.",
+    sections: [
+      {
+        title: "How a CD grows",
+        body:
+          "A certificate of deposit pays a fixed rate for a set term. Interest compounds on a schedule, often monthly or daily, so the effective annual yield is slightly higher than the stated rate. At maturity you get your deposit back plus the interest."
+      },
+      {
+        title: "Rate, APY, and the lock-up tradeoff",
+        body:
+          "The APY reflects compounding and is the fairer number to compare across banks. In exchange for a fixed rate, your money is locked for the term, and withdrawing early usually triggers a penalty."
+      },
+      {
+        title: "Where a CD fits",
+        body:
+          "CDs suit money you will not need until a known date and want kept safe and predictable. For an emergency fund you may want easier access, and for long-term growth, investing has historically outpaced CD rates."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the difference between rate and APY?",
+        answer: "The interest rate is the base figure, while APY (annual percentage yield) includes the effect of compounding over a year. APY is the better number for comparing CDs across banks."
+      },
+      {
+        question: "What happens if I withdraw early?",
+        answer: "Most CDs charge an early-withdrawal penalty, often several months of interest, if you take the money out before the term ends. This calculator assumes you hold the CD to maturity."
+      }
+    ],
+    related: ["savings-goal-calculator", "compound-interest-calculator", "emergency-fund-calculator"],
+    compute(values) {
+      const deposit = Number(values.deposit);
+      const rate = Number(values.annualRate) / 100;
+      const years = Number(values.years);
+      const n = Math.max(1, Number(values.compoundingPerYear) || 12);
+      const maturity = deposit * (1 + rate / n) ** (n * years);
+      const interest = maturity - deposit;
+      const apy = ((1 + rate / n) ** n - 1) * 100;
+      const timeline = Array.from({ length: years }, (_, index) => ({
+        label: `Year ${index + 1}`,
+        amount: roundCurrency(deposit * (1 + rate / n) ** (n * (index + 1)))
+      }));
+
+      return {
+        summary: [
+          { label: "Value at maturity", value: formatCurrency(maturity) },
+          { label: "Interest earned", value: formatCurrency(interest) },
+          { label: "Effective APY", value: formatPercent(apy) }
+        ],
+        details: [
+          { label: "Initial deposit", value: formatCurrency(deposit) },
+          { label: "Stated rate", value: formatPercent(values.annualRate) },
+          { label: "Term", value: `${years} years` },
+          { label: "Compounding", value: `${n} times per year` }
+        ],
+        timeline,
+        breakdown: [
+          { label: "Deposit", amount: roundCurrency(deposit) },
+          { label: "Interest", amount: roundCurrency(interest) }
+        ],
+        milestones: [
+          { label: "Maturity value", value: formatCurrency(maturity) },
+          { label: "Interest earned", value: formatCurrency(interest) },
+          { label: "Effective APY", value: formatPercent(apy) }
+        ],
+        note: "Assumes the CD is held to maturity at a fixed rate. Early withdrawal penalties are not modeled."
+      };
+    }
+  },
+  {
+    slug: "50-30-20-budget-calculator",
+    name: "50/30/20 Budget Calculator",
+    category: "Budgeting",
+    description: "Split your monthly take-home pay into needs, wants, and savings using the popular 50/30/20 budgeting rule.",
+    intro:
+      "Enter your monthly take-home pay to see the 50/30/20 targets for needs, wants, and savings, and use them as a quick budget benchmark.",
+    keywords: [
+      "50 30 20 budget calculator",
+      "50/30/20 rule calculator",
+      "budget rule calculator"
+    ],
+    defaults: {
+      monthlyIncome: 5000
+    },
+    inputs: [
+      { name: "monthlyIncome", label: "Monthly take-home pay", prefix: "$", min: 0, step: 100 }
+    ],
+    presets: true,
+    example: "On $5,000 of take-home pay, the 50/30/20 rule points to $2,500 for needs, $1,500 for wants, and $1,000 for savings.",
+    sections: [
+      {
+        title: "What the 50/30/20 rule means",
+        body:
+          "The rule splits after-tax income into three buckets: 50% for needs like housing, food, and minimum debt payments, 30% for wants, and 20% for savings and extra debt payoff. It is a starting framework, not a strict law."
+      },
+      {
+        title: "Why it works as a benchmark",
+        body:
+          "The appeal is simplicity. Instead of tracking dozens of categories, you check whether each broad bucket is roughly in range. If needs blow past 50%, that is a signal your fixed costs may be too high for your income."
+      },
+      {
+        title: "Adjusting the percentages",
+        body:
+          "High cost-of-living areas often push needs above 50%, while aggressive savers may flip toward more than 20%. Treat the split as a target to bend around your goals rather than a rule to obey exactly."
+      }
+    ],
+    faqs: [
+      {
+        question: "Does 50/30/20 use gross or take-home pay?",
+        answer: "It uses take-home (after-tax) pay. The percentages apply to the money that actually lands in your account, since that is what you allocate each month."
+      },
+      {
+        question: "What if my needs are more than 50%?",
+        answer: "That is common in expensive areas. It signals that fixed costs are high relative to income, so the savings or wants buckets get squeezed. Lowering large fixed costs is usually the most effective fix."
+      }
+    ],
+    related: ["budget-calculator", "savings-goal-calculator", "emergency-fund-calculator"],
+    compute(values) {
+      const income = Number(values.monthlyIncome);
+      const needs = income * 0.5;
+      const wants = income * 0.3;
+      const savings = income * 0.2;
+
+      return {
+        summary: [
+          { label: "Needs (50%)", value: formatCurrency(needs) },
+          { label: "Wants (30%)", value: formatCurrency(wants) },
+          { label: "Savings (20%)", value: formatCurrency(savings) }
+        ],
+        details: [
+          { label: "Monthly take-home pay", value: formatCurrency(income) },
+          { label: "Needs budget", value: formatCurrency(needs) },
+          { label: "Wants budget", value: formatCurrency(wants) },
+          { label: "Savings target", value: formatCurrency(savings) }
+        ],
+        timeline: [
+          { label: "Needs", amount: roundCurrency(needs) },
+          { label: "Wants", amount: roundCurrency(wants) },
+          { label: "Savings", amount: roundCurrency(savings) }
+        ],
+        breakdown: [
+          { label: "Needs", amount: roundCurrency(needs) },
+          { label: "Wants", amount: roundCurrency(wants) },
+          { label: "Savings", amount: roundCurrency(savings) }
+        ],
+        milestones: [
+          { label: "Yearly savings at 20%", value: formatCurrency(savings * 12) },
+          { label: "Needs ceiling", value: formatCurrency(needs) },
+          { label: "Wants allowance", value: formatCurrency(wants) }
+        ],
+        note: "The 50/30/20 split applies to take-home pay and is a benchmark, not a strict rule. Adjust the buckets to fit your goals and cost of living."
+      };
+    }
   }
 ];
 
@@ -2717,7 +3196,13 @@ export const calculatorCategories = [
   },
   {
     title: "Debt",
-    slugs: ["loan-calculator", "debt-payoff-calculator"]
+    slugs: [
+      "loan-calculator",
+      "debt-payoff-calculator",
+      "credit-card-payoff-calculator",
+      "auto-loan-calculator",
+      "debt-to-income-ratio-calculator"
+    ]
   },
   {
     title: "Income & Tax",
@@ -2745,11 +3230,11 @@ export const calculatorCategories = [
   },
   {
     title: "Savings",
-    slugs: ["savings-goal-calculator", "emergency-fund-calculator"]
+    slugs: ["savings-goal-calculator", "emergency-fund-calculator", "cd-calculator"]
   },
   {
     title: "Budgeting",
-    slugs: ["budget-calculator", "net-worth-calculator"]
+    slugs: ["budget-calculator", "net-worth-calculator", "50-30-20-budget-calculator"]
   }
 ];
 
