@@ -51,7 +51,8 @@ export function HeaderCalculatorMenu() {
         <svg
           viewBox="0 0 16 16"
           aria-hidden="true"
-          className="h-3.5 w-3.5 transition group-open:rotate-180"
+          className="h-3.5 w-3.5 transition duration-300 group-open:rotate-180"
+          style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}
           fill="none"
           stroke="currentColor"
           strokeWidth="1.5"
@@ -60,7 +61,7 @@ export function HeaderCalculatorMenu() {
         </svg>
       </summary>
 
-      <div className="invisible absolute left-1/2 top-full z-40 mt-4 w-[44rem] max-w-[calc(100vw-3rem)] -translate-x-1/2 rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 opacity-0 shadow-[0_18px_42px_-34px_rgba(33,53,48,0.14)] transition duration-150 group-open:visible group-open:opacity-100">
+      <div className="invisible absolute left-1/2 top-full z-40 mt-4 w-[70rem] max-w-[calc(100vw-3rem)] -translate-x-1/2 rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 opacity-0 shadow-[0_18px_42px_-34px_rgba(33,53,48,0.14)] transition duration-300 group-open:visible group-open:opacity-100" style={{ transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)" }}>
         <div className="flex items-start justify-between gap-6 border-b border-[#dee4e2] pb-5">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#4b665d]">Calculator menu</p>
@@ -76,16 +77,17 @@ export function HeaderCalculatorMenu() {
           </Link>
         </div>
 
-        <div className="mt-6 grid gap-6 md:grid-cols-3">
-          {categories.map((category) => (
+        <div className="mt-6 grid gap-6 md:grid-cols-5 lg:grid-cols-7">
+          {categories.map((category, categoryIndex) => (
             <div key={category.title} className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#4b665d]">{category.title}</p>
               <div className="space-y-2">
-                {category.calculators.map((calculator) => (
+                {category.calculators.map((calculator, calcIndex) => (
                   <Link
                     key={calculator.slug}
                     href={`/calculators/${calculator.slug}/`}
-                    className="block rounded-2xl border border-[#dbe2e5] bg-[#f8faf9] px-4 py-3 text-sm font-medium text-[#3a5048] transition hover:border-[#bec8ce] hover:bg-white hover:text-[#556874]"
+                    className="block rounded-2xl border border-[#dbe2e5] bg-[#f8faf9] px-4 py-3 text-sm font-medium text-[#3a5048] transition-all duration-200 hover:border-[#bec8ce] hover:bg-white hover:text-[#556874] hover:translate-y-[-1px]"
+                    style={{ transitionDelay: `${categoryIndex * 25 + calcIndex * 10}ms` }}
                   >
                     {calculator.name}
                   </Link>
@@ -122,7 +124,7 @@ export function CalculatorQuickStart() {
           <Link
             key={calculator.slug}
             href={`/calculators/${calculator.slug}/`}
-            className="rounded-full border border-[#d0d9d8] bg-[#f8faf9] px-4 py-2 text-sm font-medium text-[#3f5950] transition hover:border-[#bec8ce] hover:bg-white hover:text-[#556874]"
+            className="rounded-full border border-[#d0d9d8] bg-[#f8faf9] px-4 py-2 text-sm font-medium text-[#3f5950] transition-all duration-200 hover:border-[#bec8ce] hover:bg-white hover:text-[#556874] hover:translate-y-[-1px]"
           >
             {calculator.name}
           </Link>
@@ -140,7 +142,7 @@ export function CalculatorSwitchButton({ currentSlug }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-full bg-ink-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-ink-600"
+        className="inline-flex items-center gap-2 rounded-full bg-ink-500 px-4 py-2 text-sm font-medium text-white transition-all duration-200 hover:bg-ink-600 hover:translate-y-[-1px]"
       >
         <svg viewBox="0 0 16 16" aria-hidden="true" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
           <path d="M2.5 5h9L9 2.5M13.5 11h-9L7 13.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -199,16 +201,16 @@ function CalculatorSwitchModal({ currentSlug, open, onClose }) {
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6">
       <div
         onClick={onClose}
-        className={`fixed inset-0 bg-[#10201b]/45 backdrop-blur-sm transition-opacity duration-200 ${shown ? "opacity-100" : "opacity-0"}`}
+        className={`fixed inset-0 bg-[#10201b]/45 backdrop-blur-sm transition-opacity duration-300 ${shown ? "opacity-100" : "opacity-0"}`}
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Switch calculator"
-        className={`relative z-10 my-auto w-full max-w-3xl rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_30px_80px_-32px_rgba(33,53,48,0.5)] transition duration-200 sm:p-8 ${
+        className={`relative z-10 my-auto w-full max-w-6xl rounded-[2rem] border border-[#d7dfde] bg-[#fcfcfb] p-6 shadow-[0_30px_80px_-32px_rgba(33,53,48,0.5)] transition-all duration-300 sm:p-8 ${
           shown ? "scale-100 opacity-100" : "scale-90 opacity-0"
         }`}
-        style={{ transitionTimingFunction: shown ? "cubic-bezier(0.34, 1.56, 0.64, 1)" : "ease-in" }}
+        style={{ transitionTimingFunction: shown ? "cubic-bezier(0.34, 1.56, 0.64, 1)" : "ease-in-out" }}
       >
         <div className="flex items-start justify-between gap-6 border-b border-[#dee4e2] pb-5">
           <div className="space-y-2">
@@ -223,7 +225,7 @@ function CalculatorSwitchModal({ currentSlug, open, onClose }) {
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="shrink-0 rounded-full border border-[#d0d9d8] p-2 text-[#3f5950] transition hover:border-[#8d9ca5] hover:text-[#556874]"
+            className="shrink-0 rounded-full border border-[#d0d9d8] p-2 text-[#3f5950] transition-all duration-200 hover:border-[#8d9ca5] hover:text-[#556874] hover:rotate-90"
           >
             <svg viewBox="0 0 16 16" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
@@ -231,12 +233,12 @@ function CalculatorSwitchModal({ currentSlug, open, onClose }) {
           </button>
         </div>
 
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
+        <div className="mt-6 grid gap-5 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
+          {categories.map((category, categoryIndex) => (
             <div key={category.title} className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">{category.title}</p>
               <div className="flex flex-col gap-2">
-                {category.calculators.map((calculator) => {
+                {category.calculators.map((calculator, calcIndex) => {
                   const isCurrent = calculator.slug === currentSlug;
 
                   if (isCurrent) {
@@ -257,7 +259,8 @@ function CalculatorSwitchModal({ currentSlug, open, onClose }) {
                       key={calculator.slug}
                       href={`/calculators/${calculator.slug}/`}
                       onClick={onClose}
-                      className="rounded-2xl border border-[#dbe2e5] bg-[#f8faf9] px-4 py-3 text-sm font-medium text-[#3a5048] transition hover:border-[#bec8ce] hover:bg-white hover:text-[#556874]"
+                      className="rounded-2xl border border-[#dbe2e5] bg-[#f8faf9] px-4 py-3 text-sm font-medium text-[#3a5048] transition-all duration-200 hover:border-[#bec8ce] hover:bg-white hover:text-[#556874] hover:translate-y-[-1px]"
+                      style={{ transitionDelay: `${categoryIndex * 25 + calcIndex * 10}ms` }}
                     >
                       {calculator.name}
                     </Link>

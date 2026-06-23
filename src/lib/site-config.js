@@ -43,11 +43,15 @@ export const siteConfig = {
   categories: [
     {
       title: "Mortgage",
-      description: "Estimate payments, amortization, refinancing, affordability, and whether renting or buying costs less."
+      description: "Estimate payments, amortization, refinancing, affordability, PMI costs, and whether renting or buying costs less."
     },
     {
       title: "Debt",
-      description: "Estimate payments, compare payoff paths, and look at the tradeoffs behind borrowing choices."
+      description: "Estimate payments, compare payoff paths, calculate student loans, and look at the tradeoffs behind borrowing choices."
+    },
+    {
+      title: "Income & Tax",
+      description: "Calculate paychecks, taxes, capital gains, and understand how taxes impact your financial decisions."
     },
     {
       title: "Investing",
@@ -63,7 +67,7 @@ export const siteConfig = {
     },
     {
       title: "Budgeting",
-      description: "Plan monthly cash flow and track net worth over time."
+      description: "Plan monthly cash flow, track net worth, and protect your family with life insurance estimates."
     }
   ]
 };

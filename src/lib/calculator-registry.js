@@ -3177,6 +3177,1390 @@ export const calculatorRegistry = [
         note: "The 50/30/20 split applies to take-home pay and is a benchmark, not a strict rule. Adjust the buckets to fit your goals and cost of living."
       };
     }
+  },
+  {
+    slug: "pmi-calculator",
+    name: "PMI Calculator",
+    category: "Mortgage",
+    description: "Calculate private mortgage insurance costs and see how much you need to put down to avoid PMI altogether.",
+    intro:
+      "Enter your home price, down payment, and loan details to estimate your monthly PMI cost and when you can cancel it.",
+    keywords: [
+      "pmi calculator",
+      "private mortgage insurance calculator",
+      "how to avoid pmi",
+      "pmi removal calculator"
+    ],
+    defaults: {
+      homePrice: 400000,
+      downPayment: 40000,
+      annualRate: 6.5,
+      years: 30,
+      pmiRate: 0.5,
+      creditScore: 720
+    },
+    inputs: [
+      { name: "homePrice", label: "Home price", prefix: "$", min: 50000, step: 5000 },
+      { name: "downPayment", label: "Down payment", prefix: "$", min: 0, step: 5000 },
+      { name: "annualRate", label: "Mortgage rate", suffix: "%", min: 0, step: 0.1 }
+    ],
+    advancedInputs: [
+      { name: "years", label: "Loan term", suffix: "years", min: 5, max: 40, step: 5 },
+      { name: "pmiRate", label: "PMI rate", suffix: "%", min: 0.1, max: 2, step: 0.05 },
+      { name: "creditScore", label: "Credit score", min: 500, max: 850, step: 5 }
+    ],
+    presets: true,
+    example: "On a $400,000 home with 10% down, PMI could add around $150 to your monthly payment until you reach 20% equity.",
+    sections: [
+      {
+        title: "What PMI is and when you need it",
+        body:
+          "Private Mortgage Insurance protects the lender if you default. It is usually required when your down payment is less than 20% of the home price. The cost varies by credit score and loan type but typically ranges from 0.3% to 1.5% of the loan amount annually."
+      },
+      {
+        title: "How to get rid of PMI",
+        body:
+          "You can request PMI cancellation when you reach 20% equity through payments or home value appreciation. By law, PMI must automatically terminate at 22% equity based on the original amortization schedule if you are current on payments."
+      },
+      {
+        title: "Alternatives to paying PMI",
+        body:
+          "Options include putting 20% down, getting a piggyback second mortgage, using lender-paid PMI, or choosing certain government loans that have different insurance requirements. Each tradeoff deserves a close look."
+      }
+    ],
+    faqs: [
+      {
+        question: "When can I cancel PMI?",
+        answer: "You can request cancellation when you reach 20% equity, either through payments, home appreciation, or a combination. Automatic termination happens at 22% equity based on the original schedule if you are current on payments."
+      },
+      {
+        question: "Is PMI tax deductible?",
+        answer: "The tax deductibility of PMI has changed several times. Check current IRS guidelines or consult a tax professional for the latest rules and whether you qualify based on your income."
+      }
+    ],
+    related: ["mortgage-calculator", "mortgage-amortization-calculator", "home-affordability-calculator"],
+    compute(values) {
+      const homePrice = Number(values.homePrice);
+      const downPayment = Number(values.downPayment);
+      const loanAmount = Math.max(0, homePrice - downPayment);
+      const downPercent = homePrice > 0 ? (downPayment / homePrice) * 100 : 0;
+      const pmiRate = Number(values.pmiRate) / 100;
+      const years = Number(values.years) || 30;
+      const annualRate = Number(values.annualRate);
+      const needsPmi = downPercent < 20;
+
+      const monthlyPmi = needsPmi ? (loanAmount * pmiRate) / 12 : 0;
+      const annualPmi = monthlyPmi * 12;
+
+      const targetEquityForRemoval = homePrice * 0.2;
+      const additionalDownNeeded = Math.max(0, targetEquityForRemoval - downPayment);
+
+      const payment = paymentForLoan(loanAmount, annualRate, years);
+      const amortization = buildAmortizationTable({ principal: loanAmount, annualRate, years, payment });
+      const monthsTo20Percent = needsPmi ? (() => {
+        const targetBalance = loanAmount - targetEquityForRemoval;
+        let months = 0;
+        let balance = loanAmount;
+        const monthlyRate = annualRate / 100 / 12;
+        while (balance > targetBalance && months < years * 12) {
+          const interest = balance * monthlyRate;
+          const principalPaid = payment - interest;
+          balance -= principalPaid;
+          months++;
+        }
+        return months;
+      })() : 0;
+
+      const totalPmi = needsPmi && monthsTo20Percent > 0 ? monthlyPmi * monthsTo20Percent : 0;
+
+      return {
+        summary: [
+          { label: "Monthly PMI", value: needsPmi ? formatCurrencyPrecise(monthlyPmi) : "Not required" },
+          { label: "Down payment percentage", value: formatPercent(downPercent) },
+          { label: "PMI cancellation timeline", value: needsPmi ? formatYearsAndMonths(monthsTo20Percent) : "Not needed" }
+        ],
+        details: [
+          { label: "Home price", value: formatCurrency(homePrice) },
+          { label: "Down payment", value: formatCurrency(downPayment) },
+          { label: "Loan amount", value: formatCurrency(loanAmount) },
+          { label: "PMI rate used", value: formatPercent(values.pmiRate) },
+          { label: "Additional down to avoid PMI", value: formatCurrency(additionalDownNeeded) }
+        ],
+        timeline: needsPmi ? [
+          { label: "Year 1", amount: roundCurrency(annualPmi) },
+          { label: "Year 2", amount: roundCurrency(annualPmi) },
+          { label: "Year 3", amount: roundCurrency(annualPmi) },
+          { label: "Year 4", amount: roundCurrency(annualPmi) },
+          { label: "Year 5", amount: roundCurrency(annualPmi) }
+        ] : [],
+        breakdown: needsPmi ? [
+          { label: "Monthly PMI cost", amount: roundCurrency(monthlyPmi) },
+          { label: "Annual PMI cost", amount: roundCurrency(annualPmi) },
+          { label: "Total PMI until removal", amount: roundCurrency(totalPmi) }
+        ] : [
+          { label: "Down payment", amount: roundCurrency(downPayment) },
+          { label: "Equity at purchase", amount: roundCurrency(downPayment) }
+        ],
+        milestones: needsPmi ? [
+          { label: "Monthly PMI cost", value: formatCurrencyPrecise(monthlyPmi) },
+          { label: "Additional down to avoid PMI", value: formatCurrency(additionalDownNeeded) },
+          { label: "Estimated total PMI paid", value: formatCurrency(totalPmi) }
+        ] : [
+          { label: "PMI status", value: "Not required" },
+          { label: "Equity at purchase", value: formatPercent(downPercent) },
+          { label: "Savings vs PMI loan", value: formatCurrency(annualPmi * 7) }
+        ],
+        note: needsPmi ? "PMI is required with less than 20% down. Your actual PMI rate may vary by credit score, loan type, and lender." : "With 20% or more down, PMI is not required, saving you thousands over the life of the loan."
+      };
+    }
+  },
+  {
+    slug: "student-loan-calculator",
+    name: "Student Loan Calculator",
+    category: "Debt",
+    description: "Estimate your student loan monthly payment, total interest cost, and see how extra payments can save you money.",
+    intro:
+      "Enter your student loan details to see your monthly payment, total cost, and how making extra payments can shorten your repayment.",
+    keywords: [
+      "student loan calculator",
+      "student loan payment calculator",
+      "student loan interest calculator",
+      "college loan calculator"
+    ],
+    defaults: {
+      loanAmount: 35000,
+      annualRate: 5.5,
+      years: 10,
+      extraMonthly: 0
+    },
+    inputs: [
+      { name: "loanAmount", label: "Loan amount", prefix: "$", min: 1000, step: 1000 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Repayment term", suffix: "years", min: 1, max: 30, step: 1 }
+    ],
+    advancedInputs: [
+      { name: "extraMonthly", label: "Extra monthly payment", prefix: "$", min: 0, step: 25 }
+    ],
+    presets: true,
+    example: "On $35,000 of student loans at 5.5% over 10 years, the monthly payment would be around $380, with total interest near $10,500.",
+    sections: [
+      {
+        title: "Understanding student loan repayment",
+        body:
+          "Your monthly payment depends on your total borrowed, interest rate, and repayment term. Federal loans offer standard 10-year repayment or income-driven plans that adjust payments based on your income and family size."
+      },
+      {
+        title: "The impact of extra payments",
+        body:
+          "Even small extra payments applied to principal can save thousands in interest and shave years off your repayment. Prioritize higher-interest loans first for maximum savings using the avalanche method."
+      },
+      {
+        title: "Refinancing considerations",
+        body:
+          "Refinancing federal loans with a private lender can lower your rate but means giving up federal protections like income-driven repayment, forgiveness programs, and forbearance options. The tradeoff deserves careful thought."
+      }
+    ],
+    faqs: [
+      {
+        question: "Should I refinance my student loans?",
+        answer: "Refinancing can make sense if you have good credit and a stable income, but you lose federal loan protections. Compare rates and consider whether you might need income-driven repayment or forgiveness before refinancing federal loans."
+      },
+      {
+        question: "How do extra payments help?",
+        answer: "Extra payments go directly to principal, reducing the balance that accrues interest each month. This saves money over time and shortens your repayment period, often significantly if you start early."
+      }
+    ],
+    related: ["loan-calculator", "debt-payoff-calculator", "debt-to-income-ratio-calculator"],
+    compute(values) {
+      const loanAmount = Number(values.loanAmount);
+      const annualRate = Number(values.annualRate);
+      const years = Number(values.years) || 10;
+      const extraMonthly = Number(values.extraMonthly) || 0;
+
+      const basePayment = paymentForLoan(loanAmount, annualRate, years);
+      const baseTotalPaid = basePayment * years * 12;
+      const baseTotalInterest = baseTotalPaid - loanAmount;
+
+      let acceleratedResult = null;
+      if (extraMonthly > 0) {
+        acceleratedResult = amortizeWithExtra({ principal: loanAmount, annualRate, years, extraMonthly });
+      }
+
+      return {
+        summary: [
+          { label: "Monthly payment", value: formatCurrencyPrecise(basePayment) },
+          { label: "Total interest", value: formatCurrency(baseTotalInterest) },
+          { label: "Total paid over term", value: formatCurrency(baseTotalPaid) }
+        ],
+        details: [
+          { label: "Loan amount", value: formatCurrency(loanAmount) },
+          { label: "Interest rate", value: formatPercent(annualRate) },
+          { label: "Repayment term", value: `${years} years` },
+          { label: "Interest as percentage of principal", value: formatPercent((baseTotalInterest / loanAmount) * 100) }
+        ],
+        timeline: buildAmortizationSeries({ principal: loanAmount, annualRate, years, payment: basePayment }),
+        breakdown: [
+          { label: "Principal", amount: roundCurrency(loanAmount) },
+          { label: "Interest", amount: roundCurrency(baseTotalInterest) }
+        ],
+        milestones: extraMonthly > 0 && acceleratedResult ? [
+          { label: "Base monthly payment", value: formatCurrencyPrecise(basePayment) },
+          { label: "Time saved with extra payments", value: formatYearsAndMonths(years * 12 - (acceleratedResult.months || 0)) },
+          { label: "Interest saved", value: formatCurrency(baseTotalInterest - (acceleratedResult.totalInterest || 0)) }
+        ] : [
+          { label: "Monthly payment", value: formatCurrencyPrecise(basePayment) },
+          { label: "First year interest", value: formatCurrency((loanAmount * annualRate) / 100) },
+          { label: "Total interest paid", value: formatCurrency(baseTotalInterest) }
+        ],
+        note: extraMonthly > 0 ? "Extra payments are assumed to be applied to principal each month. Your loan servicer may require specifying how extra payments are applied." : "This is a standard amortization calculation. Actual repayment may vary if you switch plans or pause payments."
+      };
+    }
+  },
+  {
+    slug: "capital-gains-tax-calculator",
+    name: "Capital Gains Tax Calculator",
+    category: "Income & Tax",
+    description: "Calculate your estimated capital gains tax based on your income, filing status, and how long you held the investment.",
+    intro:
+      "Enter your investment details and income to estimate the capital gains tax you might owe and see the benefit of holding investments longer than one year.",
+    keywords: [
+      "capital gains tax calculator",
+      "capital gains calculator",
+      "stock tax calculator",
+      "investment tax calculator"
+    ],
+    defaults: {
+      purchasePrice: 10000,
+      salePrice: 18000,
+      yearsHeld: 2,
+      annualIncome: 85000,
+      filingStatus: 0
+    },
+    inputs: [
+      { name: "purchasePrice", label: "Purchase price", prefix: "$", min: 0, step: 100 },
+      { name: "salePrice", label: "Sale price", prefix: "$", min: 0, step: 100 },
+      { name: "annualIncome", label: "Your annual income", prefix: "$", min: 0, step: 1000 }
+    ],
+    advancedInputs: [
+      { name: "yearsHeld", label: "Years held", min: 0, max: 50, step: 0.5 },
+      { name: "filingStatus", label: "Filing (0 single, 1 married)", min: 0, max: 1, step: 1 }
+    ],
+    presets: true,
+    example: "Selling an investment for $18,000 that you bought for $10,000 would realize an $8,000 gain. Holding for over a year means lower long-term capital gains rates.",
+    sections: [
+      {
+        title: "Short-term vs long-term capital gains",
+        body:
+          "Gains on investments held for one year or less are taxed as ordinary income, like your salary. Gains on investments held for more than one year qualify for lower long-term capital gains rates, which can be 0%, 15%, or 20% depending on your income."
+      },
+      {
+        title: "How tax brackets affect your gains",
+        body:
+          "Your capital gains stack on top of your ordinary income. This means some of your gains could be taxed at 0% if they fall within the lowest brackets, then 15% in the middle, and 20% at the highest income levels."
+      },
+      {
+        title: "Tax-loss harvesting strategy",
+        body:
+          "You can offset capital gains with capital losses in the same year. This strategy, called tax-loss harvesting, can reduce or eliminate the tax you owe on your investment gains. Any unused losses can carry forward to future years."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the capital gains tax rate?",
+        answer: "Long-term capital gains rates are 0%, 15%, or 20% depending on your income and filing status. Short-term gains are taxed at your ordinary income tax rates, which can be significantly higher."
+      },
+      {
+        question: "Can capital losses offset gains?",
+        answer: "Yes, you can use capital losses to offset capital gains. If you have more losses than gains, you can deduct up to $3,000 against ordinary income and carry forward the rest to future years."
+      }
+    ],
+    related: ["roi-calculator", "cagr-calculator", "income-tax-calculator"],
+    compute(values) {
+      const purchasePrice = Number(values.purchasePrice);
+      const salePrice = Number(values.salePrice);
+      const annualIncome = Number(values.annualIncome);
+      const yearsHeld = Number(values.yearsHeld) || 0;
+      const isMarried = Number(values.filingStatus) === 1;
+      const isLongTerm = yearsHeld > 1;
+
+      const gain = Math.max(0, salePrice - purchasePrice);
+      const loss = purchasePrice > salePrice ? purchasePrice - salePrice : 0;
+
+      const longTermBrackets = isMarried
+        ? { zero: 89250, fifteen: 553850 }
+        : { zero: 44625, fifteen: 492300 };
+
+      const standardDeduction = isMarried ? STANDARD_DEDUCTION_2025.married : STANDARD_DEDUCTION_2025.single;
+      const taxableIncome = Math.max(0, annualIncome - standardDeduction);
+
+      let estimatedTax = 0;
+      let taxRate = 0;
+
+      if (gain > 0) {
+        if (isLongTerm) {
+          const spaceInZeroBracket = Math.max(0, longTermBrackets.zero - taxableIncome);
+          const gainInZero = Math.min(spaceInZeroBracket, gain);
+          const remainingGain = gain - gainInZero;
+
+          if (remainingGain > 0) {
+            const spaceInFifteenBracket = Math.max(0, longTermBrackets.fifteen - Math.max(taxableIncome, longTermBrackets.zero));
+            const gainInFifteen = Math.min(spaceInFifteenBracket, remainingGain);
+            const gainInTwenty = Math.max(0, remainingGain - gainInFifteen);
+
+            estimatedTax = gainInFifteen * 0.15 + gainInTwenty * 0.2;
+            taxRate = (estimatedTax / gain) * 100;
+          }
+        } else {
+          const effectiveOrdinaryRate = federalIncomeTax(taxableIncome + gain, isMarried ? "married" : "single") - federalIncomeTax(taxableIncome, isMarried ? "married" : "single");
+          estimatedTax = Math.max(effectiveOrdinaryRate, gain * 0.22);
+          taxRate = (estimatedTax / gain) * 100;
+        }
+      }
+
+      const taxSavingsWithLongTerm = isLongTerm ? 0 : gain > 0 ? estimatedTax - (gain * 0.15) : 0;
+
+      return {
+        summary: [
+          { label: "Capital gain", value: gain > 0 ? formatCurrency(gain) : (loss > 0 ? `-${formatCurrency(loss)} loss` : "No gain or loss") },
+          { label: "Estimated tax", value: gain > 0 ? formatCurrency(estimatedTax) : "No tax owed" },
+          { label: "Holding status", value: isLongTerm ? "Long-term" : "Short-term" }
+        ],
+        details: [
+          { label: "Purchase price", value: formatCurrency(purchasePrice) },
+          { label: "Sale price", value: formatCurrency(salePrice) },
+          { label: "Years held", value: `${yearsHeld} years` },
+          { label: "Effective tax rate on gain", value: gain > 0 ? formatPercent(taxRate) : "N/A" }
+        ],
+        timeline: gain > 0 ? [
+          { label: "Gain", amount: roundCurrency(gain) },
+          { label: "Estimated tax", amount: roundCurrency(estimatedTax) },
+          { label: "After-tax proceeds", amount: roundCurrency(salePrice - estimatedTax) }
+        ] : [],
+        breakdown: gain > 0 ? [
+          { label: "Capital gain", amount: roundCurrency(gain) },
+          { label: "Estimated tax", amount: roundCurrency(estimatedTax) },
+          { label: "Net after tax", amount: roundCurrency(gain - estimatedTax) }
+        ] : loss > 0 ? [
+          { label: "Capital loss", amount: roundCurrency(loss) },
+          { label: "Max deductible this year", amount: roundCurrency(Math.min(loss, 3000)) },
+          { label: "Carryforward", amount: roundCurrency(Math.max(0, loss - 3000)) }
+        ] : [],
+        milestones: gain > 0 ? [
+          { label: "After-tax sale proceeds", value: formatCurrency(salePrice - estimatedTax) },
+          { label: "Tax savings by holding 1+ year", value: !isLongTerm && taxSavingsWithLongTerm > 0 ? formatCurrency(taxSavingsWithLongTerm) : "Already long-term" },
+          { label: "Total return after tax", value: formatPercent(((salePrice - estimatedTax - purchasePrice) / purchasePrice) * 100) }
+        ] : loss > 0 ? [
+          { label: "Capital loss realized", value: formatCurrency(loss) },
+          { label: "Can offset gains up to", value: formatCurrency(loss) },
+          { label: "Excess carries forward", value: formatCurrency(Math.max(0, loss - 3000)) }
+        ] : [],
+        note: "This is an estimate only. Actual tax depends on many factors including state taxes, other income, deductions, and specific circumstances. Consult a tax professional for personalized advice."
+      };
+    }
+  },
+  {
+    slug: "life-insurance-calculator",
+    name: "Life Insurance Calculator",
+    category: "Budgeting",
+    description: "Estimate how much life insurance coverage you need by considering your income, debts, dependents, and future goals.",
+    intro:
+      "Enter your financial details to estimate how much life insurance might be right for your family's protection and peace of mind.",
+    keywords: [
+      "life insurance calculator",
+      "how much life insurance do i need",
+      "term life insurance calculator",
+      "life insurance needs calculator"
+    ],
+    defaults: {
+      annualIncome: 90000,
+      yearsOfIncome: 10,
+      mortgageBalance: 250000,
+      otherDebts: 25000,
+      childrenEducation: 100000,
+      existingSavings: 50000,
+      existingCoverage: 50000
+    },
+    inputs: [
+      { name: "annualIncome", label: "Annual income", prefix: "$", min: 0, step: 5000 },
+      { name: "yearsOfIncome", label: "Years to replace", suffix: "years", min: 0, max: 40, step: 1 },
+      { name: "mortgageBalance", label: "Mortgage balance", prefix: "$", min: 0, step: 5000 },
+      { name: "otherDebts", label: "Other debts", prefix: "$", min: 0, step: 1000 }
+    ],
+    advancedInputs: [
+      { name: "childrenEducation", label: "Education goal", prefix: "$", min: 0, step: 5000 },
+      { name: "existingSavings", label: "Existing savings", prefix: "$", min: 0, step: 5000 },
+      { name: "existingCoverage", label: "Existing coverage", prefix: "$", min: 0, step: 5000 }
+    ],
+    presets: true,
+    example: "For a family earning $90,000 with a $250,000 mortgage and children to educate, a $1 million+ policy is often recommended to cover both income replacement and debt payoff.",
+    sections: [
+      {
+        title: "How to think about life insurance needs",
+        body:
+          "A good starting point is 10-12 times your annual income, plus debts, plus future goals like college expenses. This helps ensure your family can maintain their lifestyle, pay off debts, and meet important financial goals if you are no longer there."
+      },
+      {
+        title: "Term vs permanent insurance",
+        body:
+          "Term life covers you for a set period like 10, 20, or 30 years and is generally affordable. Permanent life covers you for life and builds cash value but is significantly more expensive. For most families, term insurance provides the best protection per dollar."
+      },
+      {
+        title: "What about stay-at-home parents?",
+        body:
+          "Stay-at-home parents need coverage too. The cost of replacing childcare, housekeeping, and other household services can be substantial. Consider what it would cost to hire help for those responsibilities over many years."
+      }
+    ],
+    faqs: [
+      {
+        question: "How much life insurance do I really need?",
+        answer: "A common guideline is 10-12 times your income plus debts and future goals like college. The exact amount depends on your specific situation, including savings, other income sources, and your family's needs."
+      },
+      {
+        question: "Is term life insurance enough?",
+        answer: "For most families, term life insurance provides excellent protection at an affordable cost. It covers your peak earning years when your family is most dependent on your income and when your debts are highest."
+      }
+    ],
+    related: ["budget-calculator", "retirement-calculator", "debt-payoff-calculator"],
+    compute(values) {
+      const annualIncome = Number(values.annualIncome);
+      const yearsOfIncome = Number(values.yearsOfIncome) || 10;
+      const mortgageBalance = Number(values.mortgageBalance);
+      const otherDebts = Number(values.otherDebts);
+      const childrenEducation = Number(values.childrenEducation);
+      const existingSavings = Number(values.existingSavings);
+      const existingCoverage = Number(values.existingCoverage);
+
+      const incomeReplacement = annualIncome * yearsOfIncome;
+      const totalNeeds = incomeReplacement + mortgageBalance + otherDebts + childrenEducation;
+      const resourcesAvailable = existingSavings + existingCoverage;
+      const recommendedCoverage = Math.max(0, totalNeeds - resourcesAvailable);
+
+      const estimatedMonthlyTermPremium = (() => {
+        const baseRatePerThousand = 0.6;
+        const coverageThousands = recommendedCoverage / 1000;
+        return coverageThousands * baseRatePerThousand;
+      })();
+
+      const lowEndCoverage = Math.max(0, annualIncome * 7 + mortgageBalance - existingSavings);
+      const highEndCoverage = Math.max(0, annualIncome * 15 + mortgageBalance + otherDebts + childrenEducation * 1.5 - existingSavings);
+
+      return {
+        summary: [
+          { label: "Recommended coverage", value: formatCurrency(recommendedCoverage) },
+          { label: "Est. monthly term premium", value: recommendedCoverage > 0 ? formatCurrencyPrecise(estimatedMonthlyTermPremium) : "N/A" },
+          { label: "Income replacement need", value: formatCurrency(incomeReplacement) }
+        ],
+        details: [
+          { label: "Income replacement (10x)", value: formatCurrency(incomeReplacement) },
+          { label: "Mortgage payoff", value: formatCurrency(mortgageBalance) },
+          { label: "Other debts", value: formatCurrency(otherDebts) },
+          { label: "Education goal", value: formatCurrency(childrenEducation) },
+          { label: "Existing resources", value: formatCurrency(resourcesAvailable) }
+        ],
+        timeline: [
+          { label: "Conservative estimate", amount: roundCurrency(lowEndCoverage) },
+          { label: "Recommended", amount: roundCurrency(recommendedCoverage) },
+          { label: "Comprehensive", amount: roundCurrency(highEndCoverage) }
+        ],
+        breakdown: [
+          { label: "Income replacement", amount: roundCurrency(incomeReplacement) },
+          { label: "Debt payoff", amount: roundCurrency(mortgageBalance + otherDebts) },
+          { label: "Future goals", amount: roundCurrency(childrenEducation) },
+          { label: "Minus existing resources", amount: -roundCurrency(resourcesAvailable) }
+        ],
+        milestones: [
+          { label: "Range of coverage", value: `${formatCurrency(lowEndCoverage)} - ${formatCurrency(highEndCoverage)}` },
+          { label: "Est. annual premium", value: recommendedCoverage > 0 ? formatCurrency(estimatedMonthlyTermPremium * 12) : "N/A" },
+          { label: "Existing coverage gap", value: formatCurrency(Math.max(0, recommendedCoverage - existingCoverage)) }
+        ],
+        note: "This is an estimate only. Actual insurance needs depend on your specific situation. Premium estimates are approximate and vary by age, health, term length, and insurance company."
+      };
+    }
+  },
+  {
+    slug: "car-affordability-calculator",
+    name: "Car Affordability Calculator",
+    category: "Debt",
+    description: "Estimate how much car you can comfortably afford based on your income, budget, and other financial obligations.",
+    intro:
+      "Enter your income and budget details to see a realistic car price range that fits comfortably within your overall financial picture.",
+    keywords: [
+      "car affordability calculator",
+      "how much car can i afford",
+      "auto loan affordability calculator",
+      "vehicle affordability calculator"
+    ],
+    defaults: {
+      annualIncome: 75000,
+      downPayment: 5000,
+      tradeInValue: 0,
+      annualRate: 6.5,
+      years: 6,
+      monthlyBudget: 500,
+      otherCarExpenses: 200
+    },
+    inputs: [
+      { name: "annualIncome", label: "Annual income", prefix: "$", min: 0, step: 5000 },
+      { name: "monthlyBudget", label: "Max monthly car payment", prefix: "$", min: 0, step: 25 },
+      { name: "downPayment", label: "Down payment", prefix: "$", min: 0, step: 500 }
+    ],
+    advancedInputs: [
+      { name: "tradeInValue", label: "Trade-in value", prefix: "$", min: 0, step: 500 },
+      { name: "annualRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Loan term", suffix: "years", min: 1, max: 8, step: 1 },
+      { name: "otherCarExpenses", label: "Other car costs/month", prefix: "$", min: 0, step: 25 }
+    ],
+    presets: true,
+    example: "With a $75,000 income and a $500 monthly budget, you can comfortably afford a car in the $30,000-$35,000 range with a reasonable down payment.",
+    sections: [
+      {
+        title: "The 15-20 rule for car buying",
+        body:
+          "A common guideline is to spend no more than 15-20% of your monthly take-home pay on total car costs, including the payment, insurance, gas, and maintenance. This helps prevent car expenses from crowding out other important financial goals."
+      },
+      {
+        title: "The real cost of car ownership",
+        body:
+          "The monthly payment is only part of the picture. Insurance, gas, maintenance, repairs, registration, and depreciation add up significantly. A good rule of thumb is that these additional costs can equal or exceed the payment itself."
+      },
+      {
+        title: "Why a larger down payment helps",
+        body:
+          "Putting more money down reduces your loan amount, monthly payment, and total interest. It also lowers the risk of being underwater on the loan, where you owe more than the car is worth."
+      }
+    ],
+    faqs: [
+      {
+        question: "What percentage of my income should go to a car?",
+        answer: "A common guideline is 10-15% of take-home pay for the car payment, and no more than 15-20% for total car costs including insurance, gas, and maintenance. Your situation may vary based on other obligations."
+      },
+      {
+        question: "How long should I finance a car?",
+        answer: "Ideally 48-60 months or less. Longer terms lower the payment but cost more in interest and leave you at risk of negative equity for longer. Choose the shortest term that leaves you with a comfortable payment."
+      }
+    ],
+    related: ["auto-loan-calculator", "loan-calculator", "budget-calculator"],
+    compute(values) {
+      const annualIncome = Number(values.annualIncome);
+      const monthlyIncome = annualIncome / 12;
+      const monthlyBudget = Number(values.monthlyBudget);
+      const downPayment = Number(values.downPayment);
+      const tradeInValue = Number(values.tradeInValue);
+      const annualRate = Number(values.annualRate);
+      const years = Number(values.years) || 6;
+      const otherCarExpenses = Number(values.otherCarExpenses);
+
+      const totalDown = downPayment + tradeInValue;
+      const monthlyRate = annualRate / 100 / 12;
+      const numPayments = years * 12;
+
+      const maxLoanAmount = monthlyRate > 0
+        ? monthlyBudget * ((1 - Math.pow(1 + monthlyRate, -numPayments)) / monthlyRate)
+        : monthlyBudget * numPayments;
+
+      const affordableCarPrice = maxLoanAmount + totalDown;
+
+      const conservativeBudget = monthlyIncome * 0.1;
+      const moderateBudget = monthlyIncome * 0.15;
+      const aggressiveBudget = monthlyIncome * 0.2;
+
+      const conservativeCar = conservativeBudget * ((1 - Math.pow(1 + monthlyRate, -numPayments)) / monthlyRate) + totalDown;
+      const moderateCar = moderateBudget * ((1 - Math.pow(1 + monthlyRate, -numPayments)) / monthlyRate) + totalDown;
+      const aggressiveCar = aggressiveBudget * ((1 - Math.pow(1 + monthlyRate, -numPayments)) / monthlyRate) + totalDown;
+
+      const monthlyPaymentCheck = paymentForLoan(maxLoanAmount, annualRate, years);
+      const totalInterest = (monthlyPaymentCheck * numPayments) - maxLoanAmount;
+
+      const totalMonthlyCarCost = monthlyBudget + otherCarExpenses;
+      const percentOfIncome = monthlyIncome > 0 ? (totalMonthlyCarCost / monthlyIncome) * 100 : 0;
+
+      return {
+        summary: [
+          { label: "Affordable car price", value: formatCurrency(affordableCarPrice) },
+          { label: "Max monthly payment", value: formatCurrencyPrecise(monthlyBudget) },
+          { label: "Total monthly car costs", value: formatCurrencyPrecise(totalMonthlyCarCost) }
+        ],
+        details: [
+          { label: "Annual income", value: formatCurrency(annualIncome) },
+          { label: "Down payment + trade-in", value: formatCurrency(totalDown) },
+          { label: "Loan amount", value: formatCurrency(maxLoanAmount) },
+          { label: "Total interest over term", value: formatCurrency(totalInterest) },
+          { label: "Car costs as % of income", value: formatPercent(percentOfIncome) }
+        ],
+        timeline: [
+          { label: "Conservative (10%)", amount: roundCurrency(conservativeCar) },
+          { label: "Moderate (15%)", amount: roundCurrency(moderateCar) },
+          { label: "Aggressive (20%)", amount: roundCurrency(aggressiveCar) }
+        ],
+        breakdown: [
+          { label: "Vehicle price", amount: roundCurrency(affordableCarPrice) },
+          { label: "Down payment + trade", amount: -roundCurrency(totalDown) },
+          { label: "Loan amount", amount: roundCurrency(maxLoanAmount) },
+          { label: "Total interest", amount: roundCurrency(totalInterest) }
+        ],
+        milestones: [
+          { label: "Affordable price range", value: `${formatCurrency(conservativeCar)} - ${formatCurrency(moderateCar)}` },
+          { label: "Monthly payment", value: formatCurrencyPrecise(monthlyBudget) },
+          { label: "Payment + insurance/gas", value: formatCurrencyPrecise(totalMonthlyCarCost) }
+        ],
+        note: "This is an estimate assuming your other financial obligations are manageable. Consider your full budget, emergency fund, and other goals before committing to a car payment."
+      };
+    }
+  },
+  {
+    slug: "debt-snowball-calculator",
+    name: "Debt Snowball Calculator",
+    category: "Debt",
+    description: "Use the debt snowball method to pay off your smallest debts first for quick wins and psychological momentum.",
+    intro:
+      "Enter your debts to see how the snowball method works, paying off small balances first while making minimum payments on everything else.",
+    keywords: [
+      "debt snowball calculator",
+      "snowball method calculator",
+      "debt payoff calculator snowball",
+      "pay off debt calculator"
+    ],
+    defaults: {
+      debt1Balance: 3000,
+      debt1Rate: 18,
+      debt1Payment: 150,
+      debt2Balance: 6000,
+      debt2Rate: 22,
+      debt2Payment: 200,
+      debt3Balance: 12000,
+      debt3Rate: 7,
+      debt3Payment: 300,
+      extraMonthly: 200
+    },
+    inputs: [
+      { name: "debt1Balance", label: "Debt 1 balance", prefix: "$", min: 0, step: 100 },
+      { name: "debt1Rate", label: "Debt 1 APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "debt1Payment", label: "Debt 1 min payment", prefix: "$", min: 0, step: 10 },
+      { name: "debt2Balance", label: "Debt 2 balance", prefix: "$", min: 0, step: 100 },
+      { name: "debt2Rate", label: "Debt 2 APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "debt2Payment", label: "Debt 2 min payment", prefix: "$", min: 0, step: 10 }
+    ],
+    advancedInputs: [
+      { name: "debt3Balance", label: "Debt 3 balance", prefix: "$", min: 0, step: 100 },
+      { name: "debt3Rate", label: "Debt 3 APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "debt3Payment", label: "Debt 3 min payment", prefix: "$", min: 0, step: 10 },
+      { name: "extraMonthly", label: "Extra monthly payment", prefix: "$", min: 0, step: 25 }
+    ],
+    presets: true,
+    example: "The snowball method pays off the $3,000 debt first for a quick win, then rolls that payment into the next one, building momentum as each debt is eliminated.",
+    sections: [
+      {
+        title: "How the debt snowball works",
+        body:
+          "List your debts from smallest balance to largest, regardless of interest rate. Make minimum payments on everything, then put all extra money toward the smallest debt. When it's paid off, roll that payment into the next smallest, creating a 'snowball' effect."
+      },
+      {
+        title: "Psychological vs mathematical optimization",
+        body:
+          "The snowball prioritizes quick wins and psychological momentum over mathematical optimization (that's the avalanche method). For many people, seeing debts disappear keeps them motivated to stick with the plan long-term."
+      },
+      {
+        title: "Is the snowball right for you?",
+        body:
+          "If you've struggled to stay motivated with debt payoff in the past, the snowball might work better even if it costs slightly more in interest. If you're purely focused on minimizing interest and can stay motivated, consider the avalanche method instead."
+      }
+    ],
+    faqs: [
+      {
+        question: "Why pay smaller debts first?",
+        answer: "Quick wins build motivation. Checking debts off your list feels good and makes it easier to stick with the plan. The psychological boost often outweighs the extra interest compared to other methods."
+      },
+      {
+        question: "What's the difference between snowball and avalanche?",
+        answer: "Snowball pays smallest balances first for psychological wins. Avalanche pays highest interest rates first to minimize total interest. We have calculators for both so you can compare!"
+      }
+    ],
+    related: ["debt-avalanche-calculator", "debt-payoff-calculator", "debt-to-income-ratio-calculator"],
+    compute(values) {
+      const debts = [
+        { balance: Number(values.debt1Balance), rate: Number(values.debt1Rate), payment: Number(values.debt1Payment), name: "Debt 1" },
+        { balance: Number(values.debt2Balance), rate: Number(values.debt2Rate), payment: Number(values.debt2Payment), name: "Debt 2" },
+        { balance: Number(values.debt3Balance), rate: Number(values.debt3Rate), payment: Number(values.debt3Payment), name: "Debt 3" }
+      ].filter(d => d.balance > 0 && d.payment > 0);
+
+      const extraMonthly = Number(values.extraMonthly) || 0;
+
+      debts.sort((a, b) => a.balance - b.balance);
+
+      const totalMinimumPayment = debts.reduce((sum, d) => sum + d.payment, 0);
+      const totalMonthlyPayment = totalMinimumPayment + extraMonthly;
+
+      let months = 0;
+      let totalInterest = 0;
+      const payoffOrder = [];
+      const remainingDebts = debts.map(d => ({ ...d, remaining: d.balance }));
+
+      while (remainingDebts.some(d => d.remaining > 0) && months < 600) {
+        months++;
+        let availableForExtra = extraMonthly;
+
+        for (let i = 0; i < remainingDebts.length; i++) {
+          if (remainingDebts[i].remaining <= 0) continue;
+
+          const monthlyRate = remainingDebts[i].rate / 100 / 12;
+          const interest = remainingDebts[i].remaining * monthlyRate;
+          totalInterest += interest;
+
+          let payment = remainingDebts[i].payment;
+
+          if (availableForExtra > 0) {
+            const firstUnpaidIndex = remainingDebts.findIndex(d => d.remaining > 0);
+            if (i === firstUnpaidIndex) {
+              payment += availableForExtra;
+              availableForExtra = 0;
+            }
+          }
+
+          const newBalance = remainingDebts[i].remaining + interest - payment;
+
+          if (newBalance <= 0) {
+            const payoffAmount = remainingDebts[i].remaining + interest;
+            remainingDebts[i].remaining = 0;
+            if (!payoffOrder.includes(i)) {
+              payoffOrder.push(i);
+            }
+          } else {
+            remainingDebts[i].remaining = newBalance;
+          }
+        }
+      }
+
+      const avalancheComparison = (() => {
+        const avalancheDebts = [...debts].sort((a, b) => b.rate - a.rate);
+        let avalancheMonths = 0;
+        let avalancheInterest = 0;
+        const remaining = avalancheDebts.map(d => ({ ...d, remaining: d.balance }));
+
+        while (remaining.some(d => d.remaining > 0) && avalancheMonths < 600) {
+          avalancheMonths++;
+          let availableForExtra = extraMonthly;
+
+          for (let i = 0; i < remaining.length; i++) {
+            if (remaining[i].remaining <= 0) continue;
+
+            const monthlyRate = remaining[i].rate / 100 / 12;
+            const interest = remaining[i].remaining * monthlyRate;
+            avalancheInterest += interest;
+
+            let payment = remaining[i].payment;
+
+            if (availableForExtra > 0) {
+              const firstUnpaidIndex = remaining.findIndex(d => d.remaining > 0);
+              if (i === firstUnpaidIndex) {
+                payment += availableForExtra;
+                availableForExtra = 0;
+              }
+            }
+
+            const newBalance = remaining[i].remaining + interest - payment;
+            remaining[i].remaining = Math.max(0, newBalance);
+          }
+        }
+
+        return { months: avalancheMonths, interest: avalancheInterest };
+      })();
+
+      const interestDifference = avalancheComparison.interest - totalInterest;
+      const totalDebt = debts.reduce((sum, d) => sum + d.balance, 0);
+      const totalPaid = totalDebt + totalInterest;
+
+      return {
+        summary: [
+          { label: "Time to payoff", value: formatYearsAndMonths(months) },
+          { label: "Total interest", value: formatCurrency(totalInterest) },
+          { label: "Monthly payment", value: formatCurrencyPrecise(totalMonthlyPayment) }
+        ],
+        details: [
+          { label: "Total debt", value: formatCurrency(totalDebt) },
+          { label: "Minimum payments", value: formatCurrencyPrecise(totalMinimumPayment) },
+          { label: "Extra payment", value: formatCurrencyPrecise(extraMonthly) },
+          { label: "Interest difference vs avalanche", value: interestDifference > 0 ? `+$${formatCurrency(interestDifference)}` : "About the same" }
+        ],
+        timeline: [
+          { label: "Snowball total interest", amount: roundCurrency(totalInterest) },
+          { label: "Avalanche total interest", amount: roundCurrency(avalancheComparison.interest) }
+        ],
+        breakdown: [
+          { label: "Total principal", amount: roundCurrency(totalDebt) },
+          { label: "Total interest", amount: roundCurrency(totalInterest) },
+          { label: "Total paid", amount: roundCurrency(totalPaid) }
+        ],
+        milestones: [
+          { label: "Payoff order", value: payoffOrder.map(i => debts[i].name).join(" → ") || "Add debts to see" },
+          { label: "Snowball time", value: formatYearsAndMonths(months) },
+          { label: "Total interest cost", value: formatCurrency(totalInterest) }
+        ],
+        note: "Snowball focuses on psychological wins. The avalanche method may save interest. Compare both to see what works best for you!"
+      };
+    }
+  },
+  {
+    slug: "debt-avalanche-calculator",
+    name: "Debt Avalanche Calculator",
+    category: "Debt",
+    description: "Use the debt avalanche method to pay off your highest interest debts first and minimize total interest costs.",
+    intro:
+      "Enter your debts to see how the avalanche method works, targeting high-interest debt first while making minimum payments on everything else.",
+    keywords: [
+      "debt avalanche calculator",
+      "avalanche method calculator",
+      "debt payoff calculator interest first",
+      "highest interest debt first"
+    ],
+    defaults: {
+      debt1Balance: 3000,
+      debt1Rate: 18,
+      debt1Payment: 150,
+      debt2Balance: 6000,
+      debt2Rate: 22,
+      debt2Payment: 200,
+      debt3Balance: 12000,
+      debt3Rate: 7,
+      debt3Payment: 300,
+      extraMonthly: 200
+    },
+    inputs: [
+      { name: "debt1Balance", label: "Debt 1 balance", prefix: "$", min: 0, step: 100 },
+      { name: "debt1Rate", label: "Debt 1 APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "debt1Payment", label: "Debt 1 min payment", prefix: "$", min: 0, step: 10 },
+      { name: "debt2Balance", label: "Debt 2 balance", prefix: "$", min: 0, step: 100 },
+      { name: "debt2Rate", label: "Debt 2 APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "debt2Payment", label: "Debt 2 min payment", prefix: "$", min: 0, step: 10 }
+    ],
+    advancedInputs: [
+      { name: "debt3Balance", label: "Debt 3 balance", prefix: "$", min: 0, step: 100 },
+      { name: "debt3Rate", label: "Debt 3 APR", suffix: "%", min: 0, step: 0.1 },
+      { name: "debt3Payment", label: "Debt 3 min payment", prefix: "$", min: 0, step: 10 },
+      { name: "extraMonthly", label: "Extra monthly payment", prefix: "$", min: 0, step: 25 }
+    ],
+    presets: true,
+    example: "The avalanche method targets the 22% debt first, then the 18% debt, saving the most money in interest compared to other methods.",
+    sections: [
+      {
+        title: "How the debt avalanche works",
+        body:
+          "List your debts from highest interest rate to lowest, regardless of balance. Make minimum payments on everything, then put all extra money toward the highest interest debt. When it's paid off, roll that payment into the next one."
+      },
+      {
+        title: "Mathematical optimization",
+        body:
+          "The avalanche is mathematically optimal—it will almost always save you the most money in interest. This makes sense if you can stay motivated without the quick wins that the snowball method provides."
+      },
+      {
+        title: "Can you combine both methods?",
+        body:
+          "Absolutely! Some people use a hybrid approach. If you have one very small debt, pay it off first for a quick win, then switch to avalanche for the rest. The best method is the one you'll actually stick with."
+      }
+    ],
+    faqs: [
+      {
+        question: "Why pay highest interest first?",
+        answer: "Higher interest debts cost you more each month. Eliminating them first reduces the total interest you pay over time and frees up more money for other goals."
+      },
+      {
+        question: "Should I choose avalanche or snowball?",
+        answer: "Choose avalanche if you want to minimize interest and can stay motivated. Choose snowball if you need quick wins to stay on track. We have calculators for both so you can compare the difference!"
+      }
+    ],
+    related: ["debt-snowball-calculator", "debt-payoff-calculator", "debt-to-income-ratio-calculator"],
+    compute(values) {
+      const debts = [
+        { balance: Number(values.debt1Balance), rate: Number(values.debt1Rate), payment: Number(values.debt1Payment), name: "Debt 1" },
+        { balance: Number(values.debt2Balance), rate: Number(values.debt2Rate), payment: Number(values.debt2Payment), name: "Debt 2" },
+        { balance: Number(values.debt3Balance), rate: Number(values.debt3Rate), payment: Number(values.debt3Payment), name: "Debt 3" }
+      ].filter(d => d.balance > 0 && d.payment > 0);
+
+      const extraMonthly = Number(values.extraMonthly) || 0;
+
+      debts.sort((a, b) => b.rate - a.rate);
+
+      const totalMinimumPayment = debts.reduce((sum, d) => sum + d.payment, 0);
+      const totalMonthlyPayment = totalMinimumPayment + extraMonthly;
+
+      let months = 0;
+      let totalInterest = 0;
+      const payoffOrder = [];
+      const remainingDebts = debts.map(d => ({ ...d, remaining: d.balance }));
+
+      while (remainingDebts.some(d => d.remaining > 0) && months < 600) {
+        months++;
+        let availableForExtra = extraMonthly;
+
+        for (let i = 0; i < remainingDebts.length; i++) {
+          if (remainingDebts[i].remaining <= 0) continue;
+
+          const monthlyRate = remainingDebts[i].rate / 100 / 12;
+          const interest = remainingDebts[i].remaining * monthlyRate;
+          totalInterest += interest;
+
+          let payment = remainingDebts[i].payment;
+
+          if (availableForExtra > 0) {
+            const firstUnpaidIndex = remainingDebts.findIndex(d => d.remaining > 0);
+            if (i === firstUnpaidIndex) {
+              payment += availableForExtra;
+              availableForExtra = 0;
+            }
+          }
+
+          const newBalance = remainingDebts[i].remaining + interest - payment;
+
+          if (newBalance <= 0) {
+            remainingDebts[i].remaining = 0;
+            if (!payoffOrder.includes(i)) {
+              payoffOrder.push(i);
+            }
+          } else {
+            remainingDebts[i].remaining = newBalance;
+          }
+        }
+      }
+
+      const snowballComparison = (() => {
+        const snowballDebts = [...debts].sort((a, b) => a.balance - b.balance);
+        let snowballMonths = 0;
+        let snowballInterest = 0;
+        const remaining = snowballDebts.map(d => ({ ...d, remaining: d.balance }));
+
+        while (remaining.some(d => d.remaining > 0) && snowballMonths < 600) {
+          snowballMonths++;
+          let availableForExtra = extraMonthly;
+
+          for (let i = 0; i < remaining.length; i++) {
+            if (remaining[i].remaining <= 0) continue;
+
+            const monthlyRate = remaining[i].rate / 100 / 12;
+            const interest = remaining[i].remaining * monthlyRate;
+            snowballInterest += interest;
+
+            let payment = remaining[i].payment;
+
+            if (availableForExtra > 0) {
+              const firstUnpaidIndex = remaining.findIndex(d => d.remaining > 0);
+              if (i === firstUnpaidIndex) {
+                payment += availableForExtra;
+                availableForExtra = 0;
+              }
+            }
+
+            const newBalance = remaining[i].remaining + interest - payment;
+            remaining[i].remaining = Math.max(0, newBalance);
+          }
+        }
+
+        return { months: snowballMonths, interest: snowballInterest };
+      })();
+
+      const interestSavings = snowballComparison.interest - totalInterest;
+      const totalDebt = debts.reduce((sum, d) => sum + d.balance, 0);
+      const totalPaid = totalDebt + totalInterest;
+
+      return {
+        summary: [
+          { label: "Time to payoff", value: formatYearsAndMonths(months) },
+          { label: "Total interest", value: formatCurrency(totalInterest) },
+          { label: "Interest saved vs snowball", value: interestSavings > 0 ? formatCurrency(interestSavings) : "About the same" }
+        ],
+        details: [
+          { label: "Total debt", value: formatCurrency(totalDebt) },
+          { label: "Minimum payments", value: formatCurrencyPrecise(totalMinimumPayment) },
+          { label: "Extra payment", value: formatCurrencyPrecise(extraMonthly) },
+          { label: "Monthly total payment", value: formatCurrencyPrecise(totalMonthlyPayment) }
+        ],
+        timeline: [
+          { label: "Avalanche total interest", amount: roundCurrency(totalInterest) },
+          { label: "Snowball total interest", amount: roundCurrency(snowballComparison.interest) }
+        ],
+        breakdown: [
+          { label: "Total principal", amount: roundCurrency(totalDebt) },
+          { label: "Total interest", amount: roundCurrency(totalInterest) },
+          { label: "Total paid", amount: roundCurrency(totalPaid) }
+        ],
+        milestones: [
+          { label: "Payoff order", value: payoffOrder.map(i => debts[i].name).join(" → ") || "Add debts to see" },
+          { label: "Avalanche time", value: formatYearsAndMonths(months) },
+          { label: "Interest saved vs snowball", value: interestSavings > 0 ? formatCurrency(interestSavings) : "About the same" }
+        ],
+        note: "Avalanche is mathematically optimal for saving interest. But the best method is the one you'll actually stick with long-term!"
+      };
+    }
+  },
+  {
+    slug: "rule-of-72-calculator",
+    name: "Rule of 72 Calculator",
+    category: "Investing",
+    description: "Quickly estimate how long it takes for your money to double using the Rule of 72, plus see the exact calculation.",
+    intro:
+      "Enter an interest or growth rate to see the Rule of 72 estimate and the exact calculation for doubling your money.",
+    keywords: [
+      "rule of 72 calculator",
+      "how long to double money",
+      "double investment calculator",
+      "rule of 72 compound interest"
+    ],
+    defaults: {
+      annualRate: 7,
+      initialAmount: 10000,
+      compareRate: 5
+    },
+    inputs: [
+      { name: "annualRate", label: "Annual rate of return", suffix: "%", min: 0, max: 50, step: 0.1 },
+      { name: "initialAmount", label: "Initial amount", prefix: "$", min: 0, step: 1000 }
+    ],
+    advancedInputs: [
+      { name: "compareRate", label: "Compare with rate", suffix: "%", min: 0, max: 50, step: 0.1 }
+    ],
+    presets: true,
+    example: "At 7%, your money doubles about every 10.3 years using the Rule of 72. The exact calculation shows 10.24 years—very close!",
+    sections: [
+      {
+        title: "What is the Rule of 72?",
+        body:
+          "The Rule of 72 is a quick mental shortcut to estimate how long it takes for money to double. Simply divide 72 by the annual growth rate to get the approximate number of years. It works for interest rates, inflation, or any growth scenario."
+      },
+      {
+        title: "Why 72 works so well",
+        body:
+          "72 is chosen because it's easily divisible by many common numbers (2, 3, 4, 6, 8, 9, 12), making mental math easy. It's most accurate around 7-10%, but works reasonably well across a wide range of rates."
+      },
+      {
+        title: "The Rule of 72 in reverse",
+        body:
+          "You can also use it in reverse: if you want to double your money in 8 years, what rate do you need? 72 ÷ 8 = 9%. It's great for setting realistic expectations about investment growth."
+      }
+    ],
+    faqs: [
+      {
+        question: "How accurate is the Rule of 72?",
+        answer: "It's very accurate for rates between 6-10%. For lower rates, you might use 70, and for higher rates, 74 or 76. But 72 is excellent as a general rule of thumb."
+      },
+      {
+        question: "Can I use the Rule of 72 for anything else?",
+        answer: "Absolutely! It works for inflation (how long until money halves in value), GDP growth, population growth, or anything that compounds. Just remember it's an estimate."
+      }
+    ],
+    related: ["compound-interest-calculator", "roi-calculator", "cagr-calculator"],
+    compute(values) {
+      const annualRate = Number(values.annualRate);
+      const initialAmount = Number(values.initialAmount);
+      const compareRate = Number(values.compareRate);
+
+      const ruleOf72Years = annualRate > 0 ? 72 / annualRate : 0;
+      const exactYears = annualRate > 0 ? Math.log(2) / Math.log(1 + annualRate / 100) : 0;
+      const difference = Math.abs(ruleOf72Years - exactYears);
+
+      const ruleOf72Compare = compareRate > 0 ? 72 / compareRate : 0;
+      const exactCompare = compareRate > 0 ? Math.log(2) / Math.log(1 + compareRate / 100) : 0;
+
+      const futureValueAtDouble = initialAmount * 2;
+
+      const quadrupleRuleYears = ruleOf72Years * 2;
+      const quadrupleExactYears = exactYears * 2;
+
+      const timelineData = [];
+      let amount = initialAmount;
+      let years = 0;
+      while (amount < futureValueAtDouble * 2 && years < 100) {
+        amount = amount * (1 + annualRate / 100);
+        years++;
+        if (years % 5 === 0 || amount >= futureValueAtDouble) {
+          timelineData.push({ label: `Year ${years}`, amount: roundCurrency(amount) });
+        }
+        if (amount >= futureValueAtDouble * 2) break;
+      }
+
+      return {
+        summary: [
+          { label: "Rule of 72 estimate", value: `${ruleOf72Years.toFixed(1)} years` },
+          { label: "Exact calculation", value: `${exactYears.toFixed(2)} years` },
+          { label: "Doubled amount", value: formatCurrency(futureValueAtDouble) }
+        ],
+        details: [
+          { label: "At this rate", value: formatPercent(annualRate) },
+          { label: "Rule of 72", value: `72 ÷ ${annualRate} = ${ruleOf72Years.toFixed(1)} years` },
+          { label: "Exact formula", value: `ln(2) ÷ ln(1 + r) = ${exactYears.toFixed(2)} years` },
+          { label: "Difference", value: difference < 0.5 ? "Very close!" : `About ${difference.toFixed(1)} years off` }
+        ],
+        timeline: timelineData.length > 0 ? timelineData : [
+          { label: "Year 0", amount: roundCurrency(initialAmount) },
+          { label: "Double", amount: roundCurrency(futureValueAtDouble) },
+          { label: "Quadruple", amount: roundCurrency(futureValueAtDouble * 2) }
+        ],
+        breakdown: [
+          { label: "Time to double", amount: roundCurrency(exactYears) },
+          { label: "Time to quadruple", amount: roundCurrency(quadrupleExactYears) }
+        ],
+        milestones: compareRate > 0 ? [
+          { label: `At ${annualRate}%`, value: `${ruleOf72Years.toFixed(1)} years to double` },
+          { label: `At ${compareRate}%`, value: `${ruleOf72Compare.toFixed(1)} years to double` },
+          { label: "Difference", value: `${Math.abs(ruleOf72Years - ruleOf72Compare).toFixed(1)} years` }
+        ] : [
+          { label: "Time to double", value: `${ruleOf72Years.toFixed(1)} years` },
+          { label: "Time to quadruple", value: `${quadrupleRuleYears.toFixed(1)} years` },
+          { label: "Time to 8x", value: `${(ruleOf72Years * 3).toFixed(1)} years` }
+        ],
+        note: "The Rule of 72 is a great estimate! Use our compound interest calculator for more detailed projections."
+      };
+    }
+  },
+  {
+    slug: "apy-calculator",
+    name: "APY Calculator",
+    category: "Savings",
+    description: "Calculate the Annual Percentage Yield (APY) from an interest rate and compounding frequency.",
+    intro:
+      "Enter an interest rate and how often it compounds to see the APY—the effective annual rate you'll actually earn.",
+    keywords: [
+      "apy calculator",
+      "annual percentage yield calculator",
+      "interest rate to apy",
+      "compound interest apy"
+    ],
+    defaults: {
+      annualRate: 4.5,
+      compounding: 12,
+      initialDeposit: 10000,
+      years: 1
+    },
+    inputs: [
+      { name: "annualRate", label: "Interest rate (APR)", suffix: "%", min: 0, max: 25, step: 0.01 },
+      { name: "initialDeposit", label: "Initial deposit", prefix: "$", min: 0, step: 1000 }
+    ],
+    advancedInputs: [
+      { name: "compounding", label: "Compounds per year", min: 1, max: 365, step: 1 },
+      { name: "years", label: "Time period", suffix: "years", min: 1, max: 40, step: 1 }
+    ],
+    presets: true,
+    example: "A 4.5% interest rate compounded monthly gives an APY of about 4.59%, meaning you'll earn $459 on a $10,000 deposit in one year.",
+    sections: [
+      {
+        title: "APY vs APR—what's the difference?",
+        body:
+          "APR (Annual Percentage Rate) is the base interest rate. APY (Annual Percentage Yield) includes the effect of compounding. The more frequently interest compounds, the higher the APY will be compared to the APR."
+      },
+      {
+        title: "Why compounding frequency matters",
+        body:
+          "Compounding means you earn interest on interest. Monthly compounding is better than annual, and daily is better than monthly. The difference adds up over time, especially with larger balances."
+      },
+      {
+        title: "Comparing APYs across accounts",
+        body:
+          "When comparing savings accounts, CDs, or money market accounts, always compare APYs, not APRs. APY lets you compare accounts with different compounding frequencies on an equal basis."
+      }
+    ],
+    faqs: [
+      {
+        question: "What's the formula for APY?",
+        answer: "APY = (1 + r/n)^n - 1, where r is the annual interest rate and n is the number of compounding periods per year. We calculate this automatically for you!"
+      },
+      {
+        question: "Is higher compounding always better?",
+        answer: "Yes, for the same APR. Daily compounding will give you slightly more than monthly, which gives more than annual. But if one account has a higher APR but less frequent compounding, compare the APYs!"
+      }
+    ],
+    related: ["compound-interest-calculator", "cd-calculator", "savings-goal-calculator"],
+    compute(values) {
+      const annualRate = Number(values.annualRate);
+      const initialDeposit = Number(values.initialDeposit);
+      const compounding = Number(values.compounding) || 12;
+      const years = Number(values.years) || 1;
+
+      const periodicRate = annualRate / 100 / compounding;
+      const apy = Math.pow(1 + periodicRate, compounding) - 1;
+      const apyPercent = apy * 100;
+
+      const futureValue = initialDeposit * Math.pow(1 + periodicRate, compounding * years);
+      const totalInterest = futureValue - initialDeposit;
+
+      const simpleInterest = initialDeposit * (annualRate / 100) * years;
+      const compoundingBenefit = totalInterest - simpleInterest;
+
+      const annualCompoundingApy = Math.pow(1 + annualRate / 100, 1) - 1;
+      const dailyCompoundingApy = Math.pow(1 + annualRate / 100 / 365, 365) - 1;
+
+      const timeline = [];
+      for (let year = 1; year <= Math.min(years, 10); year++) {
+        const value = initialDeposit * Math.pow(1 + periodicRate, compounding * year);
+        timeline.push({ label: `Year ${year}`, amount: roundCurrency(value) });
+      }
+
+      return {
+        summary: [
+          { label: "Annual Percentage Yield", value: formatPercent(apyPercent) },
+          { label: "Interest earned", value: formatCurrency(totalInterest) },
+          { label: "Future value", value: formatCurrency(futureValue) }
+        ],
+        details: [
+          { label: "Stated APR", value: formatPercent(annualRate) },
+          { label: "Compounding", value: `${compounding} times per year` },
+          { label: "Compounding benefit", value: formatCurrency(compoundingBenefit) },
+          { label: "Periodic rate", value: formatPercent((periodicRate * 100)) }
+        ],
+        timeline,
+        breakdown: [
+          { label: "Initial deposit", amount: roundCurrency(initialDeposit) },
+          { label: "Interest earned", amount: roundCurrency(totalInterest) },
+          { label: "Future value", amount: roundCurrency(futureValue) }
+        ],
+        milestones: [
+          { label: "With annual compounding", value: formatPercent(annualCompoundingApy * 100) },
+          { label: "With monthly compounding", value: formatPercent(apyPercent) },
+          { label: "With daily compounding", value: formatPercent(dailyCompoundingApy * 100) }
+        ],
+        note: "APY is the effective annual rate that includes compounding. Use it to compare accounts on an equal basis!"
+      };
+    }
+  },
+  {
+    slug: "rental-property-calculator",
+    name: "Rental Property Calculator",
+    category: "Investing",
+    description: "Calculate cash flow, cash-on-cash return, cap rate, and other key metrics for a rental property investment.",
+    intro:
+      "Enter property details, income, and expenses to analyze if a rental property is a good investment for you.",
+    keywords: [
+      "rental property calculator",
+      "real estate investment calculator",
+      "cash flow calculator",
+      "cap rate calculator",
+      "rental cash flow"
+    ],
+    defaults: {
+      propertyValue: 400000,
+      downPayment: 80000,
+      interestRate: 6.5,
+      loanTerm: 30,
+      monthlyRent: 2500,
+      propertyTax: 400,
+      insurance: 100,
+      maintenance: 200,
+      vacancyRate: 5,
+      otherExpenses: 100
+    },
+    inputs: [
+      { name: "propertyValue", label: "Property value", prefix: "$", min: 0, step: 10000 },
+      { name: "downPayment", label: "Down payment", prefix: "$", min: 0, step: 5000 },
+      { name: "monthlyRent", label: "Monthly rent", prefix: "$", min: 0, step: 100 },
+      { name: "interestRate", label: "Interest rate", suffix: "%", min: 0, step: 0.1 }
+    ],
+    advancedInputs: [
+      { name: "loanTerm", label: "Loan term", suffix: "years", min: 5, max: 40, step: 5 },
+      { name: "propertyTax", label: "Property tax/month", prefix: "$", min: 0, step: 50 },
+      { name: "insurance", label: "Insurance/month", prefix: "$", min: 0, step: 25 },
+      { name: "maintenance", label: "Maintenance/month", prefix: "$", min: 0, step: 25 },
+      { name: "vacancyRate", label: "Vacancy rate", suffix: "%", min: 0, max: 30, step: 1 },
+      { name: "otherExpenses", label: "Other expenses/month", prefix: "$", min: 0, step: 50 }
+    ],
+    presets: true,
+    example: "A $400,000 property with 20% down renting for $2,500/month should cash flow positively if expenses are managed well.",
+    sections: [
+      {
+        title: "Understanding key rental metrics",
+        body:
+          "Cash flow is income minus expenses. Cash-on-cash return measures annual cash flow against your down payment. Cap rate is net operating income divided by property value, useful for comparing properties."
+      },
+      {
+        title: "Don't forget vacancy and maintenance",
+        body:
+          "New investors often underestimate vacancy costs and maintenance. A good rule of thumb is 5-10% for vacancy and 1-2% of property value annually for maintenance."
+      },
+      {
+        title: "The 1% rule as a quick check",
+        body:
+          "A quick screening test: the monthly rent should be at least 1% of the purchase price. It's not perfect, but it helps filter properties worth analyzing more deeply."
+      }
+    ],
+    faqs: [
+      {
+        question: "What's a good cash-on-cash return?",
+        answer: "Many investors look for 8-12% or more, depending on the market and risk. Higher is better, but make sure your assumptions about rent and expenses are realistic."
+      },
+      {
+        question: "What's cap rate?",
+        answer: "Cap rate is net operating income divided by property value. It measures return if you bought the property all cash, making it great for comparing properties across different markets."
+      }
+    ],
+    related: ["mortgage-calculator", "roi-calculator", "compound-interest-calculator"],
+    compute(values) {
+      const propertyValue = Number(values.propertyValue);
+      const downPayment = Number(values.downPayment);
+      const loanAmount = Math.max(0, propertyValue - downPayment);
+      const interestRate = Number(values.interestRate);
+      const loanTerm = Number(values.loanTerm) || 30;
+      const monthlyRent = Number(values.monthlyRent);
+      const propertyTax = Number(values.propertyTax);
+      const insurance = Number(values.insurance);
+      const maintenance = Number(values.maintenance);
+      const vacancyRate = Number(values.vacancyRate) / 100;
+      const otherExpenses = Number(values.otherExpenses);
+
+      const monthlyMortgage = loanAmount > 0 ? paymentForLoan(loanAmount, interestRate, loanTerm) : 0;
+
+      const annualRent = monthlyRent * 12;
+      const vacancyLoss = annualRent * vacancyRate;
+      const effectiveGrossIncome = annualRent - vacancyLoss;
+
+      const annualPropertyTax = propertyTax * 12;
+      const annualInsurance = insurance * 12;
+      const annualMaintenance = maintenance * 12;
+      const annualOther = otherExpenses * 12;
+
+      const annualOperatingExpenses = annualPropertyTax + annualInsurance + annualMaintenance + annualOther;
+      const netOperatingIncome = effectiveGrossIncome - annualOperatingExpenses;
+
+      const annualMortgagePayment = monthlyMortgage * 12;
+      const annualCashFlow = netOperatingIncome - annualMortgagePayment;
+      const monthlyCashFlow = annualCashFlow / 12;
+
+      const capRate = propertyValue > 0 ? (netOperatingIncome / propertyValue) * 100 : 0;
+      const cashOnCashReturn = downPayment > 0 ? (annualCashFlow / downPayment) * 100 : 0;
+
+      const onePercentRule = (monthlyRent / propertyValue) * 100;
+      const meetsOnePercent = onePercentRule >= 1;
+
+      const grossRentMultiplier = propertyValue > 0 ? propertyValue / annualRent : 0;
+
+      const breakEvenRatio = annualOperatingExpenses + annualMortgagePayment;
+      const breakEvenPercent = annualRent > 0 ? (breakEvenRatio / annualRent) * 100 : 0;
+
+      return {
+        summary: [
+          { label: "Monthly cash flow", value: monthlyCashFlow >= 0 ? formatCurrencyPrecise(monthlyCashFlow) : `-$${formatCurrencyPrecise(Math.abs(monthlyCashFlow))}` },
+          { label: "Cash-on-cash return", value: formatPercent(cashOnCashReturn) },
+          { label: "Cap rate", value: formatPercent(capRate) }
+        ],
+        details: [
+          { label: "Annual rent", value: formatCurrency(annualRent) },
+          { label: "Net operating income", value: formatCurrency(netOperatingIncome) },
+          { label: "Annual mortgage", value: formatCurrency(annualMortgagePayment) },
+          { label: "Down payment", value: formatCurrency(downPayment) }
+        ],
+        timeline: [
+          { label: "Annual cash flow", amount: roundCurrency(annualCashFlow) },
+          { label: "5-year cash flow", amount: roundCurrency(annualCashFlow * 5) },
+          { label: "10-year cash flow", amount: roundCurrency(annualCashFlow * 10) }
+        ],
+        breakdown: [
+          { label: "Annual rent", amount: roundCurrency(annualRent) },
+          { label: "Less vacancy", amount: -roundCurrency(vacancyLoss) },
+          { label: "Less expenses", amount: -roundCurrency(annualOperatingExpenses) },
+          { label: "Less debt service", amount: -roundCurrency(annualMortgagePayment) },
+          { label: "Cash flow", amount: roundCurrency(annualCashFlow) }
+        ],
+        milestones: [
+          { label: "1% rule check", value: meetsOnePercent ? "Meets 1% rule" : "Below 1% rule" },
+          { label: "GRM (gross rent multiplier)", value: grossRentMultiplier.toFixed(1) },
+          { label: "Break-even occupancy", value: formatPercent(breakEvenPercent) }
+        ],
+        note: "This is an estimate. Run conservative numbers—vacancy and maintenance are often higher than new investors expect."
+      };
+    }
   }
 ];
 
@@ -3191,7 +4575,8 @@ export const calculatorCategories = [
       "refinance-calculator",
       "home-affordability-calculator",
       "rent-vs-buy-calculator",
-      "extra-payment-mortgage-calculator"
+      "extra-payment-mortgage-calculator",
+      "pmi-calculator"
     ]
   },
   {
@@ -3201,7 +4586,11 @@ export const calculatorCategories = [
       "debt-payoff-calculator",
       "credit-card-payoff-calculator",
       "auto-loan-calculator",
-      "debt-to-income-ratio-calculator"
+      "debt-to-income-ratio-calculator",
+      "student-loan-calculator",
+      "car-affordability-calculator",
+      "debt-snowball-calculator",
+      "debt-avalanche-calculator"
     ]
   },
   {
@@ -3211,7 +4600,8 @@ export const calculatorCategories = [
       "salary-calculator",
       "income-tax-calculator",
       "sales-tax-calculator",
-      "self-employment-tax-calculator"
+      "self-employment-tax-calculator",
+      "capital-gains-tax-calculator"
     ]
   },
   {
@@ -3221,7 +4611,9 @@ export const calculatorCategories = [
       "roi-calculator",
       "cagr-calculator",
       "dividend-calculator",
-      "inflation-calculator"
+      "inflation-calculator",
+      "rule-of-72-calculator",
+      "rental-property-calculator"
     ]
   },
   {
@@ -3230,11 +4622,11 @@ export const calculatorCategories = [
   },
   {
     title: "Savings",
-    slugs: ["savings-goal-calculator", "emergency-fund-calculator", "cd-calculator"]
+    slugs: ["savings-goal-calculator", "emergency-fund-calculator", "cd-calculator", "apy-calculator"]
   },
   {
     title: "Budgeting",
-    slugs: ["budget-calculator", "net-worth-calculator", "50-30-20-budget-calculator"]
+    slugs: ["budget-calculator", "net-worth-calculator", "50-30-20-budget-calculator", "life-insurance-calculator"]
   }
 ];
 

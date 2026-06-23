@@ -726,6 +726,190 @@ function FiftyThirtyTwentyArt() {
   );
 }
 
+/* 31. PMI Calculator — House with shield showing 20% */
+function PmiArt() {
+  const id = "ca-pmi";
+  return (
+    <Frame id={id} label="PMI Calculator">
+      <Backdrop id={id} tone="mint" />
+      <g transform="translate(-6 8) scale(0.9)">
+        <House id={id} />
+      </g>
+      <g className="emt-float">
+        <path d="M90 80c6-14 24-14 30 0l12 46H78l12-46Z" fill={`url(#${id}-mint)`} stroke={P.ink} strokeWidth="4" />
+        <text x="105" y="120" textAnchor="middle" fontSize="14" fontWeight="800" fill={P.ink}>20%</text>
+      </g>
+      <circle cx="150" cy="70" r="14" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+      <text x="150" y="76" textAnchor="middle" fontSize="12" fontWeight="800" fill="#fff">PMI</text>
+    </Frame>
+  );
+}
+
+/* 32. Student Loan Calculator — Grad cap with books and money */
+function StudentLoanArt() {
+  const id = "ca-student";
+  return (
+    <Frame id={id} label="Student Loan Calculator">
+      <Backdrop id={id} tone="sky" />
+      <path d="M50 110l50-30 50 30v32a8 8 0 0 1-8 8H58a8 8 0 0 1-8-8v-32Z" fill={`url(#${id}-cream)`} stroke={P.ink} strokeWidth="5" />
+      <path d="M100 80l-50 30" fill="none" stroke={P.ink} strokeWidth="4" />
+      <path d="M70 98h60" fill="none" stroke={P.ink} strokeWidth="4" />
+      <circle cx="64" cy="80" r="18" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+      <text x="64" y="86" textAnchor="middle" fontSize="14" fontWeight="800" fill="#fff">$</text>
+    </Frame>
+  );
+}
+
+/* 33. Capital Gains Tax Calculator — Buy/Sell arrows with tax form */
+function CapitalGainsArt() {
+  const id = "ca-gains";
+  return (
+    <Frame id={id} label="Capital Gains Tax Calculator">
+      <Backdrop id={id} tone="cream" />
+      <rect x="50" y="80" width="100" height="72" rx="10" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <rect x="62" y="92" width="40" height="6" rx="3" fill={P.greenSoft} />
+      <rect x="62" y="106" width="70" height="5" rx="2.5" fill="#cdd8d4" />
+      <rect x="62" y="118" width="55" height="5" rx="2.5" fill="#cdd8d4" />
+      <path d="M40 110h16M56 110l-6-6M56 110l-6 6" fill="none" stroke={P.green} strokeWidth="5" strokeLinecap="round" />
+      <path d="M144 110h-16M128 110l6-6M128 110l6 6" fill="none" stroke={P.gold} strokeWidth="5" strokeLinecap="round" />
+      <text x="78" y="104" textAnchor="middle" fontSize="10" fontWeight="700" fill={P.ink}>BUY</text>
+      <text x="122" y="104" textAnchor="middle" fontSize="10" fontWeight="700" fill={P.ink}>SELL</text>
+      <g className="emt-twinkle">
+        <rect x="120" y="130" width="24" height="14" rx="4" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="2.5" />
+        <text x="132" y="141" textAnchor="middle" fontSize="8" fontWeight="800" fill="#fff">TAX</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 34. Life Insurance Calculator — Shield with family and heart */
+function LifeInsuranceArt() {
+  const id = "ca-life";
+  return (
+    <Frame id={id} label="Life Insurance Calculator">
+      <Backdrop id={id} tone="sky" />
+      <path d="M88 50l52 18v44c0 32-26 48-52 56-22-8-44-26-44-56V68Z" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <path d="M88 50l52 18v44c0 32-26 48-52 56Z" fill={P.greenSofter} />
+      <g className="emt-float">
+        <circle cx="114" cy="102" r="8" fill={P.ink} />
+        <path d="M96 106c0-8 12-14 18-10s18 2 18 10c0 10-18 16-18 16s-18-6-18-16Z" fill={P.gold} stroke={P.ink} strokeWidth="3" />
+      </g>
+    </Frame>
+  );
+}
+
+/* 35. Car Affordability Calculator — Car with steering wheel and budget tag */
+function CarAffordArt() {
+  const id = "ca-car-afford";
+  return (
+    <Frame id={id} label="Car Affordability Calculator">
+      <Backdrop id={id} tone="cream" />
+      <path d="M40 124l10-26a12 12 0 0 1 11-8h54a12 12 0 0 1 10 6l14 24" fill="none" stroke={P.ink} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M36 124h120a6 6 0 0 1 6 6v12a4 4 0 0 1-4 4H34a4 4 0 0 1-4-4v-12a6 6 0 0 1 6-6Z" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <path d="M52 98h44v18H46Z" fill={P.greenSoft} opacity="0.7" />
+      <circle cx="62" cy="148" r="13" fill={P.ink} />
+      <circle cx="62" cy="148" r="5" fill="#ffffff" />
+      <circle cx="134" cy="148" r="13" fill={P.ink} />
+      <circle cx="134" cy="148" r="5" fill="#ffffff" />
+      <g className="emt-pulse">
+        <circle cx="150" cy="70" r="14" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <text x="150" y="76" textAnchor="middle" fontSize="10" fontWeight="800" fill="#fff">$</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 36. Debt Snowball Calculator — Snowball rolling down with quick wins */
+function DebtSnowballArt() {
+  const id = "ca-snowball";
+  return (
+    <Frame id={id} label="Debt Snowball Calculator">
+      <Backdrop id={id} tone="sky" />
+      <path d="M56 134l10-34 20 10 18-32 24 18 16-36" fill="none" stroke="#cdd8d4" strokeWidth="6" strokeLinecap="round" />
+      <g className="emt-float">
+        <circle cx="70" cy="100" r="10" fill={P.greenSoft} stroke={P.ink} strokeWidth="3" />
+      </g>
+      <g className="emt-float" style={{ animationDelay: "0.1s" }}>
+        <circle cx="92" cy="84" r="14" fill={P.greenSoft} stroke={P.ink} strokeWidth="3.5" />
+      </g>
+      <g className="emt-float" style={{ animationDelay: "0.2s" }}>
+        <circle cx="120" cy="64" r="20" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <text x="120" y="70" textAnchor="middle" fontSize="14" fontWeight="800" fill="#fff">WIN</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 37. Debt Avalanche Calculator — Mountain with highest interest first */
+function DebtAvalancheArt() {
+  const id = "ca-avalanche";
+  return (
+    <Frame id={id} label="Debt Avalanche Calculator">
+      <Backdrop id={id} tone="cream" />
+      <path d="M40 142l60-70 60 70" fill={P.greenSoft} stroke={P.ink} strokeWidth="5" strokeLinejoin="round" />
+      <path d="M74 118l26-30 26 30" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" strokeLinejoin="round" />
+      <text x="100" y="110" textAnchor="middle" fontSize="16" fontWeight="800" fill="#fff">%</text>
+    </Frame>
+  );
+}
+
+/* 38. Rule of 72 Calculator — 72 number with doubling coins and curve */
+function RuleOf72Art() {
+  const id = "ca-rule72";
+  return (
+    <Frame id={id} label="Rule of 72 Calculator">
+      <Backdrop id={id} tone="mint" />
+      <text x="100" y="112" textAnchor="middle" fontSize="48" fontWeight="900" fill={P.ink}>72</text>
+      <g className="emt-float" style={{ animationDelay: "0.1s" }}>
+        <Coin id={id} cx="60" cy="140" r="12" />
+      </g>
+      <g className="emt-float" style={{ animationDelay: "0.3s" }}>
+        <Coin id={id} cx="90" cy="134" r="14" />
+      </g>
+      <g className="emt-float" style={{ animationDelay: "0.5s" }}>
+        <Coin id={id} cx="125" cy="126" r="16" />
+      </g>
+    </Frame>
+  );
+}
+
+/* 39. APY Calculator — Bank building with % badge and compounding timeline */
+function ApyArt() {
+  const id = "ca-apy";
+  return (
+    <Frame id={id} label="APY Calculator">
+      <Backdrop id={id} tone="cream" />
+      <rect x="60" y="64" width="80" height="86" rx="8" fill={`url(#${id}-white)`} stroke={P.ink} strokeWidth="5" />
+      <rect x="60" y="64" width="80" height="18" rx="8" fill={P.greenSoft} stroke={P.ink} strokeWidth="5" />
+      <rect x="72" y="90" width="16" height="16" rx="3" fill={`url(#${id}-cream)`} stroke={P.ink} strokeWidth="3" />
+      <rect x="92" y="90" width="16" height="16" rx="3" fill={`url(#${id}-cream)`} stroke={P.ink} strokeWidth="3" />
+      <rect x="112" y="90" width="16" height="16" rx="3" fill={`url(#${id}-cream)`} stroke={P.ink} strokeWidth="3" />
+      <g className="emt-pulse">
+        <circle cx="150" cy="74" r="15" fill="#ffffff" stroke={P.gold} strokeWidth="4" />
+        <text x="150" y="80" textAnchor="middle" fontSize="13" fontWeight="800" fill={P.ink}>%</text>
+      </g>
+    </Frame>
+  );
+}
+
+/* 40. Rental Property Calculator — Rental house with cash flow indicator */
+function RentalPropertyArt() {
+  const id = "ca-rental";
+  return (
+    <Frame id={id} label="Rental Property Calculator">
+      <Backdrop id={id} tone="mint" />
+      <g transform="translate(-6 8) scale(0.9)">
+        <House id={id} />
+      </g>
+      <text x="100" y="164" textAnchor="middle" fontSize="10" fontWeight="700" fill={P.ink}>RENT</text>
+      <g className="emt-twinkle">
+        <circle cx="150" cy="74" r="15" fill={`url(#${id}-gold)`} stroke={P.ink} strokeWidth="4" />
+        <text x="150" y="80" textAnchor="middle" fontSize="12" fontWeight="800" fill="#fff">CF</text>
+      </g>
+    </Frame>
+  );
+}
+
 const artBySlug = {
   "mortgage-amortization-calculator": MortgageAmortizationArt,
   "refinance-calculator": RefinanceArt,
@@ -756,7 +940,17 @@ const artBySlug = {
   "credit-card-payoff-calculator": CreditCardPayoffArt,
   "auto-loan-calculator": AutoLoanArt,
   "cd-calculator": CdArt,
-  "50-30-20-budget-calculator": FiftyThirtyTwentyArt
+  "50-30-20-budget-calculator": FiftyThirtyTwentyArt,
+  "pmi-calculator": PmiArt,
+  "student-loan-calculator": StudentLoanArt,
+  "capital-gains-tax-calculator": CapitalGainsArt,
+  "life-insurance-calculator": LifeInsuranceArt,
+  "car-affordability-calculator": CarAffordArt,
+  "debt-snowball-calculator": DebtSnowballArt,
+  "debt-avalanche-calculator": DebtAvalancheArt,
+  "rule-of-72-calculator": RuleOf72Art,
+  "apy-calculator": ApyArt,
+  "rental-property-calculator": RentalPropertyArt
 };
 
 export function CalculatorArt({ slug, category }) {

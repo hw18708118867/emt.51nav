@@ -19,6 +19,16 @@ import CreditCardDebtGuide from "@/content/guides/paying-off-credit-card-debt.md
 import CarPaymentGuide from "@/content/guides/what-drives-your-car-payment.mdx";
 import CdGuide from "@/content/guides/how-cds-work.mdx";
 import BudgetRuleGuide from "@/content/guides/the-50-30-20-budget-rule.mdx";
+import PmiGuide from "@/content/guides/what-is-pmi-and-how-to-avoid-it.mdx";
+import StudentLoanGuide from "@/content/guides/student-loan-basics.mdx";
+import CapitalGainsGuide from "@/content/guides/capital-gains-tax-explained.mdx";
+import LifeInsuranceGuide from "@/content/guides/life-insurance-basics.mdx";
+import CarAffordabilityGuide from "@/content/guides/how-much-car-can-i-afford.mdx";
+import DebtSnowballGuide from "@/content/guides/debt-snowball-method.mdx";
+import DebtAvalancheGuide from "@/content/guides/debt-avalanche-method.mdx";
+import RuleOf72Guide from "@/content/guides/rule-of-72-explained.mdx";
+import ApyGuide from "@/content/guides/what-is-apy.mdx";
+import RentalPropertyGuide from "@/content/guides/rental-property-investing.mdx";
 import HsaLimitsBlog from "@/content/blog/2026-hsa-contribution-limits.mdx";
 import RetirementLimitsBlog from "@/content/blog/2026-retirement-contribution-limits.mdx";
 import CreditReportsBlog from "@/content/blog/check-credit-reports-for-free.mdx";
@@ -308,6 +318,136 @@ export const guides = [
     takeaway: "The split is a benchmark for spotting where your money is tight, not a rule to obey exactly.",
     relatedCalculators: ["50-30-20-budget-calculator", "budget-calculator", "savings-goal-calculator"],
     Content: BudgetRuleGuide
+  },
+  {
+    slug: "what-is-pmi-and-how-to-avoid-it",
+    title: "What is PMI and How to Avoid It",
+    description: "Understand what Private Mortgage Insurance is, how it's calculated, and strategies to avoid it or remove it sooner.",
+    readingTime: "6 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Housing",
+    audience: "Homebuyers considering a low down payment and homeowners with existing PMI",
+    takeaway: "PMI is a temporary cost that lets you buy a home earlier, and extra principal payments can remove it faster.",
+    relatedCalculators: ["pmi-calculator", "mortgage-calculator", "home-affordability-calculator"],
+    Content: PmiGuide
+  },
+  {
+    slug: "student-loan-basics",
+    title: "Student Loan Basics",
+    description: "Learn the difference between federal and private student loans, how interest works, and strategies for repayment.",
+    readingTime: "7 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Debt",
+    audience: "Students, parents, and graduates navigating student loan repayment",
+    takeaway: "Federal loans usually have better protections, and understanding your repayment options can save money and stress.",
+    relatedCalculators: ["student-loan-calculator", "debt-to-income-ratio-calculator", "debt-payoff-calculator"],
+    Content: StudentLoanGuide
+  },
+  {
+    slug: "capital-gains-tax-explained",
+    title: "Capital Gains Tax Explained",
+    description: "How short-term and long-term capital gains are taxed, how cost basis works, and how losses can offset gains.",
+    readingTime: "6 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Taxes",
+    audience: "Investors selling stocks, real estate, or other assets with gains",
+    takeaway: "Holding investments for more than a year can mean significantly lower tax rates on your gains.",
+    relatedCalculators: ["capital-gains-tax-calculator", "income-tax-calculator", "compound-interest-calculator"],
+    Content: CapitalGainsGuide
+  },
+  {
+    slug: "life-insurance-basics",
+    title: "Life Insurance Basics",
+    description: "Understand the difference between term and permanent life insurance, how much coverage you need, and what affects your premium.",
+    readingTime: "7 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Insurance",
+    audience: "People with dependents or financial obligations who want to protect their family",
+    takeaway: "For most people, term life insurance is enough—the goal is to replace income, not leave an inheritance.",
+    relatedCalculators: ["life-insurance-calculator", "net-worth-calculator", "budget-calculator"],
+    Content: LifeInsuranceGuide
+  },
+  {
+    slug: "how-much-car-can-i-afford",
+    title: "How Much Car Can I Afford?",
+    description: "A practical guide to car affordability, including the 20/4/10 rule, total ownership costs, and loan term tradeoffs.",
+    readingTime: "6 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Debt",
+    audience: "Car buyers planning their next vehicle purchase",
+    takeaway: "The most you can get approved for is rarely what you can actually afford without straining your budget.",
+    relatedCalculators: ["car-affordability-calculator", "auto-loan-calculator", "budget-calculator"],
+    Content: CarAffordabilityGuide
+  },
+  {
+    slug: "debt-snowball-method",
+    title: "The Debt Snowball Method",
+    description: "How the debt snowball works, why it focuses on small wins first, and when it's the right payoff strategy for you.",
+    readingTime: "6 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Debt",
+    audience: "People with multiple debts who need motivation to stay on track",
+    takeaway: "The snowball might not save the most interest, but it can be the best method if it means you actually become debt-free.",
+    relatedCalculators: ["debt-snowball-calculator", "debt-payoff-calculator", "budget-calculator"],
+    Content: DebtSnowballGuide
+  },
+  {
+    slug: "debt-avalanche-method",
+    title: "The Debt Avalanche Method",
+    description: "How the debt avalanche targets high-interest debt first, how much interest it can save, and how it compares to the snowball.",
+    readingTime: "6 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Debt",
+    audience: "People with high-interest debt who want to pay it off as cheaply as possible",
+    takeaway: "The avalanche is mathematically optimal, but only if you can stay disciplined when progress feels slow.",
+    relatedCalculators: ["debt-avalanche-calculator", "debt-payoff-calculator", "budget-calculator"],
+    Content: DebtAvalancheGuide
+  },
+  {
+    slug: "rule-of-72-explained",
+    title: "The Rule of 72 Explained",
+    description: "How this quick mental shortcut estimates when your money will double, and what it reveals about compounding.",
+    readingTime: "5 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Investing",
+    audience: "Investors who want a simple way to think about growth and compounding",
+    takeaway: "The Rule of 72 makes compounding tangible—the real money is made in the later doublings, not the early ones.",
+    relatedCalculators: ["rule-of-72-calculator", "compound-interest-calculator", "retirement-calculator"],
+    Content: RuleOf72Guide
+  },
+  {
+    slug: "what-is-apy",
+    title: "What is APY?",
+    description: "Understand Annual Percentage Yield, how it's different from APR, and why it's the best way to compare savings accounts.",
+    readingTime: "5 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Savings",
+    audience: "Savers comparing high-yield savings accounts, CDs, and other deposit products",
+    takeaway: "APY is the apples-to-apples comparison because it includes the effect of compounding.",
+    relatedCalculators: ["apy-calculator", "cd-calculator", "savings-goal-calculator"],
+    Content: ApyGuide
+  },
+  {
+    slug: "rental-property-investing",
+    title: "Rental Property Investing",
+    description: "How to analyze a rental property, calculate cash flow and cap rate, and what expenses people usually underestimate.",
+    readingTime: "7 min read",
+    publishedAt: "June 23, 2026",
+    updatedAt: "June 23, 2026",
+    category: "Investing",
+    audience: "People considering buying their first rental property or expanding their portfolio",
+    takeaway: "Cash flow is king—counting on appreciation alone is risky, and the best deals work even if prices stay flat.",
+    relatedCalculators: ["rental-property-calculator", "mortgage-calculator", "roi-calculator"],
+    Content: RentalPropertyGuide
   }
 ];
 
