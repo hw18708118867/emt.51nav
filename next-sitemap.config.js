@@ -23,6 +23,20 @@ function resolveSiteUrl() {
 
 const siteUrl = resolveSiteUrl();
 
+// Canonical list of every calculator slug. This is a safety net for the
+// sitemap: next-sitemap scans the exported /calculators/* pages, but we also
+// emit each calculator URL explicitly so none can ever be dropped from the
+// sitemap. Keep this list in sync with calculatorCategories in
+// src/lib/calculator-registry.js when adding or removing a calculator.
+const calculatorSlugs = require("./src/lib/calculator-slugs.json");
+
+const CALCULATOR_LOCS = calculatorSlugs.map((slug) => ({
+  loc: `/calculators/${slug}`,
+  changefreq: "weekly",
+  priority: 0.8,
+  lastmod: new Date().toISOString(),
+}));
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl,
@@ -31,6 +45,10 @@ module.exports = {
   changefreq: "weekly",
   priority: 0.7,
   exclude: ["/404"],
+  // Fallback for dynamic calculator routes. next-sitemap merges these with the
+  // pages it discovers while scanning /out; entries that already exist are
+  // merged (priority/changefreq enriched) instead of duplicated.
+  additionalPaths: async () => CALCULATOR_LOCS,
   robotsTxtOptions: {
     policies: [
       {

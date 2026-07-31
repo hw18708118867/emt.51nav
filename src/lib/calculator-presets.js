@@ -658,6 +658,40 @@ export const calculatorPresets = {
       description: "$8,000 take-home",
       values: { monthlyIncome: 8000 }
     }
+  ],
+  "debt-consolidation-calculator": [
+    {
+      label: "Credit cards",
+      description: "$22k at 19.5%",
+      values: { totalDebt: 22000, currentRate: 19.5, currentPayment: 550, newRate: 9.5, newTerm: 5 }
+    },
+    {
+      label: "Cards + personal loan",
+      description: "$30k blended",
+      values: { totalDebt: 30000, currentRate: 15, currentPayment: 700, newRate: 8.5, newTerm: 5 }
+    },
+    {
+      label: "Long stretch",
+      description: "Lower payment, longer term",
+      values: { totalDebt: 35000, currentRate: 16, currentPayment: 650, newRate: 7.9, newTerm: 7 }
+    }
+  ],
+  "social-security-estimator": [
+    {
+      label: "Mid-career",
+      description: "$75k, claim at 67",
+      values: { currentAge: 40, fullRetirementAge: 67, plannedClaimAge: 67, annualEarnings: 75000, yearsToEarn: 35 }
+    },
+    {
+      label: "Claim early",
+      description: "$75k, claim at 62",
+      values: { currentAge: 40, fullRetirementAge: 67, plannedClaimAge: 62, annualEarnings: 75000, yearsToEarn: 35 }
+    },
+    {
+      label: "Delay to 70",
+      description: "$75k, claim at 70",
+      values: { currentAge: 40, fullRetirementAge: 67, plannedClaimAge: 70, annualEarnings: 75000, yearsToEarn: 35 }
+    }
   ]
 };
 

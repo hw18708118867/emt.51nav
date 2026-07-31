@@ -14,7 +14,7 @@ const heroStats = [
   { label: "Calculators", value: calculatorRegistry.length },
   { label: "Categories", value: calculatorCategories.length },
   { label: "Guides", value: guides.length },
-  { label: "Articles", value: blogArticles.length }
+  { label: "Articles & guides", value: guides.length + blogArticles.length + compareArticles.length }
 ];
 
 export default function HomePage() {

@@ -3,6 +3,7 @@ import { Container } from "@/components/container";
 import { getCalculatorsBySlugs } from "@/lib/calculator-registry";
 import { FeatureCard } from "@/components/cards";
 import { SectionHeading } from "@/components/section-heading";
+import { TableOfContents } from "@/components/table-of-contents";
 
 export function ArticleShell({ article, sectionLabel, relatedArticles = [], relatedArticlesTitle = "More to read" }) {
   const relatedCalculators = getCalculatorsBySlugs(article.relatedCalculators || []);
@@ -33,8 +34,10 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
         </Container>
       </section>
 
+      <TableOfContents />
+
       <Container className="grid gap-16 pt-16 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <article className="max-w-3xl">
+        <article id="article-content" className="max-w-3xl">
           {article.takeaway ? (
             <div className="mb-8 rounded-[2rem] border border-accent-line bg-accent-soft/60 p-6">
               <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-accent-strong">
@@ -47,7 +50,7 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
           <Content />
         </article>
 
-        <aside className="space-y-5">
+        <aside className="space-y-6 lg:self-start">
           {(article.audience || article.publishedAt || article.updatedAt) ? (
             <div className="rounded-[2rem] border border-line bg-surface p-6">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent-strong">At a glance</p>
@@ -108,7 +111,7 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
       </Container>
 
       {relatedArticles.length ? (
-        <Container className="space-y-8 pt-18">
+        <Container id="related-reading" className="space-y-8 pt-18">
           <SectionHeading
             eyebrow="Related reading"
             title={relatedArticlesTitle}

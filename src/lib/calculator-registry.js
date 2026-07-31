@@ -1,4 +1,4 @@
-import {
+ import {
   formatCurrency,
   formatCurrencyPrecise,
   formatNumber,
@@ -4561,6 +4561,274 @@ export const calculatorRegistry = [
         note: "This is an estimate. Run conservative numbers—vacancy and maintenance are often higher than new investors expect."
       };
     }
+  },
+  {
+    slug: "debt-consolidation-calculator",
+    name: "Debt Consolidation Calculator",
+    category: "Debt",
+    description: "See whether rolling your debts into one loan actually saves interest.",
+    intro:
+      "Consolidation only pays off when the new loan's rate sits below your current average and the term does not quietly stretch the debt for years. This calculator compares your current balances and payments against a single consolidation loan so you can see the real trade.",
+    keywords: [
+      "debt consolidation calculator",
+      "consolidate loans",
+      "debt consolidation loan",
+      "lower interest debt",
+      "combine debt payments"
+    ],
+    defaults: {
+      totalDebt: 22000,
+      currentRate: 19.5,
+      currentPayment: 550,
+      newRate: 9.5,
+      newTerm: 5
+    },
+    inputs: [
+      { name: "totalDebt", label: "Total debt balance", prefix: "$", min: 500, max: 250000, step: 500 },
+      { name: "currentRate", label: "Current average APR", prefix: "%", min: 0, max: 36, step: 0.1 },
+      { name: "currentPayment", label: "Current monthly payment", prefix: "$", min: 10, max: 5000, step: 10 },
+      { name: "newRate", label: "Consolidation loan APR", prefix: "%", min: 0, max: 36, step: 0.1 },
+      { name: "newTerm", label: "Consolidation loan term", prefix: "yrs", min: 1, max: 30, step: 1 }
+    ],
+    presets: false,
+    example:
+      "A $22,000 stack of credit cards at 19.5% bleeds far more interest than a 9.5% consolidation loan over five years. The calculator shows the interest you avoid and the monthly payment you trade for.",
+    sections: [
+      {
+        title: "How it frames the tradeoff",
+        body: "The tool treats your current debts as one balance earning your average rate, then projects how long your current payment takes to clear it. It does the same for the consolidation loan and lines up the two interest totals side by side."
+      },
+      {
+        title: "What the monthly payment hides",
+        body: "A lower rate can still cost more if the term is long enough. Stretching a balance from three years to seven can shrink the monthly bill while growing total interest. Always read the interest total, not just the payment."
+      },
+      {
+        title: "When consolidation backfires",
+        body: "Consolidation works best when it cuts your rate and you stop adding new charges. If you clear the cards and then run them back up, you end up owing the new loan plus a fresh balance."
+      }
+    ],
+    faqs: [
+      {
+        question: "Does consolidation hurt my credit score?",
+        answer:
+          "Opening a new loan triggers a small inquiry and can lower your average account age, but paying down balances and making on-time payments usually helps over time. The bigger risk is charging the cleared cards again."
+      },
+      {
+        question: "Should I compare the rate or the payment?",
+        answer:
+          "Compare the total interest first. A lower monthly payment can still cost more if the loan runs longer, so the interest total tells you whether consolidation actually saves money."
+      },
+      {
+        question: "What about fees on the new loan?",
+        answer:
+          "Origination fees quietly raise the effective rate. Subtract any fee from the amount you actually receive, or fold it into the balance, before trusting the headline APR."
+      }
+    ],
+    related: ["debt-payoff-calculator", "debt-avalanche-calculator", "loan-calculator"],
+    compute(values) {
+      const totalDebt = Number(values.totalDebt);
+      const currentRate = Number(values.currentRate);
+      const currentPayment = Number(values.currentPayment);
+      const newRate = Number(values.newRate);
+      const newTerm = Number(values.newTerm);
+
+      const monthlyRate = currentRate / 100 / 12;
+      let balance = totalDebt;
+      let months = 0;
+      let currentInterest = 0;
+      const cap = 1200;
+      while (balance > 0.005 && months < cap) {
+        const interest = balance * monthlyRate;
+        const principal = Math.min(currentPayment - interest, balance);
+        currentInterest += interest;
+        balance = balance - principal;
+        months += 1;
+      }
+      const currentPaysOff = months < cap && balance <= 0.005;
+
+      const newPayment = paymentForLoan(totalDebt, newRate, newTerm);
+      const newTotalInterest = newPayment * newTerm * 12 - totalDebt;
+      const interestDiff = currentPaysOff ? currentInterest - newTotalInterest : NaN;
+
+      const summary = [
+        { label: "New monthly payment", value: formatCurrencyPrecise(newPayment) },
+        { label: "New total interest", value: formatCurrency(roundCurrency(newTotalInterest)) },
+        currentPaysOff
+          ? { label: "Interest saved", value: formatCurrency(roundCurrency(Math.max(0, interestDiff))) }
+          : { label: "Current plan", value: "Never pays off" }
+      ];
+
+      const details = [
+        { label: "Total debt balance", value: formatCurrency(totalDebt) },
+        { label: "Current average APR", value: formatPercent(currentRate) },
+        { label: "Current monthly payment", value: formatCurrency(currentPayment) },
+        { label: "Current payoff time", value: currentPaysOff ? formatYearsAndMonths(months) : "Does not pay off" },
+        { label: "Consolidation APR", value: formatPercent(newRate) },
+        { label: "Consolidation term", value: `${newTerm} years` }
+      ];
+
+      const timeline = buildAmortizationSeries({ principal: totalDebt, annualRate: newRate, years: newTerm, payment: newPayment });
+
+      const breakdown = [
+        { label: "Principal", amount: totalDebt },
+        { label: "Consolidated interest", amount: roundCurrency(newTotalInterest) }
+      ];
+
+      const milestones = currentPaysOff
+        ? [
+            { label: "Interest difference", value: formatCurrency(roundCurrency(interestDiff)) },
+            { label: "Payoff time change", value: formatYearsAndMonths(Math.abs(months - newTerm * 12)) }
+          ]
+        : [
+            { label: "New monthly payment", value: formatCurrencyPrecise(newPayment) },
+            { label: "Current plan", value: "Never pays off" }
+          ];
+
+      const note =
+        "Consolidation helps most when the new rate sits well below your current average. Watch for origination fees, shorter terms that raise the monthly bill, and the temptation to run balances back up on the cards you just cleared.";
+
+      return { summary, details, timeline, breakdown, milestones, note };
+    }
+  },
+  {
+    slug: "social-security-estimator",
+    name: "Social Security Estimator",
+    category: "Retirement",
+    description: "Estimate your monthly Social Security retirement benefit.",
+    intro:
+      "Your benefit depends on your highest 35 years of earnings and the age you start collecting. This estimator walks the simplified PIA formula and shows how claiming early or late changes the monthly check.",
+    keywords: [
+      "social security estimator",
+      "social security benefit calculator",
+      "retirement benefit estimate",
+      "SSA monthly benefit",
+      "claiming age"
+    ],
+    defaults: {
+      currentAge: 40,
+      fullRetirementAge: 67,
+      plannedClaimAge: 67,
+      annualEarnings: 75000,
+      yearsToEarn: 35
+    },
+    inputs: [
+      { name: "currentAge", label: "Current age", prefix: "yrs", min: 21, max: 70, step: 1 },
+      { name: "fullRetirementAge", label: "Full retirement age", prefix: "yrs", min: 66, max: 67, step: 1 },
+      { name: "plannedClaimAge", label: "Planned claim age", prefix: "yrs", min: 62, max: 70, step: 1 },
+      { name: "annualEarnings", label: "Current annual earnings", prefix: "$", min: 0, max: 200000, step: 1000 },
+      { name: "yearsToEarn", label: "Years of earnings history", prefix: "yrs", min: 5, max: 35, step: 1 }
+    ],
+    presets: false,
+    example:
+      "A 40-year-old earning $75,000 with 35 years of history and a full retirement age of 67 can see how claiming at 62, 67, or 70 changes the monthly benefit.",
+    sections: [
+      {
+        title: "How the benefit is built",
+        body: "Social Security averages your highest 35 years of indexed earnings into a monthly figure (AIME), then applies fixed percentages at two bend points to produce your primary insurance amount (PIA) at full retirement age."
+      },
+      {
+        title: "Why claiming age matters",
+        body: "Starting before full retirement age permanently reduces the check by about 5/9 of a percent per month for the first three years, then 5/12 of a percent after that. Delaying past full retirement age adds about 2/3 of a percent per month up to age 70."
+      },
+      {
+        title: "What this estimate skips",
+        body: "This is a planning baseline. It does not model wage indexing across your career, spousal or survivor benefits, or annual cost-of-living adjustments. Your SSA statement remains the authoritative number."
+      }
+    ],
+    faqs: [
+      {
+        question: "Is it better to claim early or late?",
+        answer:
+          "If you live past your mid-eighties, delaying usually pays more in total because the higher monthly check compounds over more years. If you need the income now or have a shorter life expectancy, claiming earlier can make sense."
+      },
+      {
+        question: "What is my full retirement age?",
+        answer:
+          "For most people born in 1960 or later it is 67. Those born earlier reach it at 66 and a few months. Set it in the calculator so the reduction or credit is applied correctly."
+      },
+      {
+        question: "Do earnings after claiming reduce my benefit?",
+        answer:
+          "Before full retirement age, the earnings test can temporarily withhold benefits if you earn above the annual limit. From full retirement age on, the limit no longer applies and withheld amounts are eventually restored."
+      }
+    ],
+    related: ["retirement-calculator", "401k-calculator", "roth-ira-calculator"],
+    compute(values) {
+      const fullRetirementAge = Number(values.fullRetirementAge);
+      const plannedClaimAge = Number(values.plannedClaimAge);
+      const annualEarnings = Number(values.annualEarnings);
+      const yearsToEarn = Number(values.yearsToEarn);
+
+      const aimeMonthly = (annualEarnings * yearsToEarn) / (35 * 12);
+      const bend1 = 1226;
+      const bend2 = 7391;
+      const pia =
+        0.9 * Math.min(aimeMonthly, bend1) +
+        0.32 * Math.min(Math.max(aimeMonthly - bend1, 0), bend2 - bend1) +
+        0.15 * Math.max(aimeMonthly - bend2, 0);
+
+      const benefitAt = (claimAge) => {
+        const monthsEarly = Math.max(0, (fullRetirementAge - claimAge) * 12);
+        const monthsLate = Math.max(0, (claimAge - fullRetirementAge) * 12);
+        let factor = 1;
+        if (monthsEarly > 0) {
+          const first36 = Math.min(monthsEarly, 36);
+          const rest = Math.max(0, monthsEarly - 36);
+          factor = 1 - (first36 * (5 / 9 / 100) + rest * (5 / 12 / 100));
+        } else if (monthsLate > 0) {
+          const capped = Math.min(monthsLate, (70 - fullRetirementAge) * 12);
+          factor = 1 + capped * (2 / 3 / 100);
+        }
+        return pia * factor;
+      };
+
+      const monthlyBenefit = benefitAt(plannedClaimAge);
+      const annualBenefit = monthlyBenefit * 12;
+      const benefitAt62 = benefitAt(62);
+      const benefitAt70 = benefitAt(70);
+
+      const monthsEarly = Math.max(0, (fullRetirementAge - plannedClaimAge) * 12);
+      const monthsLate = Math.max(0, (plannedClaimAge - fullRetirementAge) * 12);
+      let adjustmentPercent = 0;
+      if (monthsEarly > 0) {
+        const first36 = Math.min(monthsEarly, 36);
+        const rest = Math.max(0, monthsEarly - 36);
+        adjustmentPercent = -((first36 * (5 / 9) + rest * (5 / 12)) / 100);
+      } else if (monthsLate > 0) {
+        const capped = Math.min(monthsLate, (70 - fullRetirementAge) * 12);
+        adjustmentPercent = (capped * (2 / 3)) / 100;
+      }
+
+      const summary = [
+        { label: "Estimated monthly benefit", value: formatCurrencyPrecise(monthlyBenefit) },
+        { label: "Estimated annual benefit", value: formatCurrency(roundCurrency(annualBenefit)) },
+        { label: "PIA at full retirement age", value: formatCurrencyPrecise(pia) }
+      ];
+
+      const details = [
+        { label: "Estimated AIME", value: formatCurrency(roundCurrency(aimeMonthly)) },
+        { label: "Full retirement age", value: `${fullRetirementAge}` },
+        { label: "Planned claim age", value: `${plannedClaimAge}` },
+        { label: "Claiming adjustment", value: `${adjustmentPercent >= 0 ? "+" : ""}${adjustmentPercent.toFixed(1)}%` }
+      ];
+
+      const endAge = 85;
+      const timeline = [];
+      for (let age = plannedClaimAge; age <= endAge; age += 1) {
+        const yearsReceived = age - plannedClaimAge;
+        timeline.push({ label: `Age ${age}`, amount: roundCurrency(monthlyBenefit * 12 * yearsReceived) });
+      }
+
+      const milestones = [
+        { label: "Monthly at age 62", value: formatCurrencyPrecise(benefitAt62) },
+        { label: "Monthly at age 70", value: formatCurrencyPrecise(benefitAt70) }
+      ];
+
+      const note =
+        "Simplified estimate using 2025 PIA bend points and a constant-earnings assumption. It ignores wage indexing, the detailed 35-year highest-earnings rule, and annual COLAs. For your exact benefit, use the SSA's official calculator at ssa.gov/myaccount.";
+
+      return { summary, details, timeline, milestones, note };
+    }
   }
 ];
 
@@ -4590,7 +4858,8 @@ export const calculatorCategories = [
       "student-loan-calculator",
       "car-affordability-calculator",
       "debt-snowball-calculator",
-      "debt-avalanche-calculator"
+      "debt-avalanche-calculator",
+      "debt-consolidation-calculator"
     ]
   },
   {
@@ -4618,7 +4887,7 @@ export const calculatorCategories = [
   },
   {
     title: "Retirement",
-    slugs: ["retirement-calculator", "401k-calculator", "roth-ira-calculator"]
+    slugs: ["retirement-calculator", "401k-calculator", "roth-ira-calculator", "social-security-estimator"]
   },
   {
     title: "Savings",
