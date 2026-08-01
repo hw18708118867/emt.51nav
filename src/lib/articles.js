@@ -53,6 +53,18 @@ import WhatIsCreditScoreGuide from "@/content/guides/what-is-a-credit-score.mdx"
 import ImproveCreditScoreGuide from "@/content/guides/improve-your-credit-score.mdx";
 import DebtConsolidationGuide from "@/content/guides/debt-consolidation-explained.mdx";
 import SelfEmploymentTaxGuide from "@/content/guides/self-employment-tax.mdx";
+import HowToCalculateNetWorthGuide from "@/content/guides/how-to-calculate-net-worth.mdx";
+import RequiredMinimumDistributionsGuide from "@/content/guides/required-minimum-distributions.mdx";
+import HowToSaveForDownPaymentGuide from "@/content/guides/how-to-save-for-down-payment.mdx";
+import SocialSecurityWhenToClaimGuide from "@/content/guides/social-security-when-to-claim.mdx";
+import IraContributionStrategyGuide from "@/content/guides/ira-contribution-strategy.mdx";
+import HowInflationErodesSavingsGuide from "@/content/guides/how-inflation-erodes-savings.mdx";
+import RoiVsCagrGuide from "@/content/guides/roi-vs-cagr.mdx";
+import UnderstandingYourSalaryGuide from "@/content/guides/understanding-your-salary.mdx";
+import LoanBasicsGuide from "@/content/guides/loan-basics.mdx";
+import ExtraMortgagePaymentsGuide from "@/content/guides/extra-mortgage-payments.mdx";
+import UnderstandingHealthInsuranceCostsGuide from "@/content/guides/understanding-health-insurance-costs.mdx";
+import ReachingASavingsGoalGuide from "@/content/guides/reaching-a-savings-goal.mdx";
 
 export const guides = [
   {
@@ -522,6 +534,162 @@ export const guides = [
     takeaway: "You pay both the employer and employee halves, so set aside a slice of each payment and pay estimated taxes quarterly.",
     relatedCalculators: ["self-employment-tax-calculator", "federal-income-tax-calculator", "401k-calculator"],
     Content: SelfEmploymentTaxGuide
+  },
+  {
+    slug: "how-to-calculate-net-worth",
+    title: "How To Calculate Your Net Worth",
+    description: "Net worth is what you own minus what you owe. Learn which assets and debts to count, why tracking the trend beats the number, and how to build it over time.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Saving & Planning",
+    audience: "Anyone who wants one clear number for where they stand financially, especially before setting bigger money goals",
+    takeaway: "Your net worth is assets minus liabilities, and the slope over years matters far more than any single day's number.",
+    relatedCalculators: ["net-worth-calculator", "compound-interest-calculator", "emergency-fund-calculator"],
+    Content: HowToCalculateNetWorthGuide
+  },
+  {
+    slug: "required-minimum-distributions",
+    title: "Required Minimum Distributions (RMDs)",
+    description: "RMDs are the amounts the IRS makes you withdraw from tax-deferred retirement accounts after age 73. Learn how they are calculated, the penalty for missing one, and how to plan.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Retirement",
+    audience: "People approaching or past 73 with traditional IRA or 401(k) balances who need to avoid the RMD penalty",
+    takeaway: "After 73 the IRS requires yearly withdrawals from tax-deferred accounts, and missing one is expensive, so automate it.",
+    relatedCalculators: ["rmd-calculator", "401k-calculator", "retirement-calculator"],
+    Content: RequiredMinimumDistributionsGuide
+  },
+  {
+    slug: "how-to-save-for-down-payment",
+    title: "How To Save For A Down Payment",
+    description: "A down payment lowers your loan, payment, and often your rate. Learn how much you really need, why closing costs sneak up, and a savings plan you can follow.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Home Buying",
+    audience: "First-time and repeat home buyers who want a concrete target and a monthly savings number",
+    takeaway: "Aim higher than the percentage alone, keep the fund separate and automated, and remember closing costs on top.",
+    relatedCalculators: ["down-payment-calculator", "home-affordability-calculator", "mortgage-calculator"],
+    Content: HowToSaveForDownPaymentGuide
+  },
+  {
+    slug: "social-security-when-to-claim",
+    title: "Social Security: When To Claim",
+    description: "You can take Social Security at 62, full retirement age, or 70. Claiming later pays more for life; earlier locks in less. Find your break-even and decide with confidence.",
+    readingTime: "7 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Retirement",
+    audience: "People nearing 62 who are deciding when to start benefits and how it affects a spouse",
+    takeaway: "Earlier means smaller checks for life, later means bigger ones; your break-even in your early 80s is the pivot.",
+    relatedCalculators: ["social-security-breakeven-calculator", "social-security-estimator", "retirement-calculator"],
+    Content: SocialSecurityWhenToClaimGuide
+  },
+  {
+    slug: "ira-contribution-strategy",
+    title: "IRA Contribution Strategy",
+    description: "An IRA has an annual contribution cap that can phase out as income rises. Learn the limit, the Roth income test, and how to pick traditional vs Roth.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Retirement",
+    audience: "Workers eligible for an IRA who want to max the right account without over-contributing or hitting a phase-out",
+    takeaway: "The cap is fixed but your eligible amount can shrink with income, so confirm your real limit before funding.",
+    relatedCalculators: ["ira-contribution-calculator", "roth-ira-calculator", "401k-calculator"],
+    Content: IraContributionStrategyGuide
+  },
+  {
+    slug: "how-inflation-erodes-savings",
+    title: "How Inflation Erodes Your Savings",
+    description: "Inflation is a quiet tax on cash: your dollars buy less each year. See how idle savings lose purchasing power and what return it takes to stay ahead.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Saving & Planning",
+    audience: "Savers holding large cash balances who want to understand the real (after-inflation) value of their money",
+    takeaway: "Idle cash loses buying power every year; earn a return above inflation to preserve what you have.",
+    relatedCalculators: ["inflation-calculator", "compound-interest-calculator", "apy-calculator"],
+    Content: HowInflationErodesSavingsGuide
+  },
+  {
+    slug: "roi-vs-cagr",
+    title: "ROI vs CAGR: Reading Investment Returns",
+    description: "ROI shows total gain as a percentage; CAGR shows the smooth yearly rate. Learn why comparing ROIs across different time spans misleads, and how to do it right.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Investing",
+    audience: "Investors who compare returns across holdings and want to stop mixing one-year wins with ten-year wins",
+    takeaway: "ROI hides time and CAGR reveals it, so annualize before comparing any two investments.",
+    relatedCalculators: ["roi-calculator", "cagr-calculator", "compound-interest-calculator"],
+    Content: RoiVsCagrGuide
+  },
+  {
+    slug: "understanding-your-salary",
+    title: "Understanding Your Salary",
+    description: "Your salary is the headline number, but net pay is what you spend. Learn the gap between gross and take-home, how pay frequency and benefits change it, and how to judge an offer for real.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Income & Work",
+    audience: "Employees and job seekers who want to budget on take-home pay and compare offers on the full package",
+    takeaway: "Build your budget on net pay, not the salary headline, and count benefits and the 401(k) match as part of income.",
+    relatedCalculators: ["salary-calculator", "budget-calculator", "50-30-20-budget-calculator"],
+    Content: UnderstandingYourSalaryGuide
+  },
+  {
+    slug: "loan-basics",
+    title: "Loan Basics",
+    description: "A loan is borrowed money repaid with interest. Learn how amount, rate, and term set your payment, why a low payment can cost more, and how to borrow without overpaying.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Debt & Credit",
+    audience: "Borrowers comparing any installment loan who want to see the full cost, not just the monthly payment",
+    takeaway: "Compare loans by total interest and APR, not the monthly payment alone; a longer term hides a higher cost.",
+    relatedCalculators: ["loan-calculator", "extra-payment-mortgage-calculator", "debt-to-income-ratio-calculator"],
+    Content: LoanBasicsGuide
+  },
+  {
+    slug: "extra-mortgage-payments",
+    title: "Extra Mortgage Payments",
+    description: "Paying a little extra on your mortgage each month shortens the loan and cuts total interest by years. Learn how much it saves, why timing matters, and the principal-only rule.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Home Buying",
+    audience: "Homeowners with a mortgage who want to pay it off faster and save interest without refinancing",
+    takeaway: "Small extra principal payments compound into years of interest saved, but only if applied to principal, and early beats late.",
+    relatedCalculators: ["extra-payment-mortgage-calculator", "mortgage-calculator", "mortgage-amortization-calculator"],
+    Content: ExtraMortgagePaymentsGuide
+  },
+  {
+    slug: "understanding-health-insurance-costs",
+    title: "Understanding Health Insurance Costs",
+    description: "Health insurance has four numbers—premium, deductible, copay, and out-of-pocket max—that decide your real cost. Learn why the cheapest premium is often the priciest plan if you use care.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Insurance",
+    audience: "Anyone choosing between health plans who wants to pick by expected usage, not the monthly price",
+    takeaway: "Choose a plan by expected usage and the out-of-pocket max, not the premium; the cheapest monthly price can cost the most.",
+    relatedCalculators: ["health-insurance-calculator", "hsa-limits-calculator", "budget-calculator"],
+    Content: UnderstandingHealthInsuranceCostsGuide
+  },
+  {
+    slug: "reaching-a-savings-goal",
+    title: "Reaching a Savings Goal",
+    description: "A savings goal is a future number with a deadline. Learn how the monthly amount, the return, and the timeline interact, and why automating the transfer beats saving what is left.",
+    readingTime: "6 min read",
+    publishedAt: "August 1, 2026",
+    updatedAt: "August 1, 2026",
+    category: "Saving & Planning",
+    audience: "Savers with a target—a trip, emergency fund, car, or home—who want a concrete monthly number",
+    takeaway: "Pay yourself first and automate the transfer; rate and time are free help that shortens the path to any goal.",
+    relatedCalculators: ["savings-goal-calculator", "emergency-fund-calculator", "down-payment-calculator"],
+    Content: ReachingASavingsGoalGuide
   },
   {
     slug: "what-is-apy",

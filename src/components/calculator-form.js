@@ -581,7 +581,10 @@ function InputGroup({ input, value, onChange }) {
           step={input.step}
           value={draftValue}
           onChange={(event) => {
-            const nextValue = Number(event.target.value);
+            const raw = Number(event.target.value);
+            const nextValue = typeof input.max === "number"
+              ? clamp(raw, input.min ?? 0, input.max)
+              : raw;
             setDraftValue(nextValue);
             commitValue(nextValue);
           }}

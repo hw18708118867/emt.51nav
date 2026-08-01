@@ -2488,7 +2488,8 @@ export const calculatorRegistry = [
     related: ["paycheck-calculator", "salary-calculator", "self-employment-tax-calculator"],
     compute(values) {
       const income = Number(values.annualIncome);
-      const status = Number(values.filingStatus) === 1 ? "married" : "single";
+      const filingStatus = Number(values.filingStatus) === 1 ? 1 : 0;
+      const status = filingStatus === 1 ? "married" : "single";
       const deduction = STANDARD_DEDUCTION_2025[status];
       const taxable = Math.max(0, income - deduction);
       const tax = federalIncomeTax(taxable, status);
@@ -4829,6 +4830,646 @@ export const calculatorRegistry = [
 
       return { summary, details, timeline, milestones, note };
     }
+  },
+  {
+    slug: "federal-income-tax-calculator",
+    name: "Federal Income Tax Calculator",
+    category: "Income & Tax",
+    description: "Estimate your federal income tax, marginal and effective rates, and after-tax income using 2025 brackets and the standard deduction.",
+    intro:
+      "Enter your income and filing status to estimate federal income tax, your marginal and effective rates, and what remains after tax.",
+    keywords: [
+      "federal income tax calculator",
+      "income tax estimator",
+      "effective tax rate calculator"
+    ],
+    defaults: {
+      annualIncome: 75000,
+      filingStatus: 0
+    },
+    inputs: [
+      { name: "annualIncome", label: "Annual income", prefix: "$", min: 0, step: 1000 },
+      { name: "filingStatus", label: "Filing (0 single, 1 married)", min: 0, max: 1, step: 1 }
+    ],
+    presets: true,
+    example: "On $75,000 of income, the standard deduction lowers the taxable amount before the bracket rates apply, so the effective rate sits well below the top bracket.",
+    sections: [
+      {
+        title: "Marginal versus effective tax rate",
+        body:
+          "Your marginal rate is the bracket your last dollar falls into; your effective rate is total tax divided by total income. Because the system is progressive, the effective rate is always lower than the marginal rate."
+      },
+      {
+        title: "The standard deduction comes first",
+        body:
+          "Most filers subtract the standard deduction before any bracket applies. That means a portion of income is taxed at zero, which is why your first dollars of salary are not taxed at your top rate."
+      },
+      {
+        title: "What this estimate excludes",
+        body:
+          "This tool models federal income tax with the standard deduction only. It does not include credits, itemized deductions, capital gains rates, the additional Medicare tax, or any state tax, so treat it as a planning estimate."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the difference between marginal and effective rate?",
+        answer: "The marginal rate is the tax on your next dollar of income, set by your top bracket. The effective rate is your total tax divided by total income, which is lower because earlier income is taxed at lower bracket rates."
+      },
+      {
+        question: "Does this include the standard deduction?",
+        answer: "Yes. This estimate subtracts the 2025 standard deduction for your filing status before applying the brackets. It does not model itemized deductions, credits, or state taxes."
+      }
+    ],
+    related: ["paycheck-calculator", "salary-calculator", "self-employment-tax-calculator"],
+    compute(values) {
+      const income = Number(values.annualIncome);
+      const filingStatus = Number(values.filingStatus) === 1 ? 1 : 0;
+      const status = filingStatus === 1 ? "married" : "single";
+      const deduction = STANDARD_DEDUCTION_2025[status];
+      const taxable = Math.max(0, income - deduction);
+      const tax = federalIncomeTax(taxable, status);
+      const afterTax = income - tax;
+      const effectiveRate = income > 0 ? (tax / income) * 100 : 0;
+      const brackets = FEDERAL_BRACKETS_2025[status];
+      let marginalRate = brackets[0][1];
+      for (let i = 0; i < brackets.length; i += 1) {
+        if (taxable > brackets[i][0]) {
+          marginalRate = brackets[i][1];
+        }
+      }
+      return {
+        summary: [
+          { label: "Estimated federal tax", value: formatCurrency(tax), emphasis: true },
+          { label: "After-tax income", value: formatCurrency(afterTax) }
+        ],
+        details: [
+          { label: "Gross income", value: formatCurrency(income) },
+          { label: "Standard deduction", value: formatCurrency(deduction) },
+          { label: "Taxable income", value: formatCurrency(taxable) },
+          { label: "Marginal rate", value: formatPercent(marginalRate * 100) },
+          { label: "Effective rate", value: formatPercent(effectiveRate) }
+        ],
+        timeline: [],
+        breakdown: [
+          { label: "After-tax income", amount: roundCurrency(afterTax) },
+          { label: "Federal tax", amount: roundCurrency(tax) }
+        ],
+        milestones: [
+          { label: "Total federal tax", value: formatCurrency(tax) },
+          { label: "Effective rate", value: formatPercent(effectiveRate) },
+          { label: "Marginal rate", value: formatPercent(marginalRate * 100) }
+        ],
+        note: "Uses 2025 brackets and the standard deduction. Excludes credits, itemized deductions, and state tax."
+      };
+    }
+  },
+  {
+    slug: "rmd-calculator",
+    name: "RMD Calculator",
+    category: "Retirement",
+    description: "Estimate your required minimum distribution from a retirement account at a given age using the IRS uniform lifetime table.",
+    intro:
+      "Once you reach your early seventies, retirement accounts generally require annual withdrawals. Estimate the amount using your balance and age.",
+    keywords: [
+      "rmd calculator",
+      "required minimum distribution",
+      "rmd at age 75"
+    ],
+    defaults: {
+      balance: 500000,
+      age: 75
+    },
+    inputs: [
+      { name: "balance", label: "Account balance", prefix: "$", min: 0, step: 10000 },
+      { name: "age", label: "Age", min: 73, max: 120, step: 1 }
+    ],
+    presets: true,
+    example: "The distribution factor shrinks each year, so the percentage you must withdraw rises as you get older even if the balance stays flat.",
+    sections: [
+      {
+        title: "When RMDs begin",
+        body:
+          "For most people, required minimum distributions start at age 73 (the exact threshold has shifted in recent law changes). Missing a distribution can trigger a steep penalty, so planning the withdrawal matters."
+      },
+      {
+        title: "The uniform lifetime table",
+        body:
+          "The IRS publishes a life-expectancy factor by age. The RMD is your prior-year-end balance divided by that factor. The factor falls each year, so the required percentage grows."
+      },
+      {
+        title: "Roth accounts are different",
+        body:
+          "Roth IRAs were exempt from RMDs for the original owner, though inherited Roth accounts follow their own rules. Roth 401(k)s are now generally treated like other 401(k)s for RMD purposes."
+      }
+    ],
+    faqs: [
+      {
+        question: "At what age do RMDs start?",
+        answer: "For most people the starting age is 73 under current law, though the threshold has changed over time. Check the year you were born, because the exact age depends on it."
+      },
+      {
+        question: "What happens if I skip a distribution?",
+        answer: "Failing to take the full RMD can result in a substantial excise penalty on the amount not withdrawn. Planning the withdrawal early in the year helps avoid that."
+      }
+    ],
+    related: ["retirement-calculator", "roth-ira-calculator", "401k-calculator"],
+    compute(values) {
+      const balance = Number(values.balance);
+      const age = Number(values.age);
+      const factors = {
+        73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7, 77: 22.9, 78: 22.0, 79: 21.1,
+        80: 20.2, 81: 19.4, 82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0, 86: 15.2,
+        87: 14.4, 88: 13.7, 89: 12.9, 90: 12.2, 91: 11.5, 92: 10.8, 93: 10.1,
+        94: 9.5, 95: 8.9, 96: 8.4, 97: 7.8, 98: 7.3, 99: 6.8, 100: 6.4
+      };
+      const factor = factors[age] || 6.4;
+      const rmd = balance > 0 ? balance / factor : 0;
+      const pct = factor > 0 ? (1 / factor) * 100 : 0;
+      const timeline = [];
+      for (let a = age; a <= 100; a += 1) {
+        const f = factors[a] || 6.4;
+        timeline.push({ label: `Age ${a}`, amount: roundCurrency(balance / f) });
+      }
+      return {
+        summary: [
+          { label: "Estimated annual RMD", value: formatCurrency(rmd), emphasis: true },
+          { label: "Share of balance", value: formatPercent(pct) }
+        ],
+        details: [
+          { label: "Prior-year balance", value: formatCurrency(balance) },
+          { label: "IRS distribution factor", value: factor.toFixed(1) },
+          { label: "Age", value: `${age}` }
+        ],
+        timeline,
+        note: "Uses the IRS uniform lifetime table. Your plan or custodian may calculate a slightly different amount; always follow the official figure for filing."
+      };
+    }
+  },
+  {
+    slug: "ira-contribution-calculator",
+    name: "IRA Contribution Calculator",
+    category: "Retirement",
+    description: "Estimate how much you can contribute to an IRA this year, including the age-50 catch-up, and project the balance if you invest it.",
+    intro:
+      "Check the standard and catch-up IRA limits for your age, then see what today's contribution could grow into by retirement.",
+    keywords: [
+      "ira contribution limit",
+      "ira catch-up contribution",
+      "how much can i contribute to my ira"
+    ],
+    defaults: {
+      age: 45,
+      annualContribution: 7000,
+      yearsToGrow: 20,
+      annualReturn: 7
+    },
+    inputs: [
+      { name: "age", label: "Your age", min: 18, max: 75, step: 1 },
+      { name: "annualContribution", label: "Annual contribution", prefix: "$", min: 0, step: 500 },
+      { name: "yearsToGrow", label: "Years until retirement", min: 1, step: 1 },
+      { name: "annualReturn", label: "Expected return", suffix: "%", min: 0, step: 0.1 }
+    ],
+    presets: true,
+    example: "The catch-up contribution lets those 50 and older put in more each year, and investing that extra amount for a couple of decades adds up through compounding.",
+    sections: [
+      {
+        title: "Standard and catch-up limits",
+        body:
+          "For 2025 the standard IRA contribution limit is $7,000, with an additional $1,000 catch-up for those 50 or older. These caps can change with inflation, so confirm the current year's figure."
+      },
+      {
+        title: "Roth versus Traditional",
+        body:
+          "The contribution limit is shared across all your IRAs, not per account. Whether you use Roth or Traditional changes when you pay tax, not how much you can put in."
+      },
+      {
+        title: "Why start the contribution early",
+        body:
+          "The contribution limit is fixed each year and you cannot make it up later. Investing the allowed amount consistently, and early, lets compounding do the most work."
+      }
+    ],
+    faqs: [
+      {
+        question: "Is the limit per IRA or across all my IRAs?",
+        answer: "It is across all of your IRAs combined. Contributing $7,000 to one IRA and another $7,000 to a second IRA in the same year would exceed the limit."
+      },
+      {
+        question: "What is the catch-up contribution?",
+        answer: "If you are 50 or older, you may add an extra amount on top of the standard limit. For 2025 that catch-up is $1,000, raising the total to $8,000."
+      }
+    ],
+    related: ["roth-ira-calculator", "retirement-calculator", "401k-calculator"],
+    compute(values) {
+      const age = Number(values.age);
+      const contrib = Number(values.annualContribution);
+      const years = Number(values.yearsToGrow);
+      const rate = Number(values.annualReturn) / 100;
+      const catchUp = age >= 50 ? 1000 : 0;
+      const maxLimit = 7000 + catchUp;
+      const monthlyRate = rate / 12;
+      const months = years * 12;
+      const overLimit = contrib > maxLimit;
+      let future = 0;
+      if (monthlyRate === 0) {
+        future = contrib * years;
+      } else {
+        future = contrib * ((1 + monthlyRate) ** months - 1) / monthlyRate;
+      }
+      const timeline = [];
+      let running = 0;
+      for (let y = 1; y <= years; y += 1) {
+        running = monthlyRate === 0
+          ? contrib * y
+          : contrib * ((1 + monthlyRate) ** (y * 12) - 1) / monthlyRate;
+        timeline.push({ label: `Year ${y}`, amount: roundCurrency(running) });
+      }
+      return {
+        summary: [
+          { label: "Your annual limit", value: formatCurrency(maxLimit), emphasis: true },
+          { label: "Projected value at retirement", value: formatCurrency(future) }
+        ],
+        details: [
+          { label: "Catch-up added", value: formatCurrency(catchUp) },
+          { label: "Years invested", value: `${years}` },
+          { label: "Entered contribution", value: formatCurrency(contrib) }
+        ],
+        timeline,
+        note: overLimit
+          ? "The contribution you entered is above the annual limit for your age. Excess contributions can incur a penalty."
+          : "Uses 2025 limits. The projected value assumes level annual contributions and a constant return, which markets will not deliver exactly."
+      };
+    }
+  },
+  {
+    slug: "social-security-breakeven-calculator",
+    name: "Social Security Breakeven Calculator",
+    category: "Retirement",
+    description: "Compare lifetime Social Security benefits from claiming at 62, full retirement age, or 70 to find your breakeven age.",
+    intro:
+      "See how the reduction for early claiming or the increase for delaying changes your total benefits, and at what age the strategies cross over.",
+    keywords: [
+      "social security breakeven age",
+      "when to claim social security",
+      "claim at 62 vs 70"
+    ],
+    defaults: {
+      pia: 2000,
+      fullRetirementAge: 67,
+      plannedClaimAge: 67
+    },
+    inputs: [
+      { name: "pia", label: "Primary insurance amount (monthly)", prefix: "$", min: 0, step: 100 },
+      { name: "fullRetirementAge", label: "Full retirement age", min: 62, max: 70, step: 1 },
+      { name: "plannedClaimAge", label: "Planned claim age", min: 62, max: 70, step: 1 }
+    ],
+    presets: true,
+    example: "Claiming at 62 lowers each check but starts payments sooner; claiming at 70 raises each check but starts later. The breakeven age is when the totals cross.",
+    sections: [
+      {
+        title: "Early versus delayed claiming",
+        body:
+          "Benefits are reduced for each month you claim before full retirement age and increased for each month you delay up to age 70. The trade is smaller checks sooner versus larger checks later."
+      },
+      {
+        title: "What breakeven means",
+        body:
+          "The breakeven age is when the total received from delayed claiming overtakes the total received from early claiming. Living longer than that point favors waiting; a shorter life favors claiming early."
+      },
+      {
+        title: "It is not only math",
+        body:
+          "Health, family history, spouse benefits, and the need for income all matter. The breakeven calculation is a useful lens, not the only factor."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is the breakeven age generally?",
+        answer: "For many people the crossover lands in their early eighties, but the exact age depends on your full retirement age and the benefit amounts involved."
+      },
+      {
+        question: "Is it better to claim at 70?",
+        answer: "If you live well past the breakeven age, delaying usually pays more in total. If you need the income earlier or have a shorter life expectancy, claiming sooner can make sense."
+      }
+    ],
+    related: ["social-security-estimator", "retirement-calculator", "rmd-calculator"],
+    compute(values) {
+      const pia = Number(values.pia);
+      const fra = Number(values.fullRetirementAge);
+      const claim = Number(values.plannedClaimAge);
+      const age62 = Math.max(0, (62 - fra) * 12);
+      const age70 = Math.max(0, (70 - fra) * 12);
+      const monthlyAt62 = pia * (1 - 0.0055556 * age62);
+      const monthlyAt70 = pia * (1 + 0.0066667 * age70);
+      const monthlyAtClaim = pia * (1 + (claim - fra) * (claim <= fra ? -0.0055556 : 0.0066667) * 12);
+      let breakevenAge = fra;
+      const maxAge = 95;
+      for (let age = claim; age <= maxAge; age += 1) {
+        const years62 = age - 62;
+        const years70 = age - 70;
+        const total62 = years62 > 0 ? monthlyAt62 * 12 * years62 : 0;
+        const total70 = years70 > 0 ? monthlyAt70 * 12 * years70 : 0;
+        if (total70 >= total62 && age > 70) {
+          breakevenAge = age;
+          break;
+        }
+      }
+      const timeline = [];
+      for (let age = 62; age <= 85; age += 1) {
+        const y62 = age - 62;
+        const y70 = age - 70;
+        const total62 = y62 > 0 ? monthlyAt62 * 12 * y62 : 0;
+        const total70 = y70 > 0 ? monthlyAt70 * 12 * y70 : 0;
+        const chosen = age >= claim ? (age - claim) * 12 * monthlyAtClaim : 0;
+        timeline.push({ label: `Age ${age}`, amount: roundCurrency(Math.max(total62, total70, chosen)) });
+      }
+      return {
+        summary: [
+          { label: "Monthly at 62", value: formatCurrency(monthlyAt62) },
+          { label: "Monthly at 70", value: formatCurrency(monthlyAt70) },
+          { label: "Breakeven age", value: `${breakevenAge}`, emphasis: true }
+        ],
+        details: [
+          { label: "Monthly at your claim age", value: formatCurrency(monthlyAtClaim) },
+          { label: "Full retirement age", value: `${fra}` },
+          { label: "Planned claim age", value: `${claim}` }
+        ],
+        timeline,
+        note: "Estimates use the standard 5/12% per month reduction before FRA and 2/3% per month increase after FRA. It ignores COLAs and spouse benefits."
+      };
+    }
+  },
+  {
+    slug: "investment-growth-calculator",
+    name: "Investment Growth Calculator",
+    category: "Investing",
+    description: "Project how a monthly or lump-sum investment could grow over time with compounding and a chosen return rate.",
+    intro:
+      "Enter what you can invest and for how long to see a projected balance and how much came from your own contributions versus growth.",
+    keywords: [
+      "investment growth calculator",
+      "compound investment projection",
+      "monthly investment calculator"
+    ],
+    defaults: {
+      initial: 5000,
+      monthly: 400,
+      annualReturn: 7,
+      years: 25
+    },
+    inputs: [
+      { name: "initial", label: "Initial amount", prefix: "$", min: 0, step: 1000 },
+      { name: "monthly", label: "Monthly contribution", prefix: "$", min: 0, step: 50 },
+      { name: "annualReturn", label: "Expected return", suffix: "%", min: 0, step: 0.1 },
+      { name: "years", label: "Years to grow", min: 1, step: 1 }
+    ],
+    presets: true,
+    example: "A modest monthly contribution invested consistently for decades can grow far larger than the sum you put in, because the returns earn their own returns.",
+    sections: [
+      {
+        title: "Contributions versus growth",
+        body:
+          "The projected balance separates what you personally contributed from what compounding added. Early on contributions dominate; later, growth dominates."
+      },
+      {
+        title: "The return is an assumption",
+        body:
+          "The rate you enter is a planning assumption, not a guarantee. Markets move, so treat the output as a range of possibilities rather than a forecast."
+      },
+      {
+        title: "Time is the main lever",
+        body:
+          "A longer horizon usually matters more than squeezing a higher return. Starting earlier lets the same monthly amount build a much larger ending balance."
+      }
+    ],
+    faqs: [
+      {
+        question: "Is this the same as compound interest?",
+        answer: "Yes. This tool applies compound interest to your contributions, just framed around investing. The growth portion is interest and gains earned on earlier gains."
+      },
+      {
+        question: "What return should I enter?",
+        answer: "A diversified stock-heavy portfolio might use a long-term assumption around 6 to 8 percent, but actual results will vary. Use a conservative number if you want a margin of safety."
+      }
+    ],
+    related: ["compound-interest-calculator", "rule-of-72-calculator", "retirement-calculator"],
+    compute(values) {
+      const initial = Number(values.initial);
+      const monthly = Number(values.monthly);
+      const rate = Number(values.annualReturn) / 100;
+      const years = Number(values.years);
+      const monthlyRate = rate / 12;
+      const months = years * 12;
+      let balance = initial;
+      const series = [];
+      for (let m = 1; m <= months; m += 1) {
+        balance = balance * (1 + monthlyRate) + monthly;
+        if (m % 12 === 0) {
+          series.push({ label: `Year ${m / 12}`, amount: roundCurrency(balance) });
+        }
+      }
+      const contributed = initial + monthly * months;
+      const growth = Math.max(0, balance - contributed);
+      return {
+        summary: [
+          { label: "Projected balance", value: formatCurrency(balance), emphasis: true },
+          { label: "From your contributions", value: formatCurrency(contributed) },
+          { label: "From growth", value: formatCurrency(growth) }
+        ],
+        details: [
+          { label: "Initial amount", value: formatCurrency(initial) },
+          { label: "Expected return", value: formatPercent(rate * 100) },
+          { label: "Time invested", value: `${years} years` }
+        ],
+        timeline: series,
+        note: "Assumes level contributions and a constant return, which markets will not deliver exactly. Past performance does not guarantee future results."
+      };
+    }
+  },
+  {
+    slug: "down-payment-calculator",
+    name: "Down Payment Calculator",
+    category: "Savings",
+    description: "Estimate the down payment for a home price and savings plan, and how long it takes to reach your target.",
+    intro:
+      "Enter a home price and target down-payment percentage to see the dollar amount, then plan how long your monthly savings will take to get there.",
+    keywords: [
+      "down payment calculator",
+      "how much down payment for a house",
+      "home down payment savings plan"
+    ],
+    defaults: {
+      homePrice: 400000,
+      percent: 20,
+      monthlySavings: 800,
+      currentSaved: 20000,
+      savingsRate: 4
+    },
+    inputs: [
+      { name: "homePrice", label: "Home price", prefix: "$", min: 0, step: 10000 },
+      { name: "percent", label: "Down payment %", suffix: "%", min: 0, max: 100, step: 1 },
+      { name: "currentSaved", label: "Already saved", prefix: "$", min: 0, step: 1000 },
+      { name: "monthlySavings", label: "Monthly savings", prefix: "$", min: 0, step: 50 },
+      { name: "savingsRate", label: "Savings return", suffix: "%", min: 0, step: 0.1 }
+    ],
+    presets: true,
+    example: "A 20% down payment avoids private mortgage insurance on many loans, but a smaller down payment can make sense if it gets you into a home sooner.",
+    sections: [
+      {
+        title: "Why 20 percent is common",
+        body:
+          "Putting 20 percent down often avoids private mortgage insurance and lowers the loan size, which reduces both the payment and total interest. It is a common target, not a requirement."
+      },
+      {
+        title: "Smaller down payments can work",
+        body:
+          "Many loans allow far less down, sometimes as low as 3 percent. The trade is a larger loan, possibly mortgage insurance, and more total interest paid."
+      },
+      {
+        title: "Saving on a timeline",
+        body:
+          "The time to reach your goal depends on what you have already saved, what you add each month, and any return those savings earn before you spend them."
+      }
+    ],
+    faqs: [
+      {
+        question: "Do I need 20 percent down?",
+        answer: "No. Many loans accept much less, but a smaller down payment usually means mortgage insurance and a bigger loan. Twenty percent is a common goal because it often avoids that insurance."
+      },
+      {
+        question: "How long will it take to save?",
+        answer: "Divide the remaining amount by your monthly savings to get a rough number of months. Any return your savings earn before purchase shortens that time a little."
+      }
+    ],
+    related: ["home-affordability-calculator", "rent-vs-buy-calculator", "savings-goal-calculator"],
+    compute(values) {
+      const price = Number(values.homePrice);
+      const pct = Number(values.percent) / 100;
+      const saved = Number(values.currentSaved);
+      const monthly = Number(values.monthlySavings);
+      const rate = Number(values.savingsRate) / 100 / 12;
+      const target = price * pct;
+      const remaining = Math.max(0, target - saved);
+      let months = 0;
+      let balance = saved;
+      if (monthly <= 0 && remaining > 0) {
+        months = Infinity;
+      } else {
+        while (balance < target && months < 1200) {
+          balance = balance * (1 + rate) + monthly;
+          months += 1;
+        }
+      }
+      const years = months === Infinity ? null : Math.floor(months / 12);
+      const remMonths = months === Infinity ? null : months % 12;
+      const timeline = [];
+      let bal = saved;
+      const maxYears = months === Infinity ? 0 : Math.min(40, Math.ceil(months / 12));
+      for (let y = 1; y <= Math.max(1, maxYears); y += 1) {
+        for (let m = 0; m < 12; m += 1) {
+          bal = bal * (1 + rate) + monthly;
+        }
+        timeline.push({ label: `Year ${y}`, amount: roundCurrency(Math.min(bal, target)) });
+        if (bal >= target) break;
+      }
+      return {
+        summary: [
+          { label: "Target down payment", value: formatCurrency(target), emphasis: true },
+          { label: "Already saved", value: formatCurrency(saved) }
+        ],
+        details: [
+          { label: "Still needed", value: formatCurrency(remaining) },
+          { label: "Monthly savings", value: formatCurrency(monthly) },
+          {
+            label: "Time to reach goal",
+            value: months === Infinity ? "Add monthly savings" : `${years} yr${remMonths ? ` ${remMonths} mo` : ""}`
+          }
+        ],
+        timeline,
+        note: "Down-payment percentages are a planning target; actual loan requirements vary by program and lender."
+      };
+    }
+  },
+  {
+    slug: "health-insurance-calculator",
+    name: "Health Insurance Calculator",
+    category: "Budgeting",
+    description: "Estimate your total annual health insurance cost from premiums, deductible, and expected medical use.",
+    intro:
+      "Add your premium, deductible, and typical care to see the full yearly cost of a plan, not just the monthly sticker price.",
+    keywords: [
+      "health insurance cost calculator",
+      "total annual premium plus deductible",
+      "compare health plan costs"
+    ],
+    defaults: {
+      monthlyPremium: 450,
+      deductible: 3000,
+      expectedMedical: 2000,
+      coinsurance: 20
+    },
+    inputs: [
+      { name: "monthlyPremium", label: "Monthly premium", prefix: "$", min: 0, step: 10 },
+      { name: "deductible", label: "Annual deductible", prefix: "$", min: 0, step: 100 },
+      { name: "expectedMedical", label: "Expected medical costs", prefix: "$", min: 0, step: 100 },
+      { name: "coinsurance", label: "Coinsurance %", suffix: "%", min: 0, max: 100, step: 1 }
+    ],
+    presets: true,
+    example: "A plan with a low premium but a high deductible can cost more than expected once you add real medical use, so compare the full annual picture.",
+    sections: [
+      {
+        title: "Premium is not the whole cost",
+        body:
+          "The monthly premium is only the start. Deductibles, copays, and coinsurance determine how much you pay out of pocket before and after the deductible is met."
+      },
+      {
+        title: "Low premium, high deductible",
+        body:
+          "Plans with cheaper premiums often shift more cost to you when you actually use care. If you expect regular medical needs, a higher premium with lower cost sharing can be cheaper overall."
+      },
+      {
+        title: "Match the plan to your use",
+        body:
+          "Estimate your likely visits and prescriptions for the year, then add premium plus expected out-of-pocket costs to compare plans on equal footing."
+      }
+    ],
+    faqs: [
+      {
+        question: "What is coinsurance?",
+        answer: "Coinsurance is the percentage of costs you pay after meeting your deductible, with the plan paying the rest. A 20% coinsurance means you pay 20% of covered costs up to any out-of-pocket maximum."
+      },
+      {
+        question: "How do I compare two plans?",
+        answer: "Add each plan's annual premium to your expected out-of-pocket costs under typical use. The cheaper premium is not always the cheaper plan once care is included."
+      }
+    ],
+    related: ["budget-calculator", "50-30-20-budget-calculator", "life-insurance-calculator"],
+    compute(values) {
+      const premium = Number(values.monthlyPremium);
+      const deductible = Number(values.deductible);
+      const expected = Number(values.expectedMedical);
+      const coins = Number(values.coinsurance) / 100;
+      const annualPremium = premium * 12;
+      const afterDeductible = Math.max(0, expected - deductible);
+      const outOfPocket = Math.min(deductible, expected) + afterDeductible * coins;
+      const total = annualPremium + outOfPocket;
+      return {
+        summary: [
+          { label: "Estimated annual cost", value: formatCurrency(total), emphasis: true },
+          { label: "Annual premium", value: formatCurrency(annualPremium) }
+        ],
+        details: [
+          { label: "Out-of-pocket (est.)", value: formatCurrency(outOfPocket) },
+          { label: "Deductible", value: formatCurrency(deductible) },
+          { label: "Expected medical", value: formatCurrency(expected) }
+        ],
+        timeline: [
+          { label: "Premium only", amount: roundCurrency(annualPremium) },
+          { label: "Plus deductible", amount: roundCurrency(annualPremium + Math.min(deductible, expected)) },
+          { label: "Full annual cost", amount: roundCurrency(total) }
+        ],
+        note: "Simplified model ignoring out-of-pocket maximums, copays, and subsidies. For ACA plans, premium tax credits can lower the real premium substantially."
+      };
+    }
   }
 ];
 
@@ -4870,7 +5511,8 @@ export const calculatorCategories = [
       "income-tax-calculator",
       "sales-tax-calculator",
       "self-employment-tax-calculator",
-      "capital-gains-tax-calculator"
+      "capital-gains-tax-calculator",
+      "federal-income-tax-calculator"
     ]
   },
   {
@@ -4882,20 +5524,21 @@ export const calculatorCategories = [
       "dividend-calculator",
       "inflation-calculator",
       "rule-of-72-calculator",
-      "rental-property-calculator"
+      "rental-property-calculator",
+      "investment-growth-calculator"
     ]
   },
   {
     title: "Retirement",
-    slugs: ["retirement-calculator", "401k-calculator", "roth-ira-calculator", "social-security-estimator"]
+    slugs: ["retirement-calculator", "401k-calculator", "roth-ira-calculator", "social-security-estimator", "rmd-calculator", "ira-contribution-calculator", "social-security-breakeven-calculator"]
   },
   {
     title: "Savings",
-    slugs: ["savings-goal-calculator", "emergency-fund-calculator", "cd-calculator", "apy-calculator"]
+    slugs: ["savings-goal-calculator", "emergency-fund-calculator", "cd-calculator", "apy-calculator", "down-payment-calculator"]
   },
   {
     title: "Budgeting",
-    slugs: ["budget-calculator", "net-worth-calculator", "50-30-20-budget-calculator", "life-insurance-calculator"]
+    slugs: ["budget-calculator", "net-worth-calculator", "50-30-20-budget-calculator", "life-insurance-calculator", "health-insurance-calculator"]
   }
 ];
 
