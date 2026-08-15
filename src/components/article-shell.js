@@ -4,6 +4,7 @@ import { getCalculatorsBySlugs } from "@/lib/calculator-registry";
 import { FeatureCard } from "@/components/cards";
 import { SectionHeading } from "@/components/section-heading";
 import { TableOfContents } from "@/components/table-of-contents";
+import { CategoryArt } from "@/components/illustrations";
 
 export function ArticleShell({ article, sectionLabel, relatedArticles = [], relatedArticlesTitle = "More to read" }) {
   const relatedCalculators = getCalculatorsBySlugs(article.relatedCalculators || []);
@@ -13,22 +14,29 @@ export function ArticleShell({ article, sectionLabel, relatedArticles = [], rela
     <div className="pb-20">
       <section className="border-b border-line bg-[radial-gradient(circle_at_top_left,_rgba(220,227,224,0.82),_rgba(248,250,249,0.94)_44%,_rgba(229,234,238,0.64)_100%)] py-18">
         <Container>
-          <div className="max-w-4xl space-y-5">
-            <p className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">{sectionLabel}</p>
-            <h1 className="text-4xl font-semibold tracking-tight text-ink-900 sm:text-6xl">{article.title}</h1>
-            <p className="max-w-3xl text-lg leading-8 text-content">{article.description}</p>
-            <div className="flex flex-wrap gap-3 text-sm text-content-muted">
-              <span>{article.category}</span>
-              <span>|</span>
-              <span>{article.readingTime}</span>
-              {article.publishedAt ? (
-                <>
-                  <span>|</span>
-                  <span>Published {article.publishedAt}</span>
-                </>
-              ) : null}
-              <span>|</span>
-              <span>Updated {article.updatedAt}</span>
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_260px]">
+            <div className="max-w-3xl space-y-5">
+              <p className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">{sectionLabel}</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-ink-900 sm:text-6xl">{article.title}</h1>
+              <p className="max-w-3xl text-lg leading-8 text-content">{article.description}</p>
+              <div className="flex flex-wrap gap-3 text-sm text-content-muted">
+                <span>{article.category}</span>
+                <span>|</span>
+                <span>{article.readingTime}</span>
+                {article.publishedAt ? (
+                  <>
+                    <span>|</span>
+                    <span>Published {article.publishedAt}</span>
+                  </>
+                ) : null}
+                <span>|</span>
+                <span>Updated {article.updatedAt}</span>
+              </div>
+            </div>
+            <div className="relative hidden lg:block">
+              <div className="mx-auto aspect-square w-full max-w-[260px] rounded-[2rem] border border-line bg-surface/70 p-5 shadow-[0_18px_40px_-34px_rgba(33,53,48,0.2)]">
+                <CategoryArt category={article.category} />
+              </div>
             </div>
           </div>
         </Container>

@@ -2,8 +2,10 @@ import { Container } from "@/components/container";
 import { FeatureCard } from "@/components/cards";
 import { Reveal } from "@/components/reveal";
 import { PageHero } from "@/components/page-hero";
+import { SectionHeading } from "@/components/section-heading";
+import { FeatureCarousel } from "@/components/feature-carousel";
 import { GuidesArt } from "@/components/page-art";
-import { guides } from "@/lib/articles";
+import { guides, featuredGuides } from "@/lib/articles";
 import { buildPageMetadata } from "@/lib/metadata";
 
 export const metadata = buildPageMetadata({
@@ -32,6 +34,15 @@ export default function GuidesPage() {
         art={<GuidesArt />}
         band="bg-band-mint"
       />
+
+      {featuredGuides.length > 0 ? (
+        <Container className="pt-16">
+          <Reveal>
+            <SectionHeading eyebrow="In-depth" title="Featured deep-dive guides" description="Longer, step-by-step guides that connect the calculators into one plan." />
+          </Reveal>
+          <FeatureCarousel items={featuredGuides.map(({ slug, title, description, category, readingTime }) => ({ slug, title, description, category, readingTime }))} ariaLabel="Featured deep-dive guides" />
+        </Container>
+      ) : null}
 
       <Container className="grid gap-6 pt-16 md:grid-cols-2 xl:grid-cols-3">
         {guides.map((guide, index) => (

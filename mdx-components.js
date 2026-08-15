@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CategoryArt, CategoryIcon, HeroGrowthChart } from "@/components/illustrations";
 
 function SmartLink({ href = "#", ...props }) {
   if (href.startsWith("/")) {
@@ -26,6 +27,20 @@ function getNodeText(node) {
 
 export function useMDXComponents(components) {
   return {
+    CategoryArt,
+    CategoryIcon,
+    HeroGrowthChart,
+    // Inline illustration block: <Figure category="Retirement" caption="..." />
+    Figure: ({ category, caption }) => (
+      <figure className="my-10 flex flex-col items-center">
+        <div className="w-full max-w-xs rounded-[2rem] border border-line bg-surface p-6 shadow-[0_18px_40px_-34px_rgba(33,53,48,0.2)]">
+          <CategoryArt category={category} />
+        </div>
+        {caption ? (
+          <figcaption className="mt-3 text-center text-sm text-slate-500">{caption}</figcaption>
+        ) : null}
+      </figure>
+    ),
     h2: ({ children, ...props }) => (
       <h2
         id={slugify(children)}

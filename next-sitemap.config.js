@@ -17,8 +17,8 @@ function resolveSiteUrl() {
     return `https://${repositoryOwner}.github.io/${repositoryName}`;
   }
 
-  console.warn("[next-sitemap] NEXT_PUBLIC_SITE_URL is not set. Falling back to http://localhost:3000 for local builds.");
-  return "http://localhost:3000";
+  console.warn("[next-sitemap] NEXT_PUBLIC_SITE_URL is not set. Falling back to https://moneytools.51nav.com for local builds.");
+  return "https://moneytools.51nav.com";
 }
 
 const siteUrl = resolveSiteUrl();

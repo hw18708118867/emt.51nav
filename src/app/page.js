@@ -4,9 +4,10 @@ import { FeatureCard } from "@/components/cards";
 import { SectionHeading } from "@/components/section-heading";
 import { StructuredData } from "@/components/structured-data";
 import { Reveal } from "@/components/reveal";
+import { FeatureCarousel } from "@/components/feature-carousel";
 import { CategoryArt, HeroArt } from "@/components/spot-art";
 import { calculatorCategories, calculatorRegistry, getCalculatorsBySlugs, getFeaturedCalculators } from "@/lib/calculator-registry";
-import { blogArticles, compareArticles, guides } from "@/lib/articles";
+import { blogArticles, compareArticles, guides, featuredGuides } from "@/lib/articles";
 import { siteConfig } from "@/lib/site-config";
 import { buildWebsiteStructuredData } from "@/lib/structured-data";
 
@@ -127,30 +128,19 @@ export default function HomePage() {
 
       {/* GUIDES + COMPARE */}
       <section className="bg-surface">
-        <Container className="grid gap-12 py-20 lg:grid-cols-2">
+        <Container className="space-y-16 py-20">
           <div className="space-y-8">
             <Reveal>
-              <SectionHeading eyebrow="Guides" title="Go deeper after the math" />
+              <SectionHeading eyebrow="In-depth guides" title="Go deeper after the math" description="Step-by-step guides that connect the calculators into one plan." />
             </Reveal>
-            <div className="grid gap-5">
-              {guides.slice(0, 3).map((guide, index) => (
-                <Reveal key={guide.slug} delay={index * 70} className="h-full">
-                  <FeatureCard
-                    href={`/guides/${guide.slug}`}
-                    title={guide.title}
-                    description={guide.description}
-                    meta={guide.readingTime}
-                  />
-                </Reveal>
-              ))}
-            </div>
+            <FeatureCarousel items={featuredGuides.map(({ slug, title, description, category, readingTime }) => ({ slug, title, description, category, readingTime }))} ariaLabel="Featured in-depth guides" />
           </div>
 
           <div className="space-y-8">
             <Reveal>
               <SectionHeading eyebrow="Compare" title="Two options, side by side" />
             </Reveal>
-            <div className="grid gap-5">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {compareArticles.map((article, index) => (
                 <Reveal key={article.slug} delay={index * 70} className="h-full">
                   <FeatureCard

@@ -16,7 +16,8 @@ const companyLinks = [
   { href: "/about/", label: "About" },
   { href: "/contact/", label: "Contact" },
   { href: "/editorial-policy/", label: "Editorial Policy" },
-  { href: "/privacy/", label: "Privacy" }
+  { href: "/privacy/", label: "Privacy" },
+  { href: "/sitemap/", label: "Sitemap" }
 ];
 
 export function SiteFooter() {
