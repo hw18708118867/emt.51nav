@@ -324,3 +324,125 @@ export function CategoryArt({ category }) {
   const Art = categoryArt[category] || BudgetArt;
   return <Art />;
 }
+
+/* Animated concept diagrams that explain a hard-to-read passage.
+   Pure SVG + the existing CSS keyframe classes (emt-art-line, emt-pulse,
+   emt-float) so they animate on static export and respect reduced-motion. */
+
+export function RentVsBuyDiagram() {
+  const own = [[50, 215], [90, 210], [130, 200], [170, 180], [210, 150], [250, 115], [290, 80], [330, 55], [370, 40]];
+  const rent = [[50, 160], [90, 153], [130, 147], [170, 141], [210, 135], [250, 129], [290, 123], [330, 117], [370, 111]];
+  const line = (pts) => pts.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
+  return (
+    <figure className="my-10">
+      <div className="w-full rounded-[2rem] border border-line bg-surface p-6 shadow-[0_18px_40px_-34px_rgba(33,53,48,0.2)]">
+        <svg viewBox="0 0 400 290" className="h-auto w-full" role="img" aria-label="Net financial position of owning versus renting over time, crossing at the break-even year">
+          <line x1="40" x2="380" y1="250" y2="250" stroke="#243d35" strokeOpacity="0.18" />
+          {[60, 110, 160, 210].map((y) => (
+            <line key={y} x1="40" x2="380" y1={y} y2={y} stroke="#243d35" strokeOpacity="0.06" strokeDasharray="4 8" />
+          ))}
+          <rect x="44" y="20" width="14" height="14" rx="4" fill="#3f7a5f" />
+          <text x="64" y="31" fontSize="13" fill="#243d35">Owning</text>
+          <rect x="150" y="20" width="14" height="14" rx="4" fill="#c8821e" />
+          <text x="170" y="31" fontSize="13" fill="#243d35">Renting</text>
+          <path className="emt-art-line" pathLength="1" d={line(own)} fill="none" stroke="#3f7a5f" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path className="emt-art-line" pathLength="1" d={line(rent)} fill="none" stroke="#c8821e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <circle className="emt-pulse" cx="232" cy="132" r="7" fill="#c8821e" stroke="#a86a12" strokeWidth="2" />
+          <text x="244" y="120" fontSize="13" fontWeight="700" fill="#243d35">Break-even ≈ 5–6 yr</text>
+          <text x="40" y="272" fontSize="12" fill="#5b6b66">Years you stay</text>
+        </svg>
+      </div>
+      <figcaption className="mt-3 text-center text-sm text-slate-500">Owning starts behind because of the down payment and closing costs, then pulls ahead as equity builds. The crossing point is your break-even year.</figcaption>
+    </figure>
+  );
+}
+
+export function RefinanceDiagram() {
+  const current = [[50, 40], [110, 75], [170, 110], [230, 145], [290, 180], [370, 210]];
+  const refi = [[50, 80], [110, 100], [170, 120], [230, 140], [290, 160], [370, 180]];
+  const line = (pts) => pts.map(([x, y], i) => `${i === 0 ? "M" : "L"} ${x} ${y}`).join(" ");
+  return (
+    <figure className="my-10">
+      <div className="w-full rounded-[2rem] border border-line bg-surface p-6 shadow-[0_18px_40px_-34px_rgba(33,53,48,0.2)]">
+        <svg viewBox="0 0 400 290" className="h-auto w-full" role="img" aria-label="Cumulative cost of the current versus refinanced loan, crossing at the break-even month">
+          <line x1="40" x2="380" y1="250" y2="250" stroke="#243d35" strokeOpacity="0.18" />
+          {[60, 110, 160, 210].map((y) => (
+            <line key={y} x1="40" x2="380" y1={y} y2={y} stroke="#243d35" strokeOpacity="0.06" strokeDasharray="4 8" />
+          ))}
+          <rect x="44" y="20" width="14" height="14" rx="4" fill="#9fb3ab" />
+          <text x="64" y="31" fontSize="13" fill="#243d35">Current loan</text>
+          <rect x="170" y="20" width="14" height="14" rx="4" fill="#c8821e" />
+          <text x="190" y="31" fontSize="13" fill="#243d35">Refinanced loan</text>
+          <path className="emt-art-line" pathLength="1" d={line(current)} fill="none" stroke="#9fb3ab" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path className="emt-art-line" pathLength="1" d={line(refi)} fill="none" stroke="#c8821e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <circle className="emt-pulse" cx="215" cy="143" r="7" fill="#c8821e" stroke="#a86a12" strokeWidth="2" />
+          <text x="227" y="131" fontSize="13" fontWeight="700" fill="#243d35">Break-even ≈ 25 mo</text>
+          <text x="40" y="272" fontSize="12" fill="#5b6b66">Months you stay</text>
+        </svg>
+      </div>
+      <figcaption className="mt-3 text-center text-sm text-slate-500">The refinanced loan costs more at first because of closing costs, then saves every month. Where it drops below the current loan is your break-even.</figcaption>
+    </figure>
+  );
+}
+
+export function StudentLoanDiagram() {
+  const bars = [
+    { x: 60, h: 160, rate: "12%", color: "#c8821e", pulse: true },
+    { x: 140, h: 130, rate: "8%", color: "#3f7a5f" },
+    { x: 220, h: 100, rate: "6%", color: "#3f7a5f" },
+    { x: 300, h: 70, rate: "4%", color: "#3f7a5f" }
+  ];
+  const baseY = 210;
+  return (
+    <figure className="my-10">
+      <div className="w-full rounded-[2rem] border border-line bg-surface p-6 shadow-[0_18px_40px_-34px_rgba(33,53,48,0.2)]">
+        <svg viewBox="0 0 400 270" className="h-auto w-full" role="img" aria-label="Loan balances by interest rate, with the highest rate marked to pay first">
+          <line x1="40" x2="370" y1={baseY} y2={baseY} stroke="#243d35" strokeOpacity="0.18" />
+          {bars.map((b, i) => (
+            <g key={i}>
+              <rect className={b.pulse ? "emt-pulse" : "emt-grow-bar"} x={b.x} y={baseY - b.h} width="46" height={b.h} rx="6" fill={b.color} />
+              <text x={b.x + 23} y={baseY - b.h - 10} fontSize="14" fontWeight="700" fill="#243d35" textAnchor="middle">{b.rate}</text>
+            </g>
+          ))}
+          <g className="emt-float">
+            <rect x="38" y="28" width="92" height="26" rx="13" fill="#c8821e" />
+            <text x="84" y="46" fontSize="13" fontWeight="700" fill="#ffffff" textAnchor="middle">Pay first</text>
+          </g>
+          <text x="200" y="248" fontSize="12" fill="#5b6b66" textAnchor="middle">Loan balances — avalanche attacks the highest rate</text>
+        </svg>
+      </div>
+      <figcaption className="mt-3 text-center text-sm text-slate-500">Avalanche pays the highest rate first (orange). Snowball would pick the smallest balance instead. Same effort, different interest saved.</figcaption>
+    </figure>
+  );
+}
+
+export function LifeInsuranceDiagram() {
+  return (
+    <figure className="my-10">
+      <div className="w-full rounded-[2rem] border border-line bg-surface p-6 shadow-[0_18px_40px_-34px_rgba(33,53,48,0.2)]">
+        <svg viewBox="0 0 400 270" className="h-auto w-full" role="img" aria-label="Coverage need equals income gap plus debts minus savings">
+          <rect x="34" y="96" width="62" height="84" rx="8" fill="#3f7a5f" />
+          <text x="65" y="132" fontSize="12" fill="#ffffff" textAnchor="middle">Income</text>
+          <text x="65" y="148" fontSize="12" fill="#ffffff" textAnchor="middle">gap</text>
+          <rect x="104" y="96" width="50" height="84" rx="8" fill="#243d35" />
+          <text x="129" y="132" fontSize="12" fill="#ffffff" textAnchor="middle">Mort-</text>
+          <text x="129" y="148" fontSize="12" fill="#ffffff" textAnchor="middle">gage</text>
+          <rect x="162" y="96" width="44" height="84" rx="8" fill="#3f7a5f" />
+          <text x="184" y="132" fontSize="12" fill="#ffffff" textAnchor="middle">Other</text>
+          <text x="184" y="148" fontSize="12" fill="#ffffff" textAnchor="middle">debt</text>
+          <rect x="220" y="108" width="50" height="60" rx="8" fill="#cdd8d4" />
+          <text x="245" y="142" fontSize="12" fill="#243d35" textAnchor="middle">Saved</text>
+          <g className="emt-float">
+            <path d="M286 136h26" stroke="#243d35" strokeWidth="3" strokeLinecap="round" />
+            <path d="M308 128l10 8-10 8" fill="none" stroke="#243d35" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+          <rect className="emt-pulse" x="332" y="82" width="50" height="104" rx="8" fill="#c8821e" />
+          <text x="357" y="130" fontSize="12" fill="#ffffff" textAnchor="middle">Cover-</text>
+          <text x="357" y="146" fontSize="12" fill="#ffffff" textAnchor="middle">age</text>
+          <text x="200" y="214" fontSize="12" fill="#5b6b66" textAnchor="middle">Add what your family would lose and owe, subtract what you have saved</text>
+        </svg>
+      </div>
+      <figcaption className="mt-3 text-center text-sm text-slate-500">Add the income your family would lose and your debts, subtract what you already have saved, and the remainder is the amount to insure.</figcaption>
+    </figure>
+  );
+}

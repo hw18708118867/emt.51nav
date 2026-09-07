@@ -17,7 +17,7 @@ function resolveSiteDomain() {
     return `https://${repositoryOwner}.github.io/${repositoryName}`;
   }
 
-  return "http://localhost:3000";
+  return "https://moneytools.51nav.com";
 }
 
 export const siteConfig = {

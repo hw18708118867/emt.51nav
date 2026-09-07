@@ -72,6 +72,10 @@ import HowToStartInvestingGuide from "@/content/guides/how-to-start-investing.md
 import CompleteInsurancePlanningGuide from "@/content/guides/complete-insurance-planning-guide.mdx";
 import CompleteCreditScoreGuide from "@/content/guides/complete-credit-score-guide.mdx";
 import CompleteSavingsSystemGuide from "@/content/guides/complete-savings-system-guide.mdx";
+import ShouldIRentOrBuyGuide from "@/content/guides/should-i-rent-or-buy.mdx";
+import WhenToRefinanceGuide from "@/content/guides/when-to-refinance.mdx";
+import StudentLoanPayoffGuide from "@/content/guides/student-loan-payoff.mdx";
+import HowMuchLifeInsuranceGuide from "@/content/guides/how-much-life-insurance.mdx";
 
 export const guides = [
   {
@@ -997,7 +1001,7 @@ export const guides = [
     audience: "Workers in their 20s to 50s who want one connected retirement plan instead of disconnected account advice",
     takeaway: "Consistent, early, tax-diversified saving does most of the work; the accounts and claiming choices are how you keep more of it.",
     featured: true,
-    relatedCalculators: ["401k-calculator", "roth-ira-calculator", "compound-interest-calculator", "social-security-breakeven-calculator", "rmd-calculator"],
+    relatedCalculators: ["retirement-calculator", "401k-calculator", "roth-ira-calculator", "compound-interest-calculator", "social-security-breakeven-calculator", "rmd-calculator"],
     faqs: [
       { question: "What is the first step in retirement planning?", answer: "Save consistently, starting with any employer 401(k) match since that is an immediate return. Consistent contributions early beat clever optimizations later because of compounding." },
       { question: "Should I use a Roth or traditional account?", answer: "Traditional gives a deduction now and taxes withdrawals later; Roth gives tax-free withdrawals later. Use traditional when your current rate is high, Roth when it is low, and both for flexibility." },
@@ -1132,6 +1136,90 @@ export const guides = [
     ],
     featured: true,
     Content: CompleteSavingsSystemGuide
+  },
+  {
+    slug: "should-i-rent-or-buy",
+    title: "Should I Rent or Buy? The Full Cost Breakdown",
+    description: "A step-by-step rent-versus-buy decision: how to compare the same home as a rental and a purchase, count the costs each side hides, and find your break-even year.",
+    readingTime: "11 min read",
+    publishedAt: "September 7, 2026",
+    updatedAt: "September 7, 2026",
+    category: "Mortgage",
+    audience: "Renters and buyers trying to decide whether owning beats renting in their situation",
+    takeaway: "Renting buys flexibility and avoids risk; owning builds equity. The break-even year is where they cross, and your life horizon sets the answer.",
+    featured: true,
+    relatedCalculators: ["rent-vs-buy-calculator", "home-affordability-calculator", "mortgage-calculator", "down-payment-calculator"],
+    faqs: [
+      { question: "Is renting or buying better financially?", answer: "It depends on your time horizon and local prices. Buying usually wins after five to seven years if prices and rents rise, but renting wins if you move soon or prices are high relative to rent." },
+      { question: "What is the break-even point for buying?", answer: "It is the number of years you must stay before the savings from owning exceed the transaction and closing costs. Staying one to three years usually favors renting; ten-plus years usually favors buying." },
+      { question: "Why is a mortgage payment not all equity?", answer: "Early payments are mostly interest, which is a cost, not savings. Principal paydown is the equity you build; the rest is the price of the loan." },
+      { question: "Should I compare my rent to a mortgage payment?", answer: "Only after adding taxes, insurance, PMI, and maintenance to the ownership side, and counting the investing upside of the cash you did not put down on the rental side." },
+      { question: "When does renting make more sense?", answer: "When your job or location may change soon, when you dislike handling repairs, or when the local market price-to-rent ratio makes buying expensive." }
+    ],
+    Content: ShouldIRentOrBuyGuide
+  },
+  {
+    slug: "when-to-refinance",
+    title: "When to Refinance Your Mortgage",
+    description: "A clear refinance decision: compute the break-even point, include closing costs honestly, avoid the term-reset trap, and know when cash-out refinancing helps or hurts.",
+    readingTime: "11 min read",
+    publishedAt: "September 7, 2026",
+    updatedAt: "September 7, 2026",
+    category: "Mortgage",
+    audience: "Homeowners weighing whether a lower rate is worth refinancing now",
+    takeaway: "Refinancing only pays off after monthly savings repay the closing costs; that break-even point, not the headline rate, should drive the decision.",
+    featured: true,
+    relatedCalculators: ["refinance-calculator", "mortgage-calculator", "extra-payment-mortgage-calculator", "home-affordability-calculator"],
+    faqs: [
+      { question: "When is refinancing worth it?", answer: "When your monthly savings repay the closing costs before you sell or refinance again. A break-even under about two years is strong; beyond four years only if you will stay long term." },
+      { question: "What costs should I include in the break-even?", answer: "Lender fees, appraisal, title, discount points, and prepaid interest, typically two to five percent of the new loan. Ignoring them overstates the savings." },
+      { question: "Why is resetting to a 30-year term a trap?", answer: "Refinancing a loan you are several years into back to a full 30-year term can lower the payment but raise total interest paid. Keep or shorten the remaining term to actually save." },
+      { question: "Is a cash-out refinance a good idea?", answer: "It can make sense for a low-rate need like a renovation, but it increases your balance, resets the term, and turns spending into debt against your home. Compare alternatives first." },
+      { question: "Should I wait for a lower rate?", answer: "Only if you expect to stay long enough for the further drop to beat the cost of waiting. Run both scenarios in the refinance calculator rather than guessing." }
+    ],
+    Content: WhenToRefinanceGuide
+  },
+  {
+    slug: "student-loan-payoff",
+    title: "Student Loan Payoff: Avalanche, Forgiveness, and Refinancing",
+    description: "How to pay off student loans efficiently: choose avalanche or snowball, use the right extra-payment tactic, factor in forgiveness, and refinance only the loans that benefit.",
+    readingTime: "12 min read",
+    publishedAt: "September 7, 2026",
+    updatedAt: "September 7, 2026",
+    category: "Debt",
+    audience: "Borrowers with federal or private student loans who want the most efficient payoff path",
+    takeaway: "Separate federal from private loans first; match the payoff method to your rate and type, and never overlook forgiveness you may qualify for.",
+    featured: true,
+    relatedCalculators: ["student-loan-calculator", "debt-avalanche-calculator", "debt-snowball-calculator", "debt-payoff-calculator"],
+    faqs: [
+      { question: "Should I use avalanche or snowball for student loans?", answer: "Avalanche pays the highest rate first and saves the most interest; snowball pays the smallest balance first and builds momentum. Both work, so pick the one you will stick with." },
+      { question: "Should I refinance my federal student loans?", answer: "Usually not, because refinancing into private loans gives up forgiveness and income-driven repayment. Refinance private loans when rates are favorable and your credit is strong." },
+      { question: "Do extra payments really help?", answer: "Yes. Direct extra payments to principal on the highest-rate loan after minimums, and you cut both the payoff time and total interest. The debt payoff calculator shows the effect." },
+      { question: "When does forgiveness matter more than paying off?", answer: "If you qualify for PSLF or income-driven forgiveness, aggressive early payoff can waste money you would have had forgiven. Weigh the expected forgiven amount against interest saved." },
+      { question: "Should I pay loans or invest instead?", answer: "Capture any 401(k) match first, keep a starter emergency fund, then accelerate high-rate loans. Compare the loan rate to your expected investment return to decide the balance." }
+    ],
+    Content: StudentLoanPayoffGuide
+  },
+  {
+    slug: "how-much-life-insurance",
+    title: "How Much Life Insurance Do You Actually Need?",
+    description: "A practical way to size life insurance: replace lost income for the years dependents need support, cover obligations, choose term for most families, and avoid the oversell.",
+    readingTime: "11 min read",
+    publishedAt: "September 7, 2026",
+    updatedAt: "September 7, 2026",
+    category: "Insurance",
+    audience: "Adults with dependents or co-signed obligations deciding how much coverage to buy",
+    takeaway: "Coverage should replace lost income and obligations for the years dependents need support, then step down as savings and the mortgage grow.",
+    featured: true,
+    relatedCalculators: ["life-insurance-calculator", "net-worth-calculator"],
+    faqs: [
+      { question: "How much life insurance do I need?", answer: "Estimate the income your family would lose each year, multiply by the years of support needed, add large obligations like the mortgage, and subtract existing savings and coverage. The life insurance calculator builds this." },
+      { question: "Is 10 to 15 times income a good rule?", answer: "It is a useful starting shortcut, but the real need depends on your obligations, savings, and how many years of support your dependents require. Do not rely on the multiple alone." },
+      { question: "Term or whole life insurance?", answer: "Term life fits most families: cheaper, covers the high-need years, and leaves the savings invested elsewhere. Whole life is usually only worth it for specific estate needs." },
+      { question: "Do I need to insure a stay-at-home parent?", answer: "Often yes. Replacing childcare, transportation, and household work has a real cost, so at-home parents are frequently underinsured." },
+      { question: "How long should the term be?", answer: "Match it to the years of highest dependence, such as 20 or 30 years with young kids, or the remaining mortgage term. Coverage should step down as the need falls." }
+    ],
+    Content: HowMuchLifeInsuranceGuide
   }
 ];
 

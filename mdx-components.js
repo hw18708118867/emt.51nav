@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CategoryArt, CategoryIcon, HeroGrowthChart } from "@/components/illustrations";
+import { CategoryArt, CategoryIcon, HeroGrowthChart, RentVsBuyDiagram, RefinanceDiagram, StudentLoanDiagram, LifeInsuranceDiagram } from "@/components/illustrations";
 
 function SmartLink({ href = "#", ...props }) {
   if (href.startsWith("/")) {
@@ -30,6 +30,10 @@ export function useMDXComponents(components) {
     CategoryArt,
     CategoryIcon,
     HeroGrowthChart,
+    RentVsBuyDiagram,
+    RefinanceDiagram,
+    StudentLoanDiagram,
+    LifeInsuranceDiagram,
     // Inline illustration block: <Figure category="Retirement" caption="..." />
     Figure: ({ category, caption }) => (
       <figure className="my-10 flex flex-col items-center">
