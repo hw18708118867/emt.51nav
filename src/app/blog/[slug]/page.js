@@ -87,7 +87,17 @@ export default async function BlogArticlePage({ params }) {
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={articleStructuredData} />
       <StructuredData data={faqStructuredData} />
-      <ArticleShell article={article} sectionLabel="Blog" relatedArticles={relatedArticles} relatedArticlesTitle="More from the blog" />
+      <ArticleShell
+        article={article}
+        sectionLabel="Blog"
+        relatedArticles={relatedArticles}
+        relatedArticlesTitle="More from the blog"
+        breadcrumb={[
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog/" },
+          { name: article.title, path: `/blog/${article.slug}/` }
+        ]}
+      />
       {article.faqs?.length ? (
         <Container className="space-y-8 pt-4 pb-20">
           <SectionHeading

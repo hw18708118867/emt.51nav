@@ -6,9 +6,11 @@ import { FeatureCard } from "@/components/cards";
 import { Reveal } from "@/components/reveal";
 import { CalculatorArt } from "@/components/calculator-art";
 import { StructuredData } from "@/components/structured-data";
+import { Breadcrumb } from "@/components/breadcrumb";
+import { Disclaimer, disclaimerVariantForCategory } from "@/components/disclaimer";
 import { getCalculatorBySlug, getCalculatorsBySlugs, calculatorRegistry } from "@/lib/calculator-registry";
 import { buildPageMetadata } from "@/lib/metadata";
-import { buildBreadcrumbStructuredData, buildFaqStructuredData } from "@/lib/structured-data";
+import { buildBreadcrumbStructuredData, buildFaqStructuredData, buildSoftwareApplicationStructuredData } from "@/lib/structured-data";
 
 export function generateStaticParams() {
   return calculatorRegistry.map((calculator) => ({ slug: calculator.slug }));
@@ -49,6 +51,12 @@ export default async function CalculatorPage({ params }) {
     { name: calculator.name, path: `/calculators/${calculator.slug}` }
   ]);
   const faqStructuredData = buildFaqStructuredData(calculator.faqs);
+  const softwareStructuredData = buildSoftwareApplicationStructuredData({
+    name: calculator.name,
+    description: calculator.description,
+    path: `/calculators/${calculator.slug}`,
+    category: calculator.category
+  });
   const categoryBands = {
     Mortgage: "bg-band-mint",
     Investing: "bg-band-sky",
@@ -64,9 +72,19 @@ export default async function CalculatorPage({ params }) {
     <div className="pb-20">
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={faqStructuredData} />
+      <StructuredData data={softwareStructuredData} />
       <section className={`border-b border-line ${heroBand}`}>
-        <Container className="grid items-center gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
-          <Reveal>
+        <Container className="py-16 lg:py-20">
+          <Breadcrumb
+            items={[
+              { name: "Home", path: "/" },
+              { name: "Calculators", path: "/calculators/" },
+              { name: calculator.name, path: `/calculators/${calculator.slug}/` }
+            ]}
+            className="mb-8"
+          />
+          <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <Reveal>
             <div className="max-w-2xl space-y-5">
               <p className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
                 {calculator.category}
@@ -81,8 +99,13 @@ export default async function CalculatorPage({ params }) {
               <CalculatorArt slug={calculator.slug} category={calculator.category} />
             </div>
           </Reveal>
+          </div>
         </Container>
       </section>
+
+      <Container className="pt-10">
+        <Disclaimer variant={disclaimerVariantForCategory(calculator.category)} />
+      </Container>
 
       <Container className="space-y-18 pt-16">
         <CalculatorForm calculatorSlug={calculator.slug} />

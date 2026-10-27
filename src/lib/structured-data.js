@@ -87,3 +87,26 @@ export function buildArticleStructuredData({
     }
   };
 }
+
+export function buildSoftwareApplicationStructuredData({
+  name,
+  description,
+  path,
+  category
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name,
+    description,
+    url: absoluteUrl(path),
+    applicationCategory: "FinanceApplication",
+    applicationSubCategory: category,
+    operatingSystem: "Web",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD"
+    }
+  };
+}

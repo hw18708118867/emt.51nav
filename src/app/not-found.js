@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
 
+export const metadata = {
+  robots: { index: false, follow: true }
+};
+
 export default function NotFound() {
   return (
     <div className="py-24">

@@ -66,7 +66,15 @@ export default async function CompareArticlePage({ params }) {
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={articleStructuredData} />
       <StructuredData data={faqStructuredData} />
-      <ArticleShell article={article} sectionLabel="Comparison" />
+      <ArticleShell
+        article={article}
+        sectionLabel="Comparison"
+        breadcrumb={[
+          { name: "Home", path: "/" },
+          { name: "Compare", path: "/compare/" },
+          { name: article.title, path: `/compare/${article.slug}/` }
+        ]}
+      />
       {article.faqs?.length ? (
         <Container className="space-y-8 pt-4 pb-20">
           <SectionHeading

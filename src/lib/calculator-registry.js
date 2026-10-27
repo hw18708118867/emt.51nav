@@ -691,6 +691,22 @@ export const calculatorRegistry = [
       {
         question: "Does buying always build wealth?",
         answer: "Not automatically. If you move before building meaningful equity, transaction costs can erase the benefit. Equity grows slowly at first because early payments are mostly interest."
+      },
+      {
+        question: "What does the rent side leave out?",
+        answer: "The renter keeps flexibility and avoids repair, tax, and selling costs, but the model does not count the investing return on the cash you did not put down. If you would actually invest the difference, the rent path can look stronger than the raw rent total suggests."
+      },
+      {
+        question: "Why does the model assume 3% appreciation and 3% rent growth?",
+        answer: "Those are defaults to make the comparison concrete, not predictions. Run the calculator with flatter or negative local-market assumptions, which can flip the result toward renting, especially for shorter stays."
+      },
+      {
+        question: "Should I include selling costs if I buy?",
+        answer: "Yes, if you might move. Selling costs of roughly 6% to 10% can erase early equity, which is why short stays usually favor renting. The calculator excludes them by default, so add them mentally for a realistic break-even."
+      },
+      {
+        question: "Is renting 'throwing money away'?",
+        answer: "No. Rent buys flexibility and avoids ownership risk and maintenance. Whether it costs more depends entirely on your stay length and local market, not on the slogan."
       }
     ],
     related: ["mortgage-calculator", "home-affordability-calculator", "extra-payment-mortgage-calculator"],
@@ -988,6 +1004,22 @@ export const calculatorRegistry = [
       {
         question: "Should I use 15 years or 30 years?",
         answer: "Use the term that still leaves room for savings, repairs, and normal life expenses after the payment clears. The cheaper total loan is not always the safer monthly choice."
+      },
+      {
+        question: "How much should I put down?",
+        answer: "A 20% down payment avoids PMI and lowers both the monthly payment and total interest, but a smaller down payment keeps more cash available for closing costs, repairs, and an emergency buffer. There is no single right number; it depends on your rate, equity goals, and cash reserve."
+      },
+      {
+        question: "What counts as a good mortgage rate?",
+        answer: "Rates move with the broader market and your credit profile, so a good rate is relative to the current week rather than a fixed number. Even a 0.25% difference compounds into tens of thousands of dollars over 30 years, which is why comparing a few lenders is worth it."
+      },
+      {
+        question: "How do I know the payment is affordable?",
+        answer: "Lenders often approve payments that stretch a budget. Test the all-in number (principal, interest, taxes, insurance, and HOA) against your monthly plan and keep room for savings, repairs, and normal life before committing to a price."
+      },
+      {
+        question: "What is PMI and when does it go away?",
+        answer: "Private mortgage insurance applies when your down payment is under 20%. It can typically be removed once you reach 20% equity through payments or appreciation, and lenders must cancel it automatically at 22% in many cases, though rules and loan types vary."
       }
     ],
     related: ["loan-calculator", "budget-calculator", "emergency-fund-calculator"],
